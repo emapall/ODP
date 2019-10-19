@@ -1,3 +1,8 @@
+.vscode
+
+# Temp db for development
+odp/db.sqlite3
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
