@@ -5,7 +5,20 @@ from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 from django.utils import html
 from django.views.decorators.cache import cache_page
-from odp_app.models import *
+from odp_app.models import (
+    Assicurazione,
+    DirittoInviolabile,
+    Infortunato,
+    Lesione,
+    Postumo,
+    Professione,
+    ProfiloRilevante,
+    Responsabilita,
+    Sentenza,
+    TrendLiquidazione,
+    TrendProfiloRilevante,
+    TrendProfiloRilevanteContainer,
+)
 
 formato_date = "j/m/Y"
 base_url = "/database/odp"
