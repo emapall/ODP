@@ -21,7 +21,7 @@ from odp_app.models import (
 )
 
 formato_date = "j/m/Y"
-base_url = "/database/odp"
+base_url = "/odp"
 search_url = base_url + "/search/"
 var_login_url = base_url + "/login/"
 
@@ -500,7 +500,7 @@ def d_results(request):
 
 
 def new_search(request):
-    return render(request, "new_search.html", {})
+    return render(request, "odp/new_search.html", {})
 
 
 ###### /search_ns: ricerca noscript ############
@@ -660,7 +660,7 @@ def activate(request, uidb64, token):
         user.save()
         return HttpResponseRedirect(search_url)
     else:
-        return render(request, "account_activation_invalid.html")
+        return render(request, "odp/account_activation_invalid.html")
 """
 
 
