@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse, HttpResponsePermanentRedirect
 from django.shortcuts import render_to_response, render
 from django.template import RequestContext
-from django.utils import simplejson, html
+from django.utils import html
 from django.views.decorators.cache import cache_page
-from lider.odp.models import *
+from odp_app.models import *
 
 formato_date = "j/m/Y"
 base_url = "/database/odp"
@@ -596,7 +595,7 @@ def search(request):
 def json_assicurazioni(request):
     dati = Assicurazione.objects.all()
     return HttpResponse(
-        simplejson.dumps(tuple(dati.values()), ensure_ascii=False),
+        json.dumps(tuple(dati.values()), ensure_ascii=False),
         content_type="application/json; charset=UTF-8",
     )
 
@@ -605,7 +604,7 @@ def json_assicurazioni(request):
 def json_professioni(request):
     dati = Professione.objects.all()
     return HttpResponse(
-        simplejson.dumps(tuple(dati.values()), ensure_ascii=False),
+        json.dumps(tuple(dati.values()), ensure_ascii=False),
         content_type="application/json; charset=UTF-8",
     )
 
@@ -614,7 +613,7 @@ def json_professioni(request):
 def json_lesioni(request):
     dati = Lesione.objects.all()
     return HttpResponse(
-        simplejson.dumps(tuple(dati.values()), ensure_ascii=False),
+        json.dumps(tuple(dati.values()), ensure_ascii=False),
         content_type="application/json; charset=UTF-8",
     )
 
@@ -623,7 +622,7 @@ def json_lesioni(request):
 def json_postumi(request):
     dati = Postumo.objects.all()
     return HttpResponse(
-        simplejson.dumps(tuple(dati.values()), ensure_ascii=False),
+        json.dumps(tuple(dati.values()), ensure_ascii=False),
         content_type="application/json; charset=UTF-8",
     )
 
@@ -636,7 +635,7 @@ def json_profili_rilevanti(request):
     dati = ProfiloRilevante.objects.all()
     dati = dati.filter(trend__id=trend_id)
     return HttpResponse(
-        simplejson.dumps(tuple(dati.values()), ensure_ascii=False),
+        json.dumps(tuple(dati.values()), ensure_ascii=False),
         content_type="application/json; charset=UTF-8",
     )
 
