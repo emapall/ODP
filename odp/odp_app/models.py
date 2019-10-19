@@ -417,10 +417,10 @@ class Sentenza(models.Model):
         "numero della sentenza", null=False, blank=False
     )
     esaminatore = models.ManyToManyField(
-        Esaminatore, verbose_name="esaminatore", null=True, blank=False
+        Esaminatore, verbose_name="esaminatore", blank=False
     )
     osservatorio = models.ManyToManyField(
-        Osservatorio, verbose_name="osservatorio", null=True, blank=False
+        Osservatorio, verbose_name="osservatorio", blank=False
     )
     estensore = models.CharField("estensore", max_length=50, null=False, blank=False)
     riconvenzionale = models.CharField(
@@ -462,7 +462,7 @@ class Sentenza(models.Model):
         on_delete=models.PROTECT,
     )
     assicurazione = models.ManyToManyField(
-        Assicurazione, verbose_name="assicurazione", null=True, blank=False
+        Assicurazione, verbose_name="assicurazione", blank=False
     )  # filter_interface=models.HORIZONTAL,
     provenienza = models.ForeignKey(
         Provenienza,
@@ -982,10 +982,7 @@ class Infortunato(models.Model):
     )
 
     richiestaparteattrice = models.ManyToManyField(
-        RichiestaParteAttrice,
-        null=False,
-        blank=False,
-        verbose_name="Richiesta parte attrice",
+        RichiestaParteAttrice, blank=False, verbose_name="Richiesta parte attrice"
     )
 
     dm_est = models.BooleanField("est danno da morte")
@@ -1185,19 +1182,16 @@ class Infortunato(models.Model):
 
     # molti a molti
     lesione = models.ManyToManyField(
-        Lesione, null=True, blank=True
+        Lesione, blank=True
     )  # filter_interface=models.VERTICAL,
     postumo = models.ManyToManyField(
-        Postumo, null=True, blank=True
+        Postumo, blank=True
     )  # filter_interface=models.VERTICAL,
-    postumo_tabulato = models.ManyToManyField(Postumo_tabulato, null=True, blank=True)
+    postumo_tabulato = models.ManyToManyField(Postumo_tabulato, blank=True)
 
     # Altri danni patrimoniali
     dannopatrimoniale = models.ManyToManyField(
-        DannoPatrimoniale,
-        null=True,
-        blank=True,
-        verbose_name="Altri danni patrimoniali",
+        DannoPatrimoniale, blank=True, verbose_name="Altri danni patrimoniali"
     )
     importo_dannopatrimoniale = models.DecimalField(
         "importo liquidato per altri danni patrimoniali",
@@ -1219,7 +1213,7 @@ class Infortunato(models.Model):
     # Lesione diritti inviolabili (vedi email per l'intricaterrima casistica degli 'altri danni')
     # A quanto pare questi diritti non sono così inviolabili - 09-04-14
     dirittoinviolabile = models.ManyToManyField(
-        DirittoInviolabile, null=True, blank=True, verbose_name="Diritti lesi"
+        DirittoInviolabile, blank=True, verbose_name="Diritti lesi"
     )
     importo_dirittoinviolabile = models.DecimalField(
         "importo liquidato", decimal_places=2, max_digits=20, null=True, blank=True
@@ -1235,33 +1229,28 @@ class Infortunato(models.Model):
     # Aggiunte di gennaio 2011
     fattori_rilevanti_liquidazione = models.ManyToManyField(
         FattoreLiquidazione,
-        null=True,
         blank=True,
         verbose_name="fattori rilevanti di liquidazione del danno non patrimoniale",
     )
     fattori_rilevanti_liquidazione_dp = models.ManyToManyField(
         FattoreLiquidazioneDP,
-        null=True,
         blank=True,
         verbose_name="fattori rilevanti di liquidazione del danno patrimoniale",
     )
     prova_del_dnp = models.ManyToManyField(
-        ProvaDelDNP,
-        null=True,
-        blank=True,
-        verbose_name="prove del danno non patrimoniale",
+        ProvaDelDNP, blank=True, verbose_name="prove del danno non patrimoniale"
     )
     note_prova_del_dnp = models.TextField(
         "note alle prove del danno non patrimoniale", null=True, blank=True
     )
     prova_del_dp = models.ManyToManyField(
-        ProvaDelDP, null=True, blank=True, verbose_name="prove del danno patrimoniale"
+        ProvaDelDP, blank=True, verbose_name="prove del danno patrimoniale"
     )
     note_prova_del_dp = models.TextField(
         "note alle prove del danno patrimoniale", null=True, blank=True
     )
     trend_liquidazione = models.ManyToManyField(
-        TrendLiquidazione, null=True, blank=True, verbose_name="trend di liquidazione"
+        TrendLiquidazione, blank=True, verbose_name="trend di liquidazione"
     )
     note_trend_liquidazione = models.TextField(
         "note ai trend di liquidazione", null=True, blank=True
@@ -1395,11 +1384,7 @@ class TrendProfiloRilevanteContainer(models.Model):
         on_delete=models.PROTECT,
     )
     profili_rilevanti = models.ManyToManyField(
-        ProfiloRilevante,
-        db_index=True,
-        blank=True,
-        null=True,
-        verbose_name="profili rilevanti",
+        ProfiloRilevante, db_index=True, blank=True, verbose_name="profili rilevanti"
     )
     sentenza = models.ForeignKey(Sentenza, db_index=True, on_delete=models.PROTECT)
 
