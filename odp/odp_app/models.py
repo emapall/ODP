@@ -56,7 +56,7 @@ def update_user_profile(sender, instance, created, **kwargs):
 class Esaminatore(models.Model):
     esaminatore = models.CharField(max_length=50)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.esaminatore
 
     class Meta:
@@ -68,7 +68,7 @@ class Esaminatore(models.Model):
 class Osservatorio(models.Model):
     osservatorio = models.CharField(max_length=50)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.osservatorio
 
     class Meta:
@@ -80,7 +80,7 @@ class Osservatorio(models.Model):
 class Assicurazione(models.Model):
     assicurazione = models.CharField(max_length=50, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.assicurazione
 
     class Meta:
@@ -95,7 +95,7 @@ class Assicurazione(models.Model):
 class Regione(models.Model):
     regione = models.CharField(max_length=50)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.regione
 
     class Meta:
@@ -111,7 +111,7 @@ class Provincia(models.Model):
         Regione, verbose_name="regione", on_delete=models.PROTECT
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.provincia + u" - " + self.regione.regione
 
     class Meta:
@@ -125,7 +125,7 @@ class Comune(models.Model):
     comune = models.CharField(max_length=50, db_index=True)
     provincia = models.ForeignKey(Provincia, on_delete=models.PROTECT)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.comune + u" - " + self.provincia.targa
 
     class Meta:
@@ -137,7 +137,7 @@ class Comune(models.Model):
 class Provenienza(models.Model):
     provenienza = models.CharField(max_length=50)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.provenienza
 
     class Meta:
@@ -154,7 +154,7 @@ class Provenienza(models.Model):
 class Lesione(models.Model):
     lesione = models.CharField(max_length=100, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.lesione
 
     class Meta:
@@ -166,7 +166,7 @@ class Lesione(models.Model):
 class Postumo(models.Model):
     postumo = models.CharField(max_length=100, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.postumo
 
     class Meta:
@@ -178,7 +178,7 @@ class Postumo(models.Model):
 class Postumo_tabulato(models.Model):
     postumo_tabulato = models.CharField(max_length=150, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.postumo_tabulato
 
     class Meta:
@@ -190,7 +190,7 @@ class Postumo_tabulato(models.Model):
 class RichiestaParteAttrice(models.Model):
     richiesta = models.CharField(max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.richiesta
 
     class Meta:
@@ -202,7 +202,7 @@ class RichiestaParteAttrice(models.Model):
 class DannoPatrimoniale(models.Model):
     tipo = models.CharField(max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.tipo
 
     class Meta:
@@ -215,7 +215,7 @@ class DannoPatrimoniale(models.Model):
 class DirittoInviolabile(models.Model):
     diritto = models.CharField(max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.diritto
 
     class Meta:
@@ -230,7 +230,7 @@ class DirittoInviolabile(models.Model):
 class Professione(models.Model):
     professione = models.CharField(max_length=50, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.professione
 
     class Admin:
@@ -245,7 +245,7 @@ class Professione(models.Model):
 class Responsabilita(models.Model):
     responsabilita = models.CharField(max_length=80)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.responsabilita
 
     class Admin:
@@ -260,7 +260,7 @@ class Responsabilita(models.Model):
 class FattoreLiquidazione(models.Model):
     fattore = models.CharField(max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.fattore
 
     class Admin:
@@ -277,7 +277,7 @@ class FattoreLiquidazione(models.Model):
 class FattoreLiquidazioneDP(models.Model):
     fattore = models.CharField(max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.fattore
 
     class Admin:
@@ -292,7 +292,7 @@ class FattoreLiquidazioneDP(models.Model):
 class ProvaDelDNP(models.Model):
     prova = models.CharField(max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.prova
 
     class Admin:
@@ -307,7 +307,7 @@ class ProvaDelDNP(models.Model):
 class ProvaDelDP(models.Model):
     prova = models.CharField(max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.prova
 
     class Admin:
@@ -322,7 +322,7 @@ class ProvaDelDP(models.Model):
 class TrendLiquidazione(models.Model):
     trend = models.CharField(max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.trend
 
     class Admin:
@@ -337,7 +337,7 @@ class TrendLiquidazione(models.Model):
 class TrendProfiloRilevante(models.Model):
     trend = models.CharField(max_length=80)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.trend
 
     class Meta:
@@ -352,7 +352,7 @@ class ProfiloRilevante(models.Model):
         TrendProfiloRilevante, null=True, blank=True, on_delete=models.PROTECT
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.profilo
 
     class Admin:
@@ -506,7 +506,7 @@ class Sentenza(models.Model):
         default=False,
     )
 
-    def __unicode__(self):
+    def __str__(self):
         #        if (self.file_img == '') and (self.file_sch == '') and (self.file_cmn == ''):
         #            linestr = '(no file) '
         #        else:
@@ -1267,7 +1267,7 @@ class Infortunato(models.Model):
         "note ai trend di liquidazione", null=True, blank=True
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.id)
         # if (self.eta != 0) :
         #    return str(self.id) + ' ' + str(self.professione) + '  (et�: ' + str(self.eta) + ')'
