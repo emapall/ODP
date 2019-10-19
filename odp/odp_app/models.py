@@ -539,7 +539,7 @@ class Sentenza(models.Model):
 
     def files_allegati(self):
         return (self.file_img != "") or (self.file_sch != "") or (self.file_cmn != "")
-        files_allegati.short_description = "PDF"
+        # files_allegati.short_description = "PDF"
 
     def save(self):
         if self.data_del_deposito:
