@@ -17,7 +17,6 @@
 ############################################################
 
 from django.db import models
-from django import forms
 from django.template.defaultfilters import date
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -108,7 +107,9 @@ class Regione(models.Model):
 class Provincia(models.Model):
     targa = models.CharField(max_length=2, null=True, blank=False)
     provincia = models.CharField(max_length=50, null=True, blank=False, db_index=True)
-    regione = models.ForeignKey(Regione, verbose_name="regione")
+    regione = models.ForeignKey(
+        Regione, verbose_name="regione", on_delete=models.PROTECT
+    )
 
     def __unicode__(self):
         return self.provincia + u" - " + self.regione.regione
@@ -122,7 +123,7 @@ class Provincia(models.Model):
 class Comune(models.Model):
     codice = models.CharField(max_length=4)
     comune = models.CharField(max_length=50, db_index=True)
-    provincia = models.ForeignKey(Provincia)
+    provincia = models.ForeignKey(Provincia, on_delete=models.PROTECT)
 
     def __unicode__(self):
         return self.comune + u" - " + self.provincia.targa
@@ -347,7 +348,9 @@ class TrendProfiloRilevante(models.Model):
 
 class ProfiloRilevante(models.Model):
     profilo = models.CharField(max_length=80)
-    trend = models.ForeignKey(TrendProfiloRilevante, null=True, blank=True)
+    trend = models.ForeignKey(
+        TrendProfiloRilevante, null=True, blank=True, on_delete=models.PROTECT
+    )
 
     def __unicode__(self):
         return self.profilo
@@ -452,13 +455,21 @@ class Sentenza(models.Model):
 
     codice = models.CharField("Codice archivio", max_length=50, null=True, blank=True)
     sede_tribunale = models.ForeignKey(
-        Comune, verbose_name="sede tribunale", null=True, blank=False
+        Comune,
+        verbose_name="sede tribunale",
+        null=True,
+        blank=False,
+        on_delete=models.PROTECT,
     )
     assicurazione = models.ManyToManyField(
         Assicurazione, verbose_name="assicurazione", null=True, blank=False
     )  # filter_interface=models.HORIZONTAL,
     provenienza = models.ForeignKey(
-        Provenienza, verbose_name="provenienza", null=True, blank=True
+        Provenienza,
+        verbose_name="provenienza",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
     )
     numero_attori = models.IntegerField(
         "numero attori", default=0, null=True, blank=False
@@ -471,7 +482,11 @@ class Sentenza(models.Model):
     )
     fatto = models.TextField("fatto", null=False, blank=False)
     responsabilita = models.ForeignKey(
-        Responsabilita, verbose_name="responsabilità", null=True, blank=False
+        Responsabilita,
+        verbose_name="responsabilità",
+        null=True,
+        blank=False,
+        on_delete=models.PROTECT,
     )
     note_sentenza = models.TextField("note", null=False, blank=True)
     ocr = models.TextField("ocr", null=False, blank=True)
@@ -706,7 +721,10 @@ class Infortunato(models.Model):
     # campi della tabella
 
     sentenza = models.ForeignKey(
-        Sentenza, verbose_name="sentenza", related_name="infortunati"
+        Sentenza,
+        verbose_name="sentenza",
+        related_name="infortunati",
+        on_delete=models.PROTECT,
     )
     eta = models.IntegerField("età", null=True, blank=True)
     est_maggiorenne = models.CharField(
@@ -715,7 +733,9 @@ class Infortunato(models.Model):
     sesso = models.CharField(
         "sesso", max_length=1, choices=SESSO, null=True, blank=False
     )
-    professione = models.ForeignKey(Professione, verbose_name="professione")
+    professione = models.ForeignKey(
+        Professione, verbose_name="professione", on_delete=models.PROTECT
+    )
     percentuale_colpa_attore = models.DecimalField(
         "percentuale colpa attore",
         decimal_places=2,
@@ -1369,7 +1389,10 @@ class Infortunato(models.Model):
 
 class TrendProfiloRilevanteContainer(models.Model):
     trend = models.ForeignKey(
-        TrendProfiloRilevante, db_index=True, verbose_name="parola chiave"
+        TrendProfiloRilevante,
+        db_index=True,
+        verbose_name="parola chiave",
+        on_delete=models.PROTECT,
     )
     profili_rilevanti = models.ManyToManyField(
         ProfiloRilevante,
@@ -1378,7 +1401,7 @@ class TrendProfiloRilevanteContainer(models.Model):
         null=True,
         verbose_name="profili rilevanti",
     )
-    sentenza = models.ForeignKey(Sentenza, db_index=True)
+    sentenza = models.ForeignKey(Sentenza, db_index=True, on_delete=models.PROTECT)
 
     class Meta:
         verbose_name = u"profilo rilevante container"
@@ -1389,7 +1412,9 @@ class TrendProfiloRilevanteContainer(models.Model):
 
 
 class Invalidita_temporanea(models.Model):
-    infortunato = models.ForeignKey(Infortunato, verbose_name="danneggiato")
+    infortunato = models.ForeignKey(
+        Infortunato, verbose_name="danneggiato", on_delete=models.PROTECT
+    )
     percentuale = models.DecimalField("%", decimal_places=2, max_digits=5)  # core=True
     giorni = models.IntegerField("giorni")  # core=True
 
