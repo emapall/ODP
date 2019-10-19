@@ -13,7 +13,7 @@ urlpatterns = [
     path("search/d_results/", core_views.d_results),
     # (r'^search/?$', 'django.views.generic.simple.direct_to_template', {'template':'odp/search.html'}),
     path("search/", core_views.new_search),
-    path("/", core_views.new_search),
+    path("", core_views.new_search),
     # path("search_ns/", core_views.search_noscript),
     path("ajax/assicurazioni.json", core_views.json_assicurazioni),
     path("ajax/professioni.json", core_views.json_professioni),
