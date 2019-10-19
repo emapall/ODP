@@ -2,8 +2,36 @@
 
 from django import forms
 from django.contrib import admin
-from lider.odp.models import *
-from lider.odp.widgets import *
+from odp_app.models import (
+    Assicurazione,
+    Comune,
+    DannoPatrimoniale,
+    DirittoInviolabile,
+    Esaminatore,
+    FattoreLiquidazione,
+    FattoreLiquidazioneDP,
+    Infortunato,
+    Invalidita_temporanea,
+    Lesione,
+    Osservatorio,
+    Postumo,
+    Postumo_tabulato,
+    Professione,
+    ProfiloRilevante,
+    ProvaDelDNP,
+    ProvaDelDP,
+    Provenienza,
+    Provincia,
+    Regione,
+    Responsabilita,
+    RichiestaParteAttrice,
+    Sentenza,
+    TrendLiquidazione,
+    TrendProfiloRilevante,
+    TrendProfiloRilevanteContainer,
+)
+
+# from lider.odp.widgets import *
 
 
 class ComuneAdmin(admin.ModelAdmin):
@@ -41,10 +69,13 @@ class InvaliditaTemporaneaInline(admin.TabularInline):
 
 class ProfiloRilevanteInline(admin.StackedInline):
     extra = 1
-    formfield_overrides = {
-        models.ForeignKey: {"widget": TrendWidget},
-        #             models.ManyToManyField: {'widget' : ProfiloWidget},
-    }
+
+    # TODO implement widgets
+
+    # formfield_overrides = {
+    # models.ForeignKey: {"widget": TrendWidget},
+    #             models.ManyToManyField: {'widget' : ProfiloWidget},
+    # }
     model = TrendProfiloRilevanteContainer
 
 
@@ -146,15 +177,15 @@ class DanneggiatoForm(forms.ModelForm):
         #
         #    interessi_legali_ss        DipendeDa_est_ss
 
-        CampiControllo = [
-            "est_it",
-            "est_ip",
-            "est_lcit",
-            "est_dm",
-            "est_dmip",
-            "est_dmit",
-            "est_ss",
-        ]
+        # CampiControllo = [
+        #    "est_it",
+        #    "est_ip",
+        #    "est_lcit",
+        #    "est_dm",
+        #    "est_dmip",
+        #    "est_dmit",
+        #    "est_ss",
+        # ]
 
         DipendeDa = {
             "est_it": [
