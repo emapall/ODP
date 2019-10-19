@@ -143,6 +143,8 @@ class SentenzaAdmin(admin.ModelAdmin):
 class DanneggiatoForm(forms.ModelForm):
     class Meta:
         model = Infortunato
+        # TODO list only interesting fields
+        fields = "__all__"
 
     def clean(self):
         cleaned_data = self.cleaned_data
@@ -268,7 +270,8 @@ class DanneggiatoForm(forms.ModelForm):
             if not cleaned_data.get(controllo):
                 for campo in dipendenze:
                     if cleaned_data.get(campo):
-                        self._errors[campo] = forms.util.ErrorList([msg[controllo]])
+                        # TODO controllare
+                        self._errors[campo] = forms.utils.ErrorList([msg[controllo]])
                         del cleaned_data[campo]
 
         return cleaned_data
