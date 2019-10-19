@@ -1,0 +1,66 @@
+{% extends "odp/search.html" %}
+
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/styles/odp_database/search.css" />
+<style type="text/css">
+	#navigazione { font-size: medium; }
+	.ui-tabs-hide {	background: white url(/images/odp_database/logosfondo-chiaro.png) center center no-repeat fixed; }
+</style>
+{% endblock %}
+
+
+{% block pagina %}
+	{% if not assicurazioni or not professioni or not lesioni or not postumi %}
+		<div class="box_errore">Si &egrave; verificato un errore sul nostro server: alcuni campi di ricerca potrebbero non essere disponibili.<br />
+		Riprova pi&ugrave; tardi.</div>
+	{% else %}
+		<p><strong>Questa &egrave; la pagina di ricerca senza script.</strong> Potrebbe impiegare molto tempo per caricarsi ed &egrave; necessaria
+		solo per i browser che non supportano Javascript. Per questo, se il tuo browser lo supporta, ti consigliamo di tornare alla
+		<a href="/odp_database/search/">pagina di ricerca normale</a>.</p>
+		{{ block.super }}
+	{% endif %}
+{% endblock %}
+
+
+{% block navigazione %}
+<p style="text-align: center" id="navigazione">
+	<a id="a_sentenza" href="#sentenza" style="padding: 0.25em">Sentenza</a>
+	| <a id="a_danno" href="#danno" style="padding: 0.25em">Danno alla salute</a>
+	| <a id="a_danneggiato" href="#danneggiato" style="padding: 0.25em">Danneggiato</a>
+</p>
+{% endblock %}
+
+
+{% block select_assicurazioni %}
+				<select id="assicurazioni" name="assicurazione" size="15" multiple="multiple">{% for o in assicurazioni %}
+					<option value="{{ o.id }}">{{ o.assicurazione }}</option>{% endfor %}
+				</select>
+{% endblock %}
+
+
+{% block select_professioni %}
+				<select id="professioni" name="professione" size="1">
+					<option value="" selected="selected">(qualsiasi)</option>{% for o in professioni %}	
+					<option value="{{ o.id }}">{{ o.professione }}</option>{% endfor %}
+				</select>
+{% endblock %}
+
+
+{% block select_lesioni %}
+				<select id="lesioni" name="lesione" size="15" style="width:100%">{% for o in lesioni %}	
+					<option value="{{ o.id }}">{{ o.lesione }}</option>{% endfor %}
+				</select>
+{% endblock %}
+
+
+{% block select_postumi %}
+				<select id="postumi" name="postumo" size="15" style="width:100%">{% for o in postumi %}	
+					<option value="{{ o.id }}">{{ o.postumo }}</option>{% endfor %}
+				</select>
+{% endblock %}
+
+{% block ns1 %}{% endblock %}
+{% block ns2 %}{% endblock %}
+{% block ns3 %}{% endblock %}
+{% block body_tag %}{% endblock %}

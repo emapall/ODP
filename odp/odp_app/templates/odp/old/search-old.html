@@ -1,0 +1,329 @@
+{% extends "frontend/template_base.html" %}
+
+
+{% block titolo %}Ricerca{% endblock %}
+{% block titolo_html %}Ricerca database <acronym title="Osservatorio sul Danno alla Persona">ODP</acronym>{% endblock %}
+
+
+{% block head %}
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+<link rel="stylesheet" type="text/css" href="/styles/odp_database/search-old.css" />
+<link rel="stylesheet" type="text/css" href="/styles/odp_database/vlaCal-v2.1.css" />
+<style type="text/css">
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0 0 0.4em 0;
+	position: relative; 
+	text-align: center; }
+li { display: inline; }
+div#focus_s, div#focus_i, div#tab_infortunato, div#tab_danno {
+	display:none }
+a#a_danno, a#a_infortunato, a#a_sentenza {
+	text-decoration:none;
+	border-bottom: 0 solid;
+	padding: 0.5em 1em 0.4em 1em; /* t,r,b,l */ }
+a#a_sentenza {
+	border-bottom-color: #cddfff;
+	border-bottom-width: 1px; }
+a#a_danno{
+	border-bottom-color: #FFFFBE; }
+a#a_infortunato {
+	border-bottom-color: #FFBEFF; }
+</style>
+<script type="text/javascript" src="/scripts/odp_database/search-old.js"></script>
+<script type="text/javascript" src="/scripts/odp_database/mootools-1.2.1-core-yc.js"></script>
+<script type="text/javascript" src="/scripts/odp_database/vlaCal-v2.1-compressed.js"></script>
+<script type="text/javascript">
+//	window.addEvent('domready', function() { myCal = new Calendar({ data_della_sentenza: 'Y-m-d' }); });
+//	window.addEvent('domready', function() { myCal = new Calendar({ data_del_deposito: 'Y-m-d' }); });
+//	window.addEvent('domready', preload);
+	
+	window.addEvent('domready', function() {
+		opzioni = {
+			prefillDate: false,
+			format: 'y/m/d',
+			separator: '-',
+			filePath: '/scripts/vla-calendar-serverside/',
+			ieTransitionColor: '#ccdeff'
+		};
+		new vlaDatePicker('data_della_sentenza', opzioni);
+		new vlaDatePicker('data_del_deposito', opzioni);
+	});
+</script>
+{% endblock %}
+
+
+{% block body_tag %}{% endblock %}
+
+
+{% block topleft %}
+{% if user.is_staff %}
+| <a href="/database/admin/">Amministrazione</a>
+{% endif %}
+{% endblock %}
+
+
+
+{% block pagina %}
+
+{% block navigazione %}
+<ul id="ul_tab">
+	<li id="li_sentenza"><a id="a_sentenza" accesskey="s" href="#sentenza" onclick="return showtab('sentenza');"><span class="ak">S</span>entenza</a></li>
+	<li id="li_danno"><a id="a_danno" accesskey="d"  href="#danno" onclick="return showtab('danno');"><span class="ak">D</span>anno alla salute</a></li>
+	<li id="li_infortunato"><a id="a_infortunato" accesskey="i" href="#infortunato" onclick="return showtab('infortunato');"><span class="ak">I</span>nfortunato</a></li>
+</ul>
+{% endblock %}
+
+<div id="tab_sentenza">
+	<h2><a name="sentenza" id="sentenza">Sentenza</a></h2>
+	<form id="form_sentenza" enctype="application/x-www-form-urlencoded" title="Ricerca per sentenza" action="/odp_database/search/s_results/" method="get">
+		<p>
+			<label for="grado_di_giudizio" style="display:inline">Organo giudicante: 
+			<select id="grado_di_giudizio" name="grado_di_giudizio" size="1">
+				<option value="" selected="selected">(qualsiasi)</option>
+				<option value="C">Corte d&#39;Appello</option>
+				<option value="P">Giudice di Pace</option>
+				<option value="T">Tribunale</option>
+			</select></label>
+			<label for="sede_tribunale" title="Sede della corte" style="display:inline"> sede: 
+				<input type="text" class="t" id="sede_tribunale" name="sede_tribunale" size="10" value="" />
+			</label>
+		</p>
+		<p>
+			<span style="width:25%" class="sx">
+				<label for="data_della_sentenza">Data della sentenza: </label>
+				<input type="text" class="t" style="float:left;" id="data_della_sentenza" name="data_della_sentenza" size="10" value="" maxlength="10" /></span>
+			<span style="width:25%" class="sx">
+				<label for="numero_della_sentenza">Numero della sentenza: </label>
+				<input type="text" class="t" id="numero_della_sentenza" name="numero_della_sentenza" size="10" value="" /></span>
+			<span style="width:25%" class="sx">
+				<label for="data_del_deposito">Data del deposito: </label>
+				<input type="text" class="t" style="float:left;" id="data_del_deposito" name="data_del_deposito" size="10" value="" maxlength="10" /></span>
+			<label for="anno_del_deposito">Anno del deposito: </label>
+			<input type="text" class="t" id="anno_del_deposito" name="anno_del_deposito" size="10" value="" />
+		</p>
+		<div class="clr"></div>
+		<div id="focus_s">
+			<hr/>
+			<p class="sx">
+				<label for="assicurazioni">Assicurazione/i: </label>
+				{% block select_assicurazioni %}
+				<span id="s_assicurazioni">
+					<select id="assicurazioni" name="assicurazione" size="15" style="width:100%" multiple="multiple">
+						<option value="" id="dummy_assicurazioni">Richiede Javascript!</option>
+					</select>
+				</span>
+				{% endblock %}
+			</p>
+			<p>
+				<label for="estensore">Estensore: </label>
+				<input type="text" class="t" id="estensore" name="estensore" size="30" value="" maxlength="50" />
+			</p>
+			<p>
+				<label for="responsabilita">Responsabilit&agrave;: </label>
+				<select id="responsabilita" name="responsabilita" size="1">
+					<option value="" selected="selected">(qualsiasi)</option>
+					<option value="D">Dolo</option>
+					<option value="A">Colpa esclusiva dell&#39;attore</option>
+					<option value="E">Colpa esclusiva del convenuto</option>
+					<option value="C">Colpa concorrente del convenuto</option>
+					<option value="1">Presunzione di responsabilit&agrave; ex 2054 cc I comma</option>
+					<option value="2">Presunzione di responsabilit&agrave; ex 2054 cc II comma</option>
+				</select>
+			</p>
+			<fieldset>
+				<legend> Sentenza importante per: </legend>
+				<label for="si_it"><input type="checkbox" id="si_it" name="si_it" /> Invalidit&agrave; temporanea</label>
+				<label for="si_ip"><input type="checkbox" id="si_ip" name="si_ip" /> Invalidit&agrave; permanente</label>
+				<label for="si_dm"><input type="checkbox" id="si_dm" name="si_dm" /> Danno morale</label>
+				<label for="si_mo"><input type="checkbox" id="si_mo" name="si_mo" /> Danno da morte</label>
+				<label for="si_rp"><input type="checkbox" id="si_rp" name="si_rp" /> Responsabilit&agrave; professionale</label>
+				<label for="si_de"><input type="checkbox" id="si_de" name="si_de" /> Danno non patrimoniale</label>
+			</fieldset>	
+		</div>
+		<div class="clr"></div>
+		<p>
+			<label for="sante_2001"><input type="checkbox" id="sante_2001" name="ante_2001" /> Cerca anche sentenze anteriori al 2001</label>
+		</p>
+		<p>
+			<input type="hidden" name="inizia_da" value="1" />
+			<input class="btn" type="submit" value="Ricerca" />
+			<input class="btn" type="reset" value="Reset" />
+			{% block ns1 %}
+			<a onclick="if(!ajax_sentenza){submitForm('assicurazioni');} ajax_sentenza=1;return toggObject('focus_s',this)" href="#">Visualizza pi&ugrave; opzioni...</a>
+			{% endblock %}
+		</p>
+	</form>
+</div>
+
+
+<div id="tab_danno">
+	<h2><a name="danno" id="danno">Danno alla salute</a></h2>
+	<form id="form_danno" enctype="application/x-www-form-urlencoded" title="Ricerca per danno alla salute" action="/odp_database/search/d_results/" method="get">
+		<fieldset>
+			<legend> Tipologia di Invalidit&agrave;: </legend>
+			<label for="tipo_inv_1"><input type="radio" id="tipo_inv_1" name="tipo_inv" value="macro" /> Macropermanente</label>
+			<label for="tipo_inv_2"><input type="radio" id="tipo_inv_2" name="tipo_inv" value="micro" /> Micropermanente</label>
+			<label for="tipo_inv_3"><input type="radio" id="tipo_inv_3" name="tipo_inv" value="" checked="checked" /> (qualsiasi)</label>
+		</fieldset>
+		<fieldset>
+			<legend> Invalidit&agrave; permanente </legend>
+			<p>
+				<label for="perc_ip_da" class="sx">Percentuale invalidit&agrave; permanente da
+					<input type="text" class="t" id="perc_ip_da" name="perc_ip_da" size="6" />%
+				</label>
+				<label for="perc_ip_a">a
+					<input type="text" class="t" id="perc_ip_a" name="perc_ip_a" size="6" />%
+				</label>
+			</p>
+			<p>
+				<label for="metodo_das_ip">Metodo di calcolo importo per invalidit&agrave; permanente:</label>
+				<select id="metodo_das_ip" name="metodo_das_ip" size="1">
+					<option value="" selected="selected">(qualsiasi)</option>
+					<option value="1">Calcolo a punto</option>
+					<option value="2">Triplo pensione sociale</option>
+					<option value="4">Via equitativa pura</option>
+					<option value="3">Reddito medio nazionale</option>
+					<option value="7">Legge 57/2001</option>
+					<option value="8">Codice assicurazioni</option>
+					<option value="5">(altro)</option>
+					<option value="0">(non ricavabile)</option>
+				</select>
+			</p>
+			<label for="est_lcip"><input type="checkbox" id="est_lcip" name="est_lcip" /> Lucro cessante per invalidit&agrave; permanente</label>
+			<label for="est_dm_ip"><input type="checkbox" id="est_dm_ip" name="est_dm_ip" /> Danno morale relativo all'invalidit&agrave; permanente</label>
+		</fieldset>
+		<fieldset>
+			<legend>
+				<label for="est_it"><input type="checkbox" id="est_it" name="est_it" value="est_it" />Invalidit&agrave; temporanea</label>
+			</legend>
+			<p>
+				<label for="metodo_das_it">Metodo di calcolo importo per invalidit&agrave; temporanea:</label>
+				<select id="metodo_das_it" name="metodo_das_it" size="1">
+					<option value="" selected="selected">(qualsiasi)</option>
+					<option value="1">Triplo pensionesociale</option>
+					<option value="3">Via equitativa pura</option>
+					<option value="4">IN IP</option>
+					<option value="6">Euro al d&igrave;</option>
+					<option value="7">TAB</option>
+					<option value="8">Legge 57/2001</option>
+					<option value="9">Codice assicurazioni</option>
+					<option value="5">(altro)</option>
+					<option value="0">(non ricavabile)</option>
+				</select>
+			</p>
+			<label for="est_lcit"><input type="checkbox" id="est_lcit" name="est_lcit" /> Lucro cessante per invalidit&agrave; temporanea</label>
+			<label for="est_dm_it"><input type="checkbox" id="est_dm_it" name="est_dm_it" /> Danno morale relativo all'invalidit&agrave; temporanea</label>
+		</fieldset>
+		<fieldset class="sx" style="width:30%">
+			<legend> Importo danni alla persona </legend>
+			<label for="importo_dap_da" class="sx">da <input type="text" class="t" size="6" id="importo_dap_da" name="importo_dap_da" />&euro;</label>
+			<label for="importo_dap_a">a <input type="text" class="t" size="6" id="importo_dap_a" name="importo_dap_a" />&euro;</label>
+		</fieldset>
+		<fieldset class="sx" style="width:30%">
+			<legend> Importo altri danni </legend>
+			<label for="importo_ad_da" class="sx">da <input type="text" class="t" size="6" id="importo_ad_da" name="importo_ad_da" />&euro;</label>
+			<label for="importo_ad_a">a <input type="text" class="t" size="6" id="importo_ad_a" name="importo_ad_a" />&euro;</label>
+		</fieldset>
+		<fieldset>
+			<legend> Importo totale </legend>
+			<label for="importo_totale_da" class="sx">da <input type="text" class="t" size="6" id="importo_totale_da" name="importo_totale_da" />&euro;</label>
+			<label for="importo_totale_a">a <input type="text" class="t" size="6" id="importo_totale_a" name="importo_totale_a" />&euro;</label>
+		</fieldset>
+		<p>
+			<label for="est_dm"><input type="checkbox" id="est_dm" name="est_dm" value="est_dm" /> Danno morale</label>
+			<label for="est_dm_vp"><input type="checkbox" id="est_dm_vp" name="est_dm_vp" value="est_dm_vp" /> Danno morale risarcito per via equitativa pura</label>
+		</p>
+		<div class="clr"></div>
+		<p><label for="dante_2001"><input type="checkbox" id="dante_2001" name="ante_2001" /> Cerca anche sentenze anteriori al 2001</label></p>
+		<p>
+			<input type="hidden" name="inizia_da" value="1" />
+			<input class="btn" type="submit" value="Ricerca" />
+			<input class="btn" type="reset" value="Reset" />
+		</p>
+	</form>
+</div>
+
+
+<div id="tab_infortunato">
+	<h2><a name="infortunato" id="infortunato">Infortunato</a></h2>
+	<form id="form_infortunato" enctype="application/x-www-form-urlencoded" title="Ricerca per infortunato" action="/odp_database/search/i_results/" method="get">
+		<div class="sx">
+			<p>
+				<label for="sesso">Sesso:</label>
+				<select id="sesso" name="sesso" size="1">
+					<option value="" selected="selected">(qualsiasi)</option>
+					<option value="M">Maschio</option>
+					<option value="F">Femmina</option>
+					<option value="N">(non ricavabile)</option>
+				</select>
+			</p>
+			<p>
+				<label for="professioni">Professione:</label>
+				{% block select_professioni %}
+				<span id="s_professioni">
+					<select id="professioni" name="professione" size="1">
+						<option value="" id="dummy_professioni">Richiede Javascript!</option>
+					</select>
+				</span>
+				{% endblock %}
+			</p>
+		</div>
+		<p>
+			<label for="est_maggiorenne">Est maggiorenne:</label>
+			<select id="est_maggiorenne" name="est_maggiorenne" size="1">
+				<option value="" selected="selected">(qualsiasi)</option>
+				<option value="0">Minorenne</option>
+				<option value="1">Maggiorenne</option>
+				<option value="2">(non picavabile)</option>
+			</select>
+		</p>
+		<p>
+			<label for="eta">Et&agrave; esatta:</label>
+			<input type="text" class="t" id="eta" name="eta" size="10" value="" />
+		</p>
+		<div class="clr"></div>
+		<div id="focus_i">
+			<hr/>
+			<p>
+				<label for="lesioni">Lesioni:</label>
+				{% block select_lesioni %}
+				<span id="s_lesioni">
+					<select id="lesioni" name="lesione" size="15" style="width:100%">
+						<option value="" id="dummy_lesioni">Richiede Javascript!</option>
+					</select>
+				</span>
+				{% endblock %}
+			</p>
+			<p>
+				<label for="postumi">Postumi:</label>
+				{% block select_postumi %}
+				<span id="s_postumi">
+					<select id="postumi" name="postumo" size="15" style="width:100%">
+						<option value="" id="dummy_postumi">Richiede Javascript!</option>
+					</select>
+				</span>
+				{% endblock %}
+			</p>
+		</div>
+		<p><label for="iante_2001"><input type="checkbox" id="iante_2001" name="ante_2001" /> Cerca anche sentenze anteriori al 2001</label></p>
+		<p>
+			<input type="hidden" name="inizia_da" value="1" />
+			<input class="btn" type="submit" value="Ricerca" />
+			<input class="btn" type="reset" value="Reset" />
+			{% block ns2 %}
+			<a onclick="if(!ajax_infortunato){submitForm('lesioni');submitForm('postumi');} ajax_infortunato=1;return toggObject('focus_i',this)" href="#">Visualizza pi&ugrave; opzioni...</a>
+			{% endblock %}
+		</p>
+	</form>
+</div>
+
+<noscript>
+<p id="avviso">
+	Questa pagina richiede un browser compatibile con JavaScript/AJAX per essere visualizzata correttamente. <a href="/odp_database/search_ns/">Vai alla versione senza script.</a>
+</p>
+</noscript>
+
+<p style="text-align:right"><a href="http://validator.w3.org/check?uri=referer"><img src="/images/odp_database/valid-xhtml.gif" alt="Markup XHTML 1.0 Strict valido" width="78" height="13" style="border:none;" /></a></p>
+{% endblock %}

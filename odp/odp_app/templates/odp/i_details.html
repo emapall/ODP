@@ -1,0 +1,429 @@
+{% extends "odp/_base.html" %}
+
+
+{% block titolo %}Dettagli danneggiato{% endblock %}
+{% block titolo_html %}Database <acronym title="Osservatorio sul Danno alla Persona">ODP</acronym> - Dettagli danneggiato{% endblock %}
+
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/styles/odp_database/dettagli.css" />
+{% endblock %}
+
+
+{% block topleft %}
+| <a href="/database/odp/search/" name="top" id="top"><img alt="Cerca" width="20" height="20" src="/images/odp_database/search.gif" /> Nuova ricerca</a>
+{% if user.is_staff %}
+| <a href="/database/admin/odp/infortunato/{{ infort.id|stringformat:"s" }}/">Modifica</a>
+{% if infort.pubblicabile %}
+| <span style="color: green;">PUBBLICABILE</span>
+{% else %}
+| <span style="color: red;">NON PUBBLICABILE</span>
+{% endif %}{% endif %}
+{% endblock %}
+
+
+{% block pagina %}
+
+{% if infort %}
+{% if infort.pubblicabile or user.is_staff %}
+
+
+	<div id="totali">
+	<h2>Totali liquidati</h2>
+	<table style="text-align:right;">
+		{% if infort.importo_liquidazione_das_it %}<tr><th scope="row">Danno alla salute da inv. temp.:</th><td>{{ infort.importo_liquidazione_das_it }} &euro;</td></tr>{% endif %}
+		{% if infort.importo_liquidazione_das_ip %}<tr><th scope="row">Danno alla salute da inv. perm.:</th><td>{{ infort.importo_liquidazione_das_ip }} &euro;</td></tr>{% endif %}
+		{% if infort.dm_dbjh_importo_liquidazione %}<tr><th scope="row">Danno biol. jure hereditario:</th><td>{{ infort.dm_dbjh_importo_liquidazione }} &euro;</td></tr>{% endif %}
+		{% if infort.importo_liquidazione_lcit %}<tr><th scope="row">Lucro cessante da inv.temp.:</th><td>{{ infort.importo_liquidazione_lcit }} &euro;</td></tr>{% endif %}
+		{% if infort.importo_liquidazione_lcip %}<tr><th scope="row">Lucro cessante da inv.perm.:</th><td>{{ infort.importo_liquidazione_lcip }} &euro;</td></tr>{% endif %}
+		{% if infort.importo_liquidazione_dmit %}<tr><th scope="row">Danno morale da inv.temp.:</th><td>{{ infort.importo_liquidazione_dmit }} &euro;</td></tr>{% endif %}
+		{% if infort.importo_liquidazione_dmip %}<tr><th scope="row">Danno morale da inv.perm.:</th><td>{{ infort.importo_liquidazione_dmip }} &euro;</td></tr>{% endif %}
+		{% if infort.importo_liquidazione_dm %}<tr><th scope="row">Danno morale:</th><td>{{ infort.importo_liquidazione_dm }} &euro;</td></tr>{% endif %}
+		{% if infort.importo_dirittoinviolabile %}<tr><th scope="row">Lesione diritti inviolabili:</th><td>{{ infort.importo_dirittoinviolabile }} &euro;</td></tr>{% endif %}
+		{% if infort.importo_liquidazione_de %}<tr><th scope="row">Altri danni non patrimoniali:</th><td>{{ infort.importo_liquidazione_de }} &euro;</td></tr>{% endif %}
+		{% if infort.importo_dannopatrimoniale %}<tr><th scope="row">Altri danni patrimoniali:</th><td>{{ infort.importo_dannopatrimoniale }} &euro;</td></tr>{% endif %}
+		{% if infort.importo_sostenute %}<tr><th scope="row">Spese sostenute:</th><td>{{ infort.importo_sostenute }} &euro;</td></tr>{% endif %}
+		{% if infort.importo_future %}<tr><th scope="row">Spese future:</th><td>{{ infort.importo_future }} &euro;</td></tr>{% endif %}
+		<tr><th scope="row">Totale danni:</th><td{% if infort.importo_totale %} style="border-top:1px solid black;"{% endif %}>{{ infort.importo_totale|default:"0,00" }} &euro;</td></tr>
+		{% if infort.importo_provvisionale %}<tr><th scope="row">Provvisionale:</th><td>- {{ infort.importo_provvisionale }} &euro;</td></tr>{% endif %}
+		{% if infort.importo_sr %}<tr><th scope="row">Surroga:</th><td>- {{ infort.importo_sr }} &euro;</td></tr>{% endif %}
+		<tr><th scope="row">Liquidazione totale:</th><td style="border-top:1px solid black; font-weight:bold;">{{ infort.liquidazione_totale|default:"0,00" }} &euro;</td></tr>
+	</table>
+	</div>
+	
+	{% if infort.sentenza %}
+		<p id="sentenza"><a href="/odp_database/search/s_details/?id={{ infort.sentenza.id|stringformat:"s" }}"><img src="/images/odp_database/martello.png" alt="Sentenza" height="29" width="29" class="icona" id="martello" /> Vai alla sentenza: {{ infort.sentenza }}</a></p>
+	{% else %}
+		<p id="nosentenza"><span>(nessuna sentenza associata!)</span></p>
+	{% endif %}	
+	
+	<div id="dati_danneggiato" class="box">
+	<h2>Dati del danneggiato</h2>
+	<table style="width:60%;">{% if infort.eta %}
+		<tr><th>Et&agrave;:</th><td>{{ infort.eta }}</td></tr>{% else %}{% ifequal infort.est_maggiorenne "1" %}
+		<tr><th>Et&agrave;:</th><td class="dati_i">(maggiorenne)</td></tr>{% else %}{% ifequal infort.est_maggiorenne "0" %}
+		<tr><th>Et&agrave;:</th><td class="dati_i">(minorenne)</td></tr>{% endifequal %}{% endifequal %}{% endif %}
+		<tr><th>Sesso:</th><td>{{ infort.get_sesso_display }}</td></tr>
+		<tr><th>Professione</th><td>{{ infort.professione }}</td></tr>
+		{% if infort.percentuale_colpa_attore %}
+		<tr><th>Percentuale di colpa:</th><td>{{ infort.percentuale_colpa_attore }}%</td></tr>
+		{% endif %}
+		<tr><th>Richieste parte attrice:</th><td>
+			{% ifequal infort.richiestaparteattrice.count 1 %}{{ infort.richiestaparteattrice.all.0.richiesta }}
+		{% else %}<ul>
+				{% for unarpa in infort.richiestaparteattrice.all %}<li>{{ unarpa.richiesta }}</li>
+				{% endfor %}</ul>
+		{% endifequal %}</td></tr>
+		<tr><th>Lesioni:</th><td>
+		{% ifequal infort.lesione.count 0 %}{% else %}
+			{% ifequal infort.lesione.count 1 %}{{ infort.lesione.all.0.lesione }}
+		{% else %}<ul>
+				{% for unalesione in infort.lesione.all %}<li>{{ unalesione.lesione }}</li>
+				{% endfor %}</ul>
+		{% endifequal %}{% endifequal %}</td></tr>
+		{% ifequal infort.postumo_tabulato.count 0 %}{% else %}
+		<tr><th>Postumi da tabella:</th><td>
+			{% ifequal infort.postumo_tabulato.count 1 %}{{ infort.postumo_tabulato.all.0.postumo_tabulato }}
+		{% else %}<ul>
+				{% for unpostumo in infort.postumo_tabulato.all %}<li>{{ unpostumo.postumo_tabulato }}</li>
+				{% endfor %}</ul>
+		{% endifequal %}</td></tr>{% endifequal %}
+		<tr><th>Postumi:</th><td>
+		{% ifequal infort.postumo.count 0 %}{% else %}
+			{% ifequal infort.postumo.count 1 %}{{ infort.postumo.all.0.postumo }}
+		{% else %}<ul>
+				{% for unpostumo in infort.postumo.all %}<li>{{ unpostumo.postumo }}</li>
+				{% endfor %}</ul>
+		{% endifequal %}{% endifequal %}</td></tr>
+	</table>
+	</div>	
+	
+	<div class="clr"></div>
+	
+	{% if infort.est_ip %}
+	<div id="inv_permanente" class="box half sx">
+		<h2>Invalidit&agrave; permanente: </h2>
+		<table>
+			<tr><th>Percentuale di invalidit&agrave;:</th><td>{{ infort.percentuale_das_ip }}%</td></tr>
+			<tr><th>Metodo di calcolo:</th><td>{{ infort.get_metodo_das_ip_display }}</td></tr>
+			{% if infort.sede_tabella %}<tr><th>Sede della tabella:</th><td>{{ infort.sede_tabella|title }}</td></tr>{% endif %}
+			<tr><th>Importo liquidazione:</th><td>{{ infort.importo_liquidazione_das_ip }} &euro;</td></tr>
+			<tr><th>Decorrenza interessi legali:</th><td>{{ infort.interessi_legali_ip|date:formato_date }}</td></tr>
+			<tr><th>Metodo di quantificazione:</th><td>{{ infort.metodo_di_quantificazione }}</td></tr>
+			{% if infort.note_ip %}<tr><th>Note:</th><td>{{ infort.note_ip }}</td></tr>{% endif %}
+		</table>
+	</div>
+	{% endif %}
+	
+	
+	
+	{% if infort.est_it %}
+	<div id="inv_temporanea" class="box half dx">
+		<h2>Invalidit&agrave; temporanea:</h2>
+			<table>
+				{% for unatemp in infort.invalidita_temporanea_set.all %}
+					{% if forloop.first %}
+						<tr><th>Invalidit&agrave; temporanea:</th><td><ul>
+					{% endif %}
+					<li>{{ unatemp.percentuale }}% per {{ unatemp.giorni }} giorni</li>
+					{% if forloop.last %}
+						</ul></td></tr>
+					{% endif %}
+				{% endfor %}
+			<tr><th>Metodo di calcolo:</th><td>{{ infort.get_metodo_das_it_display }}</td></tr>
+			<tr><th>Somma giornaliera base:</th><td>{{ infort.euro_al_di }}</td></tr>
+			<tr><th>Importo liquidazione:</th><td>{{ infort.importo_liquidazione_das_it }} &euro;</td></tr>
+			<tr><th>Decorrenza interessi legali:</th><td>{{ infort.interessi_legali_it|date:formato_date }}</td></tr>
+			{% if infort.note_it %}
+				<tr><th>Note:</th><td>{{ infort.note_it }}</td></tr>
+			{% endif %}
+			</table>
+	</div>
+	{% endif %}
+
+	
+	
+	
+	<!-- inizio nuovi campi -->
+	<div class="clr"></div>
+	{% ifnotequal infort.fattori_rilevanti_liquidazione.count 0 %}
+	<div id="fatt_rilevanti_liquidazione" class="box">
+		<h2>Fattori rilevanti di liquidazione: </h2>
+			<ul>
+				{% for a_item in infort.fattori_rilevanti_liquidazione.all %}
+					<li>
+						{{ a_item.fattore }}
+					</li>
+				{% endfor %}
+			</ul>
+		{% if infort.note_fattori_rilevanti_liquidazione %}
+		<div id="note_frl" class="box">
+			<h3>Note:</h3>
+			<p>{{ infort.note_fattori_rilevanti_liquidazione }}</p>
+		</div>
+		{% endif %}
+	</div>
+	{% endifnotequal %}
+
+
+	{% ifnotequal infort.prova_del_dnp.count 0 %}
+	<div id="prova_dnp" class="box">
+		<h2>Prove del danno non patrimoniale: </h2>
+			<ul>
+				{% for a_item in infort.prova_del_dnp.all %}
+					<li>
+						{{ a_item.prova }}
+					</li>
+				{% endfor %}
+			</ul>
+		{% if infort.note_prova_del_dnp %}
+		<div id="note_pr_dnp" class="box">
+			<h3>Note:</h3>
+			<p>{{ infort.note_prova_del_dnp }}</p>
+		</div>
+		{% endif %}
+	</div>
+	{% endifnotequal %}
+
+
+	{% ifnotequal infort.trend_liquidazione.count 0 %}
+	<div id="prova_dnp" class="box">
+		<h2>Trend di liquidazione: </h2>
+			<ul>
+				{% for a_item in infort.trend_liquidazione.all %}
+					<li>
+						{{ a_item.trend }}
+					</li>
+				{% endfor %}
+			</ul>
+			
+		{% if infort.est_rdjh or infort.est_pddb or infort.est_interazione %}
+		<div id="chkbox_tr_liq" class="box">
+			<ul>
+			{% if infort.est_rdjh %}
+			<li>Est riconoscimento danno jure haereditario</li>
+			{% endif %}
+			{% if infort.est_interazione %}
+			<li>Est interazione tra risarcimento danno patrimoniale e risarcimento danno non patrimoniale</li>
+			{% endif %}
+			{% if infort.est_pddb %}
+			<li>Est personalizzazione del danno biologico (percentuale: {{ infort.percentuale_pddb  }} %)</li>
+			{% endif %}
+			</ul>
+		</div>
+		{% endif %}
+
+		{% if infort.note_trend_liquidazione %}
+		<div id="note_tr_liq" class="box">
+			<h3>Note:</h3>
+			<p>{{ infort.note_trend_liquidazione }}</p>
+		</div>
+		{% endif %}
+	</div>
+	{% endifnotequal %}
+	<!-- fine nuovi campi -->
+
+
+
+	{% if infort.est_lcip or infort.est_lcit %}
+	<div class="clr"></div>
+	<div id="lucro_cessante" class="box">
+		<h2>Lucro cessante</h2>
+		{% if infort.est_lcip %}
+		<div id="lc_ip" class="box half sx">
+			<h3>Da invalidit&agrave; permanente: </h3>
+			<table>
+				<tr><th>Metodo di calcolo:</th><td>{{ infort.get_metodo_lcip_display }}</td></tr>
+				<tr><th>Percentuale lucro cessante:</th><td>{{ infort.percentuale_lcip }}%</td></tr>
+				<tr><th>Importo liquidazione:</th><td>{{ infort.importo_liquidazione_lcip }} &euro;</td></tr>
+				<tr><th>Decorrenza interessi legali:</th><td>{{ infort.interessi_legali_lcip|date:formato_date }}</td></tr>
+			</table>
+		</div>
+		{% endif %}
+
+		{% if infort.est_lcit %}
+		<div id="lc_it" class="box half dx">
+			<h3>Da invalidit&agrave; temporanea: </h3>
+			<table>
+				<tr><th>Metodo di calcolo:</th><td>{{ infort.get_metodo_lcit_display }}</td></tr>
+				<tr><th>Importo liquidazione:</th><td>{{ infort.importo_liquidazione_lcit }} &euro;</td></tr>
+				<tr><th>Giorni di invalidit&agrave;:</th><td>{{ infort.giorni_lcit }}</td></tr>
+				<tr><th>Decorrenza interessi legali:</th><td>{{ infort.interessi_legali_lcit|date:formato_date }}</td></tr>
+			</table>
+		</div>
+		{% endif %}
+	<div class="clr"></div>
+	</div>
+	{% endif %}
+
+
+	{% if infort.importo_dannopatrimoniale %}
+	<div id="danno_patrimoniale" class="box">
+	<h2>Altri danni patrimoniali</h2>
+	<table>
+		<tr><th>Danni:</th><td>
+		{% ifequal infort.dannopatrimoniale.count 1 %}{{ infort.dannopatrimoniale.all.0.tipo }}
+		{% else %}<ul>
+				{% for untipo in infort.dannopatrimoniale.all %}<li>{{ untipo.tipo }}</li>
+				{% endfor %}</ul>
+		{% endifequal %}</td></tr>
+		<tr><th>Importo liquidazione:</th><td>{{ infort.importo_dannopatrimoniale }} &euro;</td></tr>
+		<tr><th>Decorrenza interessi legali:</th><td>{{ infort.interessi_dannopatrimoniale|date:formato_date }}</td></tr>
+		<tr><th>Note:</th><td>{{ infort.note_dannopatrimoniale }}</td></tr>
+	</table>
+	</div>
+	{% endif %}
+
+	
+	<div id="danno_non_patrimoniale" class="box">
+		<h2>Altri danni non patrimoniali</h2>
+		
+		{% if infort.importo_dirittoinviolabile %}
+			<h3>Lesione di diritti inviolabili</h3>
+			<table>
+				<tr>
+					<th>Diritti inviolabili lesi:</th>
+					<td>
+					{% ifequal infort.dirittoinviolabile.count 1 %}
+						{{ infort.dirittoinviolabile.all.0.diritto }}
+					{% else %}
+						<ul>
+							{% for undiritto in infort.dirittoinviolabile.all %}
+								<li>{{ undiritto.diritto }}</li>
+							{% endfor %}
+						</ul>
+					{% endifequal %}
+					</td>
+				</tr>
+				<tr><th>Importo liquidazione:</th><td>{{ infort.importo_dirittoinviolabile }} &euro;</td></tr>
+				<tr><th>Decorrenza interessi legali:</th><td>{{ infort.interessi_dirittoinviolabile|date:formato_date }}</td></tr>
+				<tr><th>Note:</th><td>{{ infort.note_dirittoinviolabile }}</td></tr>
+			</table>
+			<hr />
+		{% endif %}
+		
+		
+		{% if infort.est_dm %}
+			<h3>Danno non patrimoniale da reato (ex danno morale): </h3>
+			<ul>
+				{% if infort.est_dm_vp %}
+					<li> Via equitativa pura</li>
+				{% endif %}
+				{% if infort.est_dm_it %}
+					<li> Da invalidit&agrave; temporanea:
+						<span class="dato">{% if infort.importo_liquidazione_dmit %}{{ infort.importo_liquidazione_dmit }} &euro; {% endif %}
+						{% if infort.durata_dmit %}
+							({{ infort.durata_dmit }} giorni)
+						{% endif %}
+						{% if not infort.importo_liquidazione_dmit and not infort.durata_dmit %}
+							(importo sconosciuto)
+						{% endif %}</span></li>
+				{% endif %}
+				{% if infort.est_dm_ip %}
+					<li> Da invalidit&agrave; permanente:
+					<span class="dato">
+						{% if infort.importo_liquidazione_dmip %}
+							{{ infort.importo_liquidazione_dmip }} &euro;
+						{% endif %}
+						{% if infort.percentuale_dmip %}
+							({{ infort.percentuale_dmip }}%)
+						{% endif %}
+						{% if not infort.importo_liquidazione_dmip and not infort.percentuale_dmip %}
+							(importo sconosciuto)
+						{% endif %}
+					</span></li>
+				{% endif %}
+				{% if not infort.est_dm_vp and not infort.est_dm_ip and not infort.est_dm_it %}	
+					<li><span class="dato">(metodo di calcolo sconosciuto)</span></li>
+				{% endif %}
+			</ul>
+		{% endif %}
+		
+		<table>
+			{% if infort.motivazione %}<tr><th>Motivazione:</th><td>{{ infort.motivazione }}</td></tr>{% endif %}
+			<tr><th>Liquidazione totale:</th><td>{{ infort.importo_liquidazione_dm|default:"0" }} &euro;</td></tr>
+			<tr><th>Decorrenza interessi legali:</th><td>{{ infort.interessi_legali_dm|date:formato_date }}</td></tr>
+			{% if infort.note_dm %}<tr><th>Note:</th><td>{{ infort.note_dm }}</td></tr>{% endif %}
+		</table>
+		
+		{% if infort.dm_est %}
+			<h3>Danno da morte</h3>
+			<table>
+				<tr><th>Importo liquidazione danno biologico jure hereditario:</th><td>{{ infort.dm_dbjh_importo_liquidazione }}</td></tr>
+				{% if infort.est_de %}
+					<tr><td colspan="2">Danno non patrimoniale da perdita del congiunto</td></tr>
+					<tr><th>Importo liquidazione danno non patrimoniale:</th><td>{{ infort.importo_liquidazione_de }} &euro;</td></tr>
+					<tr><th>Decorrenza interessi legali danno non patrimoniale:</th><td>{{ infort.interessi_legali_de|date:formato_date }}</td></tr>
+				{% endif %}
+				<tr><th>Note:</th><td>{{ infort.note_morte }}</td></tr>
+			</table>
+			<hr />
+		{% endif %}
+		
+	</div>
+
+
+	{% if infort.est_ss_sostenute or infort.est_ss_future or infort.importo_danni_cose or infort.importo_altri_danni %}
+	<div id="altri_danni" class="box">
+		<h2>Altre voci di danno: </h2>
+		{% if infort.est_ss_sostenute or infort.est_ss_future or infort.importo_danni_cose or infort.importo_altri_danni %}<ul>
+		{% if infort.est_ss_sostenute %}	<li> Spese sostenute: <span class="dato">{{ infort.importo_sostenute }} &euro;</span></li>{% endif %}
+		{% if infort.est_ss_future %}	<li> Spese future: <span class="dato">{{ infort.importo_future }} &euro;</span></li>{% endif %}
+		{% if infort.est_ss_future or infort.est_ss_sostenute %}	<li class="indentato">Data decorrenza interessi legali spese: <span class="dato">{% if infort.interessi_legali_ss|date:formato_date %}{{ infort.interessi_legali_ss }}{% else %}(sconosciuta){% endif %}</span></li>{% endif %}
+		{% if infort.note_exaltrespese %}<li>Note per spese e danni alle cose: <span style="display: inline-block; vertical-align: top;" class="dato">{{ infort.note_exaltrespese }}</span></li>{% endif %}
+		{% if infort.importo_danni_cose %}<li> Danni alle cose: <span class="dato">{{ infort.importo_danni_cose }} &euro;</span></li>
+			<li class="indentato">Data decorrenza interessi legali danni alle cose: <span class="dato">{% if infort.interessi_legali_dc %}{{ infort.interessi_legali_dc|date:formato_date }}{% else %}(sconosciuta){% endif %}</span></li>{% endif %}
+		{% if infort.importo_altri_danni %}	<li> Altri danni: <span class="dato">{{ infort.importo_altri_danni }} &euro;</span></li>
+		{% if infort.altri_danni %}	<li>Note: <span style="display: inline-block; vertical-align: top;" class="dato">{{ infort.altri_danni }}</span></li>{% endif %}{% endif %}
+		</ul>{% endif %}
+	</div>
+	{% endif %}
+
+
+	{% if infort.note_importi %}
+	<div class="box">
+		<h2>Note agli importi</h2>
+		<p class="dato">{{ infort.importi|escape|linebreaksbr }}</p>
+	</div>
+	{% endif %}
+	{% if infort.note_gen %}
+	<div class="box">
+		<h2>Note generali</h2>
+		<p class="dato">{{ infort.note_gen|escape|linebreaksbr }}</p>
+	</div>
+	{% endif %}
+
+
+	<p style="clear: both; text-align: left; font-size: small; color: black">Per creare link a questa scheda copiare il seguente codice HTML:<br /><code>&lt;a href=&quot;http://www.lider-lab.sssup.it/odp_database/search/i_details/?id={{ infort.id|stringformat:"s" }}&quot;&gt;Testo del link&lt;/a&gt;</code></p>
+	<p style="clear: both; text-align: right;"><a href="#top">Torna all'inizio</a> | <a href="/odp_database/search/">Nuova ricerca</a> | <a href="http://validator.w3.org/check?uri=referer"><img src="/images/odp_database/valid-xhtml.gif" alt="Markup XHTML 1.0 Strict valido" width="78" height="13" style="border:none;" /></a></p>
+
+	
+	
+
+
+{% else %}
+Questa scheda di parte danneggiata non &egrave; ancora pronta per la pubblicazione.
+{% endif %}
+
+{% else %}
+Si &egrave; verificato un errore dal lato server!
+{% endif %}
+
+
+{% comment %}
+<p>provvisoriamente eliminati:</p>
+<table>
+	<tr><th>Ente sociale:</th><td>{{ infort.get_ente_sociale_display }}</td></tr>
+	<tr><th>Tipo surroga:</th><td>{{ infort.get_tipo_sr_display }}</td></tr>
+	<tr><th>Importo surroga:</th><td>{{ infort.importo_sr }} &euro;</td></tr>
+</table>
+<ol>
+	<li>Tipo rivalutazione: {{ infort.get_tipo_rivalutazione_display }}</li>
+	<li>Importo rivalutazione: {{ infort.importo_rivalutazione }} &euro;</li>
+	<li>Capacit&agrave; lavorativa generica? {% if infort.est_clg %}S&igrave;{% else %}No{% endif %}</li>
+	<li>Capacit&agrave; lavorativa specifica? {% if infort.est_cls %}S&igrave;{% else %}No{% endif %}</li>
+</ol>
+{% endcomment %}
+
+
+{% endblock %}

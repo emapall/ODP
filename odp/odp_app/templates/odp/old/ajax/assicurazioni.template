@@ -1,0 +1,7 @@
+{% if tutte %}
+<select id="assicurazioni" name="assicurazione" size="15" style="width:100%" multiple="multiple">
+{% for o in tutte %}	<option value="{{ o.id }}">{{ o.assicurazione }}</option>
+{% endfor %}</select>
+{% else %}
+Errore nel server!
+{% endif %}

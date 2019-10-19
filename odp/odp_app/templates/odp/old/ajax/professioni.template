@@ -1,0 +1,8 @@
+{% if tutte %}
+<select id="professioni" name="professione" size="1">
+    <option value="" selected="selected">(qualsiasi)</option>
+{% for o in tutte %}	<option value="{{ o.id }}">{{ o.professione }}</option>
+{% endfor %}</select>
+{% else %}
+Errore nel server!
+{% endif %}

@@ -1,0 +1,35 @@
+{% extends "odp/_base.html" %}
+
+
+{% block titolo %}Login necessario{% endblock %}
+{% block titolo_html_h1 %}{% endblock %}
+
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/styles/odp_database/login.css" />
+<!--[if lte IE 6]><style type="text/css">div#form {height: 1%}</style><![endif]-->
+{% endblock %}
+
+
+{% block pagina %}
+<div id="messaggio">
+<h1>&Egrave; necessario autenticarsi</h1>
+{% if form.errors %}
+<p id="errore">Username e password forniti non sono esatti.</p>
+{% endif %}
+<p>Il login e logout da questo sistema di database avvengono indipendentemente da quelli del sito del LIDER-Lab, ma la procedura di registrazione &egrave; una sola. Utilizza gli stessi dati della tua registrazione al nostro sito.</p>
+<div id="form">
+	<form method="post" action="">
+		{% csrf_token %}
+		<p><label for="id_username">Username: </label>{{ form.username }}</p>
+		<p><label for="id_password">Password: </label>{{ form.password }}</p>
+		<p id="btn"><input type="submit" value="Entra nel database &gt;&gt;" /><input type="hidden" name="next" value="{{ next }}" /></p>
+	</form>
+</div>
+<p>
+	Non sei ancora registrato al nostro sito? <a href="../register">Registrati adesso!</a><br/>
+	Hai perso la tua password? <a href="/lider/component/user/reset.html">Clicca qui per ottenerne una nuova.</a><br/>
+	Hai perso il tuo username? <a href="/lider/component/user/remind.html">Clicca qui per fartelo spedire.</a>
+</p>
+</div>
+{% endblock %}

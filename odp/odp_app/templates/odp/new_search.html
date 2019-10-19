@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+{% load static %}
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo nuova ricerca</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.css">
+  <link rel="stylesheet" href="{% static "odp/new_search.css" %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/css/foundation-datepicker.css">
+</head>
+
+<body>
+
+  <div class="search-box large-11 medium-12 small-12 medium-centered-column row">
+    <form id="search_form" enctype="application/x-www-form-urlencoded" title="Ricerca per sentenza"
+      action="/odp/search/new_s_results/" method="get" autocomplete="off">
+      <h3 id="titolo_form" class="text-center">
+        Criteri di ricerca
+        {% if user.is_staff %}
+        | <a href="/admin/">Amministrazione</a>
+        {% endif %}</h3>
+      <div class="row">
+        <div class="input-group">
+          <span class="input-group-label">Cerca nel testo
+          </span>
+          <input class="input-group-field" id="text-search" name="contenuto_testuale" value="" type="text">
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-3 columns">
+          <label for="grado_di_giudizio" class="text-right middle">Organo giudicante: </label>
+        </div>
+        <div class="medium-4 columns">
+          <select id="grado_di_giudizio" name="grado_di_giudizio">
+            <option value="" selected="selected">(qualsiasi)</option>
+            <option value="C">Corte d&#39;Appello</option>
+            <option value="P">Giudice di Pace</option>
+            <option value="T">Tribunale</option>
+            <option value="R">T.A.R.</option>
+            <option value="S">Consiglio di Stato</option>
+          </select>
+        </div>
+        <div class="medium-2 columns">
+          <label for="sede_tribunale" class="text-right middle">Sede: </label>
+        </div>
+        <div class="medium-3 columns">
+          <input type="text" id="sede_tribunale" name="sede_tribunale">
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-3 columns">
+          <label for="data_della_sentenza" class="text-right middle">Data sentenza: </label>
+        </div>
+        <div class="medium-3 columns">
+          <input type="text" id="data_della_sentenza" name="data_della_sentenza">
+        </div>
+        <div class="medium-3 columns">
+          <label for="numero_della_sentenza" class="text-right middle">Numero sentenza: </label>
+        </div>
+        <div class="medium-3 columns">
+          <input type="number" class="no_spin" id="numero_della_sentenza" name="numero_della_sentenza">
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-3 columns">
+          <label for="data_del_deposito" class="text-right middle">Data deposito: </label>
+        </div>
+        <div class="medium-3 columns">
+          <input type="text" id="data_del_deposito" name="data_del_deposito">
+        </div>
+        <div class="medium-3 columns">
+          <label for="anno_del_deposito" class="text-right middle">Anno deposito: </label>
+        </div>
+        <div class="medium-3 columns">
+          <select id="anno_del_deposito" name="anno_del_deposito">
+            <option value="" selected="selected">(qualsiasi)</option>
+          </select>
+        </div>
+      </div>
+      <a href="#" id="mostra_altre_opzioni">Mostra altre opzioni</a>
+      <div id=altre_opzioni style="display: none;">
+        <fieldset class="fieldset" id="tipi_danno_biologico">
+          <legend>Danno biologico:</legend>
+          <div class="row">
+            <div class="medium-3 columns">
+              <input type="checkbox" name="est_it" id="est_it">
+              <div class="medium-9 columns">
+                <label for="est_it">Invalidità temporanea</label>
+              </div>
+            </div>
+            <div class="medium-2 columns">
+              <label for="percentuale_invalidita" class="text-right middle">Invalidit&agrave; permanente: </label>
+            </div>
+            <div id="percentuale_invalidita" class="medium-7 columns">
+              <div class="medium-6 columns collapse">
+                <div class="input-group">
+                  <span class="input-group-label">Da</span>
+                  <input class="input-group-field" type="number" id="perc_ip_min" name="perc_ip_min">
+                  <span class="input-group-label">%</span>
+                </div>
+              </div>
+              <div class="medium-5 columns collapse">
+                <div class="input-group">
+                  <span class="input-group-label">A</span>
+                  <input class="input-group-field" type="number" id="perc_ip_max" name="perc_ip_max">
+                  <span class="input-group-label">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+
+          </div>
+        </fieldset>
+        <fieldset class="fieldset" id="tipi_di_danno">
+          <legend>Altre tipologie di danno alla persona:</legend>
+          <div class="row">
+            <div class="medium-3 large-3 columns collapse">
+              <input type="checkbox" name="est_dm" id="danno_morale">
+              <div class="medium-10 columns collapse">
+                <label for="danno_morale">Danno morale</label>
+              </div>
+            </div>
+            <div class="medium-3 large-3 columns collapse">
+              <input type="checkbox" name="danno_morte" id="danno_morte">
+              <div class="medium-10 columns collapse">
+                <label for="danno_morte">Danno da morte</label>
+              </div>
+            </div>
+            <div class="medium-3 large-4 columns collapse">
+              <input type="checkbox" id="danno_non_patrimoniale" name="danno_np">
+              <div class="medium-10 columns collapse">
+                <label for="danno_non_patrimoniale">Danno non patrimoniale diverso dalla salute</label>
+              </div>
+            </div>
+            <div class="medium-3 large-2 columns collapse">
+              <input type="checkbox" id="danno_patrimoniale" name="danno_p">
+              <div class="medium-9 columns collapse">
+                <label for="danno_patrimoniale">Danno patrimoniale</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" id="dettagli_danno_morale" style="display: none;">
+            <div class="input-group">
+              <label class="input-group-label" for="tipo_danno_morale">Metodo di calcolo danno morale</label>
+              <select class="input-group-field" id="tipo_danno_morale">
+                <option value="" selected="selected">(qualsiasi)</option>
+                <option value="equi">Via equitativa pura</option>
+                <option value="perma">Da invalidit&agrave; permanente</option>
+                <option value="temp">Da invalidit&agrave; temporanea</option>
+              </select>
+            </div>
+          </div>
+          <div class="row" id="dettagli_danno_non_patrimoniale" style="display: none;">
+            <div class="input-group">
+              <label class="input-group-label">Diritti lesi</label>
+              <select class="input-group-field" id="diritti_lesi" name="diritti_lesi">
+                <option value="" selected="selected">(qualsiasi)</option>
+                <option value="92">danno da lesione del diritto al corretto trattamento dei dati personali</option>
+                <option value="94">Danno esistenziale</option>
+                <option value="85">diritto a coltivare il legame col proprio animale d'affezione</option>
+                <option value="80">diritto a non subire discriminazioni</option>
+                <option value="87">diritto ad un ambiente salubre</option>
+                <option value="82">diritto al lavoro</option>
+                <option value="89">diritto al ripspetto della vita privata e del domicilio</option>
+                <option value="88">diritto al sereno e pacifico godimento dell'abitazione</option>
+                <option value="45">Diritto all'abitazione</option>
+                <option value="81">diritto all'autenticità della storia familiare</option>
+                <option value="78">diritto all'autodeterminazione</option>
+                <option value="63">Diritto all'equità e correttezza nelle relazioni commerciali</option>
+                <option value="15">Diritto all'identità personale</option>
+                <option value="49">Diritto all'identità professionale</option>
+                <option value="46">Diritto all'immagine personale</option>
+                <option value="38">Diritto all'immagine professionale</option>
+                <option value="16">Diritto all'intangibilità delle relazioni familiari</option>
+                <option value="32">Diritto all'integrità morale del lavoratore</option>
+                <option value="50">Diritto all'integrità morale personale</option>
+                <option value="29">Diritto all'integrità psicofisica</option>
+                <option value="25">Diritto all'inviolabilità del domicilio</option>
+                <option value="26">Diritto all'onore, reputazione e decoro</option>
+                <option value="33">Diritto alla dignità del coniuge</option>
+                <option value="62">Diritto alla dignità del lavoratore</option>
+                <option value="18">Diritto alla dignità della persona</option>
+                <option value="57">Diritto alla dignità familiare</option>
+                <option value="48">Diritto alla libertà di circolazione</option>
+                <option value="21">Diritto alla libertà di comunicazione</option>
+                <option value="39">Diritto alla libertà di iniziativa economica</option>
+                <option value="22">Diritto alla libertà di manifestazione del pensiero</option>
+                <option value="17">Diritto alla libertà personale</option>
+                <option value="64">Diritto alla libertà religiosa</option>
+                <option value="93">diritto alla libertà sessuale</option>
+                <option value="84">diritto alla professionalità</option>
+                <option value="79">diritto alla proprietà privata</option>
+                <option value="34">Diritto alla realizzazione professionale del coniuge</option>
+                <option value="51">Diritto alla realizzazione professionale del lavoratore</option>
+                <option value="43">Diritto alla riservatezza</option>
+                <option value="37">Diritto alla serenità familiare</option>
+                <option value="36">Diritto alla serenità personale</option>
+                <option value="19">Diritto alla solidarietà</option>
+                <option value="86">diritto alla tutela della salute</option>
+                <option value="95">diritto alla vita</option>
+                <option value="30">Diritto alle ferie e vacanze</option>
+                <option value="24">Diritto allo studio</option>
+                <option value="90">diritto d'autore</option>
+                <option value="91">diritto di difesa</option>
+                <option value="83">rapporto parentale</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
+        <div class="row">
+          <div class="medium-3 columns">
+            <label for="trend_liquidazione" class="text-right middle">Trend di liquidazione</label>
+          </div>
+          <div class="medium-4 columns">
+            <select id="trend_liquidazione" name="trend_liq">
+              <option value="" selected="selected">---</option>
+              <option value="2">Abolizione danno morale</option>
+              <option value="12">Danno biologico</option>
+              <option value="11">danno morale</option>
+              <option value="16">Danno non patrimoniale complessivamente inteso</option>
+              <option value="5">Danno non patrimoniale diverso dal danno biologico</option>
+              <option value="18">danno patrimoniale</option>
+              <option value="28">DB + DNP diverso dal danno biologico</option>
+            </select>
+          </div>
+          <div class="medium-3 columns">
+            <label for="eta_danneggiato" class="text-right middle">Et&agrave; danneggiato: </label>
+          </div>
+          <div class="medium-2 columns">
+            <input type="number" id="eta_danneggiato" name="eta_danneggiato">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="medium-12 column text-right">
+          <input type="submit" class="button" value="Cerca">
+        </div>
+      </div>
+    </form>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/what-input/5.2.6/what-input.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.5.3/js/foundation.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.js"></script>
+  <script src="{% static "odp/new_search.js" %}"></script>
+</body>
+
+</html>

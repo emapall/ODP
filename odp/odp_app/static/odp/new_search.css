@@ -1,0 +1,29 @@
+body {
+    background: #eee;
+}
+
+.search-box {
+    background: #fff;
+    border: 1px solid #ddd;
+    margin: 20px auto;
+    padding: 40px 40px 10px 40px;
+}
+
+.columns.collapse {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.input-group-label{
+    padding: 0 0.4rem;
+}
+
+/* Hide HTML5 Up and Down arrows. */
+.no_spin::-webkit-outer-spin-button, .no_spin::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.no_spin {
+    -moz-appearance: textfield;
+}

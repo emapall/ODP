@@ -1,0 +1,11 @@
+{% extends "errore.html" %}
+
+
+{% block titolo %}Errore interno del server (500){% endblock %}
+
+
+{% block titolo_errore %}Ops! Errore del server <span style="color:#999">(500)</span>{% endblock %}
+
+{% block desc %}Si &egrave; verificato un inconveniente tecnico sul nostro server. Potrebbe essere una condizione temporanea, puoi riprovare fra qualche minuto. Questo errore &egrave; stato registrato ed i nostri webmaster se ne occuperanno appena possibile.{% endblock %}
+
+{% block link %}<a href="javascript:window.location.reload()">Riprova</a>, <a href="javascript:history.back()">torna indietro</a> oppure vai alla <a href="/odp_database/search/">pagina di ricerca</a>.{% endblock %}
