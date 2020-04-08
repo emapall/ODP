@@ -16,5 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-urlpatterns = [path("admin/", admin.site.urls), 
-                path("odp/", include("odp_app.urls"))]
+urlpatterns = [
+                path('admin/doc/', include('django.contrib.admindocs.urls')),
+                path("admin/", admin.site.urls), 
+                path("odp/", include("odp_app.urls"))
+        ]

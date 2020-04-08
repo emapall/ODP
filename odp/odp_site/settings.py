@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "odp_app", #why not odp_app.apps.OdpAppConfig?
+    'django.contrib.admindocs',
+
 ]
 
 MIDDLEWARE = [

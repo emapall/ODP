@@ -17,7 +17,10 @@
 {% if form.errors %}
 <p id="errore">Username e password forniti non sono esatti.</p>
 {% endif %}
-<p>Il login e logout da questo sistema di database avvengono indipendentemente da quelli del sito del LIDER-Lab, ma la procedura di registrazione &egrave; una sola. Utilizza gli stessi dati della tua registrazione al nostro sito.</p>
+<p>
+	Il login e logout da questo sistema di database avvengono indipendentemente da quelli del sito del LIDER-Lab, ma la procedura di registrazione &egrave; una sola.
+	Utilizza gli stessi dati della tua registrazione al nostro sito.
+</p>
 <div id="form">
 	<form method="post" action="">
 		{% csrf_token %}
