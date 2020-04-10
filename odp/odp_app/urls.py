@@ -2,7 +2,8 @@
 
 # from django.conf.urls.defaults import *
 from django.urls import path
-from odp_app import views as core_views
+from . import views as core_views
+
 from django.contrib.auth import views as def_auth
 urlpatterns = [
     path("search/s_results/", core_views.s_results),
@@ -15,7 +16,7 @@ urlpatterns = [
     path("search/d_results/", core_views.d_results),
     # (r'^search/?$', 'django.views.generic.simple.direct_to_template', {'template':'odp/search.html'}) TODO TODO TODO
     path("search/", core_views.new_search),
-    path("", core_views.new_search),
+    path("", core_views.new_search,name="new-search"),
     # path("search_ns/", core_views.search_noscript), questa c'è sul sito vero
     path("ajax/assicurazioni.json", core_views.json_assicurazioni),
     path("ajax/professioni.json", core_views.json_professioni),
@@ -23,7 +24,7 @@ urlpatterns = [
     path("ajax/postumi.json", core_views.json_postumi),
     path("ajax/profili_rilevanti.json", core_views.json_profili_rilevanti),
     # path("ajax/profilo.json", "lider.odp.ajax.update_profilo"),
-    path("login/", def_auth.LoginView.as_view(template_name="odp/login.html")), # TODO
+    path("login/", def_auth.LoginView.as_view(template_name="odp/login.html")), # TODO. Si todo una vera!
     path("logout/", core_views.logout_view),
     # path("register/", core_views.singup), # TODO
     # path("admin/", RedirectView.as_view(url="/database/admin/")), # TODO
