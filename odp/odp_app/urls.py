@@ -28,9 +28,10 @@ urlpatterns = [
     path("login/", core_views.login_view,name="login"), 
     path("logout/", core_views.logout_view, name="logout"),
     # path("register/", core_views.singup), # TODO
-    # path("admin/", RedirectView.as_view(url="/database/admin/")), # TODO
+    # path("admin/", RedirectView.as_view(url="/database/admin/")), # TODO???
     path("account_activation_sent/", core_views.account_activation_sent),
-    path("change_password/", def_auth.PasswordChangeView.as_view()),
+    path("change_password/", def_auth.PasswordChangeView.as_view(), name="change-password"), # TODO: CUSTOM!
+    path("reset_password/",def_auth.PasswordResetView.as_view(),name="reset-password") # TODO: CUSTOM
     
 
 ]
