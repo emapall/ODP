@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
 
 urlpatterns = [
                 path('admin/doc/', include('django.contrib.admindocs.urls')),
                 path("admin/", admin.site.urls), 
-                path("odp/", include("odp_app.urls"))
+                path("" if settings.DEBUG else "/odp", include("odp_app.urls"))
         ]
