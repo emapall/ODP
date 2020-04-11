@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.urls import path
+from django.contrib.auth import views as def_auth
 
 from . import views as core_views
 
@@ -25,10 +26,13 @@ urlpatterns = [
     path("ajax/profili_rilevanti.json", core_views.json_profili_rilevanti),
     # path("ajax/profilo.json", "lider.odp.ajax.update_profilo"),
     path("login/", core_views.login_view,name="login"), 
-    path("logout/", core_views.logout_view),
+    path("logout/", core_views.logout_view, name="logout"),
     # path("register/", core_views.singup), # TODO
     # path("admin/", RedirectView.as_view(url="/database/admin/")), # TODO
     path("account_activation_sent/", core_views.account_activation_sent),
+    path("change_password/", def_auth.PasswordChangeView.as_view()),
+    
+
 ]
 """ + [
     url(

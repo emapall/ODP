@@ -5,9 +5,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 
-# @login_required ahaha
 # just login would override the contrib.auth.login funct,
 # https://stackoverflow.com/questions/39316948/typeerror-login-takes-1-positional-argument-but-2-were-given
+# @login_required ahaha
 def login_view(request):     
     if request.method == "POST":
         username = request.POST['username']
@@ -31,5 +31,8 @@ def login_view(request):
 
     return render(request, "odp/login.html" )
 
-
-
+@login_required
+def logout_view(request):
+    logout(request)
+    messages.success(request,"Logout effettuato con successo")
+    return redirect(reverse('odp_app:login'))

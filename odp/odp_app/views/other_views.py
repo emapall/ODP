@@ -599,12 +599,7 @@ def json_profili_rilevanti(request):
 ###### autenticazione ##########################
 
 
-def logout_view(request):
-    from django.contrib.auth import logout
-    from django.http import HttpResponseRedirect
 
-    logout(request)
-    return HttpResponseRedirect(search_url)
 
 
 """
