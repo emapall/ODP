@@ -20,5 +20,5 @@ from django.conf import settings
 urlpatterns = [
                 path('admin/doc/', include('django.contrib.admindocs.urls')),
                 path("admin/", admin.site.urls), 
-                path("" if settings.DEBUG else "", include("odp_app.urls"))
+                path("" if settings.DEBUG else "/odp", include("odp_app.urls"))
         ]
