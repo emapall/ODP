@@ -25,7 +25,13 @@ SECRET_KEY = "r^=f-&+-979p2+fi*6xw2as62o&dv&j!y(-9rf-@jh!h2tx#h_"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+                'odp.santannapisa.it',
+                'lider-lab.santannapisa.it',
+                '80.211.133.160',
+                '127.0.0.1',
+                'localhost',    
+                    ]
 
 
 # Application definition
@@ -114,7 +120,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = "/static/"
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # email
 EMAIL_HOST = 'localhost'
