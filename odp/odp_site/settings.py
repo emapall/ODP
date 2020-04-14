@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "odp_app", # odp_app.apps.OdpAppConfig? direi di no
     'django.contrib.admindocs',
+    'django_extensions'
 
 ]
 
