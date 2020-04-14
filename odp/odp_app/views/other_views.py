@@ -21,9 +21,9 @@ from odp_app.models import (
 )
 
 formato_date = "j/m/Y"
-base_url = "/odp"
+base_url = ""
 search_url = base_url + "/search/"
-var_login_url = base_url + "/login/"
+var_login_url = base_url + "/login"
 
 
 def do_paging_response(request, obj, template):
