@@ -68,3 +68,8 @@ startbootstrap-sb-admin-2-gh-pages
 static/
 db.sqlite3
 remote-apache.conf
+
+#other
+
+modelli*
+db.conf
