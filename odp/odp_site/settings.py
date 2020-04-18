@@ -134,3 +134,9 @@ EMAIL_PORT = 25
 
 LOGIN_URL = "login/"
 LOGIN_REDIRECT_URL = ""
+
+# media file uploading and serving
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
+MEDIA_URL = '/uploads/'
+
+SENDFILE_BACKEND = "sendfile.backends.xsendfile" 
