@@ -20,10 +20,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "r^=f-&+-979p2+fi*6xw2as62o&dv&j!y(-9rf-@jh!h2tx#h_"
-
+from odp_site.secret import SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
                 'odp.santannapisa.it',

@@ -73,3 +73,4 @@ remote-apache.conf
 
 modelli*
 db.conf
+secret.py
