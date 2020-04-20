@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 from odp_site.secret import SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
                 'odp.santannapisa.it',
@@ -138,4 +138,5 @@ LOGIN_REDIRECT_URL = ""
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
 MEDIA_URL = '/uploads/'
 
-SENDFILE_BACKEND = "sendfile.backends.xsendfile" 
+# SENDFILE_BACKEND = "sendfile.backends.xsendfile" 
+SENDFILE_BACKEND = "sendfile.backends.development"
