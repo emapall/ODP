@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 from odp_site.secret import SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
                 'odp.santannapisa.it',
@@ -84,8 +84,10 @@ WSGI_APPLICATION = "odp_site.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'read_default_file': os.path.join(BASE_DIR, 'db.conf'),
+        },
     }
 }
 
@@ -136,5 +138,5 @@ LOGIN_REDIRECT_URL = ""
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
 MEDIA_URL = '/uploads/'
 
-# SENDFILE_BACKEND = "sendfile.backends.xsendfile" 
-SENDFILE_BACKEND = "sendfile.backends.development"
+SENDFILE_BACKEND = "sendfile.backends.xsendfile" 
+# SENDFILE_BACKEND = "sendfile.backends.development"
