@@ -75,3 +75,5 @@ modelli*
 db.conf
 secret.py
 *.conf
+*.json
+note sul trasferimento
