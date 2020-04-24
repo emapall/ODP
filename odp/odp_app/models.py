@@ -24,12 +24,14 @@ from django.dispatch import receiver
 
 
 # User registration with confirmation email
+# TODO: ELIMINARE QUESTA CLASSE: EITHER USARE class ConfirmedUser(User) 
+# oppure banalmente usare il flag actuve dei standard django users!
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email_confirmed = models.BooleanField(default=False)
-    # TODO vedere di sistemare Nome e Cognome
-    first_name = models.CharField(max_length=30, blank=True)
-    last_name = models.CharField(max_length=30, blank=True)
+    # TODO vedere di sistemare Nome e Cognome 
+    first_name = models.CharField(max_length=30, blank=True) #TODO self.user.first_name
+    last_name = models.CharField(max_length=30, blank=True) #TODO self.user.last_name
 
 
 @receiver(post_save, sender=User)
