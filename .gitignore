@@ -77,3 +77,10 @@ secret.py
 *.conf
 *.json
 note sul trasferimento
+
+# roba db
+
+commento/
+*.pdf
+*.doc
+*copia_media/
