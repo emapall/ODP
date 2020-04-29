@@ -77,7 +77,7 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
     object_list = m_obj.objects.all() # list of the instances already in the db
     for m_inst in object_list:  # m_inst model instance
         if scaledown is not None: # cut the test db down
-            if random.random() <= 1.0/scaledown:
+            if random.random() >= 1.0/scaledown:
                 print "not saving, random"
                 continue
         
