@@ -40,11 +40,19 @@ import random
 
 def write_rule(field,t):
     if t == "int":
-        return int(field)
+        try:
+            return int(field)
+        except:
+            assert(field == None)
+            return None
     if t == "str":
-        return field
+        return field #may be none, '' or else
     if t == "date":
-        return field.strftime("%Y%m%d")
+        try:
+            return field.strftime("%Y%m%d")
+        except:
+            assert(field == None)
+            return None
     if t == "file":
         try:
             if "sir_tiff/2001_12136" in field.path:
@@ -55,9 +63,12 @@ def write_rule(field,t):
         except ValueError:
             return None
     if t == "foreignkey":
-        return int(field.pk)
+        try:
+            return int(field.pk)
+        except:
+            assert(field == None)
     if t == "bool":
-        return field
+        return field # may be none
 
 def populate_model_dict(model_dict,model_name, scaledown = None):
     m_obj = model_dict["model_obj"] #class oject of the specific model
@@ -65,95 +76,65 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
     # each instance is a dict of field_name:field_value for the various fields
     object_list = m_obj.objects.all() # list of the instances already in the db
     for m_inst in object_list:  # m_inst model instance
-        
         if scaledown is not None: # cut the test db down
             if random.random() <= 1.0/scaledown:
+                print "not saving, random"
                 continue
         
         instance_dict={}  # each instance is a dict of field_name:field_value
         for fieldname, t in model_dict["fields_dict"].items():
+            # print(model_name,":",fieldname)
             try:
                 field = getattr(m_inst, fieldname) # get the value of the field for that instance
             except:
                 assert(False)
             assert(fieldname not in instance_dict)
+            # print "provo a salvare field", fieldname,t,field
+            # raw_input()
             instance_dict.update({fieldname:write_rule(field,t)})
         instance_dict.update({"old_pk":int(m_inst.pk)})
         instances_list.append(instance_dict) 
-        print "L'istanza per ",m_inst, "è",instance_dict
-    dump_dict.update({m_name:instances_list})
+        print "Saved ",m_inst, "with pk",m_inst.pk
+    dump_dict.update({model_name:instances_list})
+
+dump_dict = {}
+
+def group1():
+    models_list = [
+        ("Regione",Regione),
+        ("Provincia",Provincia),
+        ("Comune",Comune),
+        ("Esaminatore",Esaminatore),
+        ("Osservatorio",Osservatorio),
+        ("Assicurazione",Assicurazione),
+        ("Provenienza",Provenienza),
+        ("Responsabilita",Responsabilita),
+    ]
+
+    return models_list
+
+def group2():
+    models_list = [
+        ("Sentenza",Sentenza),
+    ]
+
+    return models_list
+
+def save_group(ng, scaledown = None):
+    handle_dict = {
+        1:group1,
+        2:group2,
+    }
+    handle=handle_dict[ng]
+    models_list = handle()
+    models_dict = {m_name:models_dict_complete[m_name] for (m_name,m_obj) in models_list}
+    for m_name,m_dict in models_dict.items():
+        print("----------------------------INIZIO MODELLO",m_name,scaledown)
+        populate_model_dict(m_dict,m_name,scaledown)
+        print("----------------------------FINITO MODELLO",m_dict)
+        raw_input()
 
 
-
-"""
-model_dicts = [
-        { # Regione
-            "model_name":"Regione",
-            "model_obj":Regione,
-            "field_list":[
-                ("regione","str"),
-            ],
-        }, 
-
-        { # Provincia 
-            "model_name":"Provincia",
-            "model_obj":Provincia,
-            "field_list":[
-                ("regione","foreignkey"),
-                ("provincia","str"),
-                ("targa","str"),
-            ],
-        },
-
-        { # Comune 
-            "model_name":"Comune",
-            "model_obj":Comune,
-            "field_list":[
-                ("provincia","foreignkey"),
-                ("comune","str"),
-                ("codice","str"),
-            ],
-        },
-
-        { # Esaminatore 
-            "model_name":"Esaminatore",
-            "model_obj":Esaminatore,
-            "field_list":[
-                ("esaminatore","str"),
-            ],
-        },
-        { # Osservatorio 
-            "model_name":"Osservatorio",
-            "model_obj":Osservatorio,
-            "field_list":[
-                ("osservatorio","str"),
-            ],
-        },
-
-        { # Assicurazione 
-            "model_name":"Assicurazione",
-            "model_obj":Assicurazione,
-            "field_list":[
-                ("assicurazione","str"),
-            ],
-        },
-
-        { # Provenienza 
-            "model_name":"Provenienza",
-            "model_obj":Provenienza,
-            "field_list":[
-                ("provenienza","str"),
-            ],
-        },
-
-        { # Responsabilita 
-            "model_name":"Responsabilita",
-            "model_obj":Responsabilita,
-            "field_list":[
-                ("responsabilita","str"),
-            ],
-        }, 
-    ]"""
 
 models_dict_complete = {
         "Regione":{
@@ -166,7 +147,7 @@ models_dict_complete = {
             "model_obj":Provincia,
             "fields_dict":{
                 "regione":"foreignkey",
-                "regione_name":"Regione",
+                # "regione_name":"Regione",
                 "provincia":"str",
                 "targa":"str",
             },
@@ -175,7 +156,7 @@ models_dict_complete = {
             "model_obj":Comune,
             "fields_dict":{
                 "provincia":"foreignkey",
-                "provincia_name":"Provincia",
+                # "provincia_name":"Provincia",
                 "comune":"str",
                 "codice":"str",
             },
@@ -214,9 +195,9 @@ models_dict_complete = {
             "model_obj":Sentenza,
             "fields_dict":{
                 "provenienza":"foreignkey",
-                "provenienza_name":"Provenienza",
+                # "provenienza_name":"Provenienza",
                 "responsabilita":"foreignkey",
-                "responsabilita_name":"Responsabilita",
+                # "responsabilita_name":"Responsabilita",
                 "anno_del_deposito":"int",
                 "anno_di_arrivo":"int",
                 "codice":"str",
@@ -244,39 +225,3 @@ models_dict_complete = {
             },
         },
 }
-
-dump_dict = {}
-
-def group1():
-    models_list = [
-        ("Regione",Regione),
-        ("Provincia",Provincia),
-        ("Comune",Comune),
-        ("Esaminatore",Esaminatore),
-        ("Osservatorio",Osservatorio),
-        ("Assicurazione",Assicurazione),
-        ("Provenienza",Provenienza),
-        ("Responsabilita",Responsabilita),
-    ]
-
-    return models_list
-
-def group2():
-    models_list = [
-        ("Sentenza",Sentenza),
-    ]
-
-    return models_list
-
-def save_group(ng, scaledown = None):
-    handle_dict = {
-        1:group1,
-        2:group2,
-    }
-    handle=handle_dict[ng]
-    models_list = handle()
-    models_dict = {m_name:models_dict_complete[m_name] for m_name in models_list}
-    for m_name,m_dict in models_dict.items():
-        populate_model_dict(m_dict,m_name,scaledown)
-        print("----------------------------FINITO MODELLO",m_dict)
-        raw_input()
