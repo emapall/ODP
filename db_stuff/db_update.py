@@ -20,13 +20,18 @@ from django.core.files import File
  }"""
 
 MEDIA_BACKUP_PATH = "/home/ema/projects/LiderLab/odp/ODP/db_stuff/copia_media/media/copia-media"
-
+DB_STUFF_PATH = "/home/ema/projects/LiderLab/odp/ODP/db_stuff"
 @transaction.atomic
 def save_fileField(fieldname,jsonval,model_obj):
     # jsonval is the old path -> get the newname
+    if jsonval == None:
+        return None
     file_name = jsonval.split("/var/lib/django-media/")[1]
-    f = open(os.path.join(MEDIA_BACKUP_PATH,file_name),"rb")
+    f = open(os.path.join(MEDIA_BACKUP_PATH,file_name),"rb") #reading binary is vital!
     ff = File(f)
+    print(fieldname,f,ff,model_obj) # TODO
+    print(getattr(model_obj,fieldname),type(getattr(model_obj,fieldname)))
+    input()
     getattr(model_obj,fieldname).save(file_name,ff)
     model_obj.save()
     return True
@@ -57,11 +62,13 @@ def save_row(row_dict, model_obj,model_name):
     # saves a SINGLE INSTANCE of a model, given the dict with its attributes
     # is like {"field1":value1,"filed2",field}
     i = model_obj()
+    print(getattr(i,"file_img"),type(getattr(i,"file_img"))) # TODO REMOVE
+    input()
     for fieldname, jsonval in row_dict.items():# sett all the attributes apart old_pk
         if fieldname != "old_pk":
             fieldtype = models_dict[model_name]["fields_dict"][fieldname]
             if fieldtype == "file":
-                assert(False)
+                save_fileField(fieldname=fieldname,jsonval=jsonval,model_obj=model_obj)
             #elif altra robba
             else:
                 fieldval = field_value(fieldname,fieldtype, jsonval, model_name)
@@ -110,8 +117,8 @@ def group2():
     return models_list
 
 def save_group(ng):
-    
-    f = open("db_stuff/gruppo"+str(ng)+".json","r")
+    json_rel_path = "gruppo"+str(ng)+".json"
+    f = open(os.path.join(DB_STUFF_PATH,json_rel_path),"r")
     db_dict = json.load(f)
     handle_dict = {
         1:group1,
@@ -126,12 +133,14 @@ def save_group(ng):
                 model_obj=modelobj,
                 model_name=modelname,
                 )
-    f = open("db_stuff/pk_remap.json","w")
-    json.dump(pk_remap,f)
+    pk_rel_path = "pk_remap.json"
+    pk_file = open(os.path.join(DB_STUFF_PATH,pk_rel_path),"w")
+    json.dump(pk_remap,pk_file)
 
 models_list = []
-try:    
-    pk_file = open("db_stuff/pk_remap.json","r")
+try:   
+    pk_rel_path = "pk_remap.json" 
+    pk_file = open(os.path.join(DB_STUFF_PATH,pk_rel_path),"r")
     pk_remap_json = json.load(pk_file) # Le chiavi sono str!
     pk_remap = {}
     for m_name, m_remap_dict in pk_remap_json.items():
