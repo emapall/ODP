@@ -22,18 +22,15 @@ from django.core.files import File
 MEDIA_BACKUP_PATH = "/home/ema/projects/LiderLab/odp/ODP/db_stuff/copia_media/media/copia-media"
 DB_STUFF_PATH = "/home/ema/projects/LiderLab/odp/ODP/db_stuff"
 @transaction.atomic
-def save_fileField(fieldname,jsonval,model_obj):
+def save_fileField(fieldname,jsonval,model_inst):
     # jsonval is the old path -> get the newname
     if jsonval == None:
         return None
     file_name = jsonval.split("/var/lib/django-media/")[1]
     f = open(os.path.join(MEDIA_BACKUP_PATH,file_name),"rb") #reading binary is vital!
     ff = File(f)
-    print(fieldname,f,ff,model_obj) # TODO
-    print(getattr(model_obj,fieldname),type(getattr(model_obj,fieldname)))
-    input()
-    getattr(model_obj,fieldname).save(file_name,ff)
-    model_obj.save()
+    getattr(model_inst,fieldname).save(file_name,ff)
+    model_inst.save()
     return True
 
 def field_value(fieldname,fieldtype, jsonval, model_name):
@@ -62,13 +59,11 @@ def save_row(row_dict, model_obj,model_name):
     # saves a SINGLE INSTANCE of a model, given the dict with its attributes
     # is like {"field1":value1,"filed2",field}
     i = model_obj()
-    print(getattr(i,"file_img"),type(getattr(i,"file_img"))) # TODO REMOVE
-    input()
     for fieldname, jsonval in row_dict.items():# sett all the attributes apart old_pk
         if fieldname != "old_pk":
             fieldtype = models_dict[model_name]["fields_dict"][fieldname]
             if fieldtype == "file":
-                save_fileField(fieldname=fieldname,jsonval=jsonval,model_obj=model_obj)
+                save_fileField(fieldname=fieldname,jsonval=jsonval,model_inst=i)
             #elif altra robba
             else:
                 fieldval = field_value(fieldname,fieldtype, jsonval, model_name)
