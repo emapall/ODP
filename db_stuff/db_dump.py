@@ -35,40 +35,40 @@ from django.utils import simplejson,html
 from django.views.decorators.cache import cache_page
 from lider.odp.models import *
 # from odp_app.models import *
-import random
+import random, json
 
 
-def write_rule(field,t):
+def write_rule(fieldval,t):
     if t == "int":
         try:
-            return int(field)
+            return int(fieldval)
         except:
-            assert(field == None)
+            assert(fieldval == None)
             return None
     if t == "str":
-        return field #may be none, '' or else
+        return fieldval #may be none, '' or else
     if t == "date":
         try:
-            return field.strftime("%Y%m%d")
+            return fieldval.strftime("%Y%m%d")
         except:
-            assert(field == None)
+            assert(fieldval == None)
             return None
     if t == "file":
         try:
-            if "sir_tiff/2001_12136" in field.path:
+            if "sir_tiff/2001_12136" in fieldval.path:
                 print("sir sgualdreffo trovato!!!!!!")
                 input()
                 return None
-            return field.path #IT'S A STR!!!
+            return fieldval.path #IT'S A STR!!!
         except ValueError:
             return None
     if t == "foreignkey":
         try:
-            return int(field.pk)
+            return int(fieldval.pk)
         except:
-            assert(field == None)
+            assert(fieldval == None)
     if t == "bool":
-        return field # may be none
+        return fieldval # may be none
 
 def populate_model_dict(model_dict,model_name, scaledown = None):
     m_obj = model_dict["model_obj"] #class oject of the specific model
@@ -78,7 +78,7 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
     for m_inst in object_list:  # m_inst model instance
         if scaledown is not None: # cut the test db down
             if random.random() >= 1.0/scaledown:
-                print "not saving, random"
+                print "not saving, random -", m_inst
                 continue
         
         instance_dict={}  # each instance is a dict of field_name:field_value
@@ -87,6 +87,7 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
             try:
                 field = getattr(m_inst, fieldname) # get the value of the field for that instance
             except:
+                print fieldname
                 assert(False)
             assert(fieldname not in instance_dict)
             # print "provo a salvare field", fieldname,t,field
@@ -133,6 +134,10 @@ def save_group(ng, scaledown = None):
         populate_model_dict(m_dict,m_name,scaledown)
         print("----------------------------FINITO MODELLO",m_dict)
         raw_input()
+
+    out = open("gruppo"+str(ng)+".json","w")
+    json.dump(dump_dict,out)
+    out.close()
 
 
 
