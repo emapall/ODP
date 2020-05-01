@@ -462,7 +462,7 @@ class Sentenza(models.Model):
         null=True,
         blank=False,
         on_delete=models.PROTECT,
-    )
+    ) #TODO (VEDI LINESTR)
     assicurazione = models.ManyToManyField(
         Assicurazione, verbose_name="assicurazione", blank=False
     )  # filter_interface=models.HORIZONTAL,
@@ -523,13 +523,14 @@ class Sentenza(models.Model):
         #                linestr = '(' + link[1+link.rfind('/'):link.rfind('.')] + ') '
 
         if self.grado_di_giudizio == u"":
-            linestr = self.sede_tribunale.comune
+            linestr = self.sede_tribunale.comune #TODO non possibile: questo è blank = True, se 
+            # si fa il print e sede_tribunale è none crasha tutto. Fix!!
         else:
             linestr = (
                 self.get_grado_di_giudizio_display()
                 + u" di "
                 + self.sede_tribunale.comune
-            )
+            ) # TODO VEDI SOPRA
 
         if self.data_della_sentenza:
             linestr += u" (" + date(self.data_della_sentenza, "j/m/Y") + u")"

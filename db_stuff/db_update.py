@@ -69,7 +69,10 @@ def save_row(row_dict, model_obj,model_name):
                 fieldval = field_value(fieldname,fieldtype, jsonval, model_name)
                 setattr(i,fieldname,fieldval)
     # save the pk remappings
-    print("Sto per salvare",i)
+    try:
+        print("Sto per salvare",i)
+    except:
+        pass
     i.save()
     pk_remap[model_name].update({row_dict["old_pk"]:i.pk})
     return i.pk
