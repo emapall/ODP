@@ -62,7 +62,8 @@ def save_row(row_dict, model_obj,model_name):
             fieldtype = models_dict[model_name]["fields_dict"][fieldname]
             if fieldtype == "file":
                 assert(False)
-            elif:
+            #elif altra robba
+            else:
                 fieldval = field_value(fieldname,fieldtype, jsonval, model_name)
                 setattr(i,fieldname,fieldval)
     # save the pk remappings
@@ -101,12 +102,20 @@ def group1():
 
     return models_list
 
+def group2():
+    models_list = [
+        ("Sentenza",Sentenza),
+    ]
+
+    return models_list
+
 def save_group(ng):
     
     f = open("db_stuff/gruppo"+str(ng)+".json","r")
     db_dict = json.load(f)
     handle_dict = {
         1:group1,
+        2:group2,
     }
     handle = handle_dict[ng]
     models_list = handle()
