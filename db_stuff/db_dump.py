@@ -67,6 +67,9 @@ def write_rule(fieldval,t):
             return int(fieldval.pk)
         except:
             assert(fieldval == None)
+    if t == "manytomany-d": # TODO: MANYTOMANY REVERSE
+        # fieldval is then a many to many manager (.all() is queryset)
+        return [ pointed_obj.pk for pointed_obj in fieldval.all() ]
     if t == "bool":
         return fieldval # may be none
 
@@ -203,6 +206,8 @@ models_dict_complete = {
                 # "provenienza_name":"Provenienza",
                 "responsabilita":"foreignkey",
                 # "responsabilita_name":"Responsabilita",
+                "sede_tribunale":"foreignkey",
+                # "sede_tribunale_name":"Comune",
                 "anno_del_deposito":"int",
                 "anno_di_arrivo":"int",
                 "codice":"str",
@@ -227,6 +232,12 @@ models_dict_complete = {
                 "numero_terzi":"int",
                 "ocr":"str",
                 "riconvenzionale":"str",
+                "esaminatore":"manytomany-d",
+                # "esaminatore_name":"Esaminatore",
+                "osservatorio":"manytomany-d",
+                # "osservatorio_name":"Osservatorio",
+                "assicurazione":"manytomany-d",
+                # "assicurazione_name":"Assicurazione",
             },
         },
 }
