@@ -33,6 +33,27 @@ def save_fileField(fieldname,jsonval,model_inst):
     model_inst.save()
     return True
 
+@transaction.atomic
+def saveManyMany(fieldname,t,jsonval,model_name,model_inst):
+    # shall save, not return
+    if t == "d": # direct many to many relationship 
+        pointed_modelname = models_dict[model_name]["fields_dict"][str(fieldname+"_name")]
+        pointed_model = models_dict[pointed_modelname]["model_obj"]
+
+        pointed_list = [] # the list of objects due to this manymany relationship
+        for old_pk in jsonval: # jsonval is the old pk's list
+            assert(type(old_pk) is int)
+            new_pk = pk_remap[pointed_modelname][int(old_pk)]# get the new pk of the associated model instance. old_pk è gia un int
+            pointed_inst = pointed_model.objects.get(pk=new_pk)# get the object
+            # 
+            pointed_list.append(pointed_inst)
+        
+        # now save the new queryset
+        getattr(model_inst,fieldname).set(pointed_list)
+        model_inst.save()
+
+        return True
+
 def field_value(fieldname,fieldtype, jsonval, model_name):
     # ^ second element in tuple 
     if jsonval == None: # if there none, blanks or so....
@@ -50,6 +71,8 @@ def field_value(fieldname,fieldtype, jsonval, model_name):
         pointed_model = models_dict[pointed_modelname]["model_obj"]
         pointed_pk = pk_remap[pointed_modelname][int(jsonval)] #jsonval is the old pk that is pointed to!
         return pointed_model.objects.get(pk=pointed_pk) # the foreignkey stores the obj, not the pk
+    
+    
     if fieldtype == "bool":
         return jsonval # may NOT be none
 
@@ -64,7 +87,8 @@ def save_row(row_dict, model_obj,model_name):
             fieldtype = models_dict[model_name]["fields_dict"][fieldname]
             if fieldtype == "file":
                 save_fileField(fieldname=fieldname,jsonval=jsonval,model_inst=i)
-            #elif altra robba
+            elif fieldtype = "manytomany-d":
+                save_manyMany(fieldname=fieldname)
             else:
                 fieldval = field_value(fieldname,fieldtype, jsonval, model_name)
                 setattr(i,fieldname,fieldval)
@@ -115,17 +139,19 @@ def group2():
     return models_list
 
 def save_group(ng):
+    # open the relative file
     json_rel_path = "gruppo"+str(ng)+".json"
     f = open(os.path.join(DB_STUFF_PATH,json_rel_path),"r")
     db_dict = json.load(f)
+    #get the function to call
     handle_dict = {
         1:group1,
         2:group2,
     }
     handle = handle_dict[ng]
-    models_list = handle()
+    models_list = handle() # get modellist
+    # save each model in model list (in the group)
     for (modelname,modelobj) in models_list:
-        
         save_model(
                 instances_list=db_dict[modelname],
                 model_obj=modelobj,
@@ -136,11 +162,13 @@ def save_group(ng):
     json.dump(pk_remap,pk_file)
 
 models_list = []
-try:   
+try: 
+    # read pks  
     pk_rel_path = "pk_remap.json" 
     pk_file = open(os.path.join(DB_STUFF_PATH,pk_rel_path),"r")
     pk_remap_json = json.load(pk_file) # Le chiavi sono str!
     pk_remap = {}
+    # create the pk remap dict
     for m_name, m_remap_dict in pk_remap_json.items():
         print("creo remap per modello",m_name,m_remap_dict)
         pk_remap.update({m_name:{}})
@@ -162,7 +190,7 @@ models_dict = {
             "model_obj":Provincia,
             "fields_dict":{
                 "regione":"foreignkey",
-                "regione_name":"Regione",
+                # "regione_name":"Regione",
                 "provincia":"str",
                 "targa":"str",
             },
@@ -171,7 +199,7 @@ models_dict = {
             "model_obj":Comune,
             "fields_dict":{
                 "provincia":"foreignkey",
-                "provincia_name":"Provincia",
+                # "provincia_name":"Provincia",
                 "comune":"str",
                 "codice":"str",
             },
@@ -213,6 +241,8 @@ models_dict = {
                 "provenienza_name":"Provenienza",
                 "responsabilita":"foreignkey",
                 "responsabilita_name":"Responsabilita",
+                "sede_tribunale":"foreignkey",
+                "sede_tribunale_name":"Comune",
                 "anno_del_deposito":"int",
                 "anno_di_arrivo":"int",
                 "codice":"str",
@@ -237,6 +267,12 @@ models_dict = {
                 "numero_terzi":"int",
                 "ocr":"str",
                 "riconvenzionale":"str",
+                "esaminatore":"manytomany-d",
+                "esaminatore_name":"Esaminatore",
+                "osservatorio":"manytomany-d",
+                "osservatorio_name":"Osservatorio",
+                "assicurazione":"manytomany-d",
+                "assicurazione_name":"Assicurazione",
             },
         },
 }
