@@ -112,7 +112,7 @@ def save_row(row_dict, model_obj,model_name):
             if fieldtype == "file":
                 fieldval = save_fileField(fieldname=fieldname,jsonval=jsonval,model_inst=i)
             elif fieldtype == "manytomany-d":
-                fieldval = save_ManyMany(fieldname=fieldname,t=fieldtype,jsonval=jsonval,model_name=model_name,model_inst=i)
+                fieldval = save_ManyMany(fieldname=fieldname,t=fieldtype[-1],jsonval=jsonval,model_name=model_name,model_inst=i)
             else:
                 fieldval = field_value(fieldname,fieldtype, jsonval, model_name)
                 setattr(i,fieldname,fieldval)
