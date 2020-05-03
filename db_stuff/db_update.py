@@ -25,7 +25,6 @@ debug_flag = False
 
 MEDIA_BACKUP_PATH = "/home/ema/projects/LiderLab/odp/ODP/db_stuff/copia_media/media/copia-media"
 DB_STUFF_PATH = "/home/ema/projects/LiderLab/odp/ODP/db_stuff"
-@transaction.atomic
 def save_fileField(fieldname,jsonval,model_inst):
     # jsonval is the old path -> get the newname
     if jsonval == None:
@@ -41,10 +40,9 @@ def save_fileField(fieldname,jsonval,model_inst):
 
     ff = File(f)
     getattr(model_inst,fieldname).save(file_name,ff)
-    model_inst.save()
+    # model_inst.save() NOOOOOOOO NOT HERE!!!!!
     return True
 
-@transaction.atomic
 def save_ManyMany(fieldname,t,jsonval,model_name,model_inst):
     # shall save, not return
     if t == "d": # direct many to many relationship 
@@ -60,8 +58,10 @@ def save_ManyMany(fieldname,t,jsonval,model_name,model_inst):
             pointed_list.append(pointed_inst)
         
         # now save the new queryset
+        if debug_flag:
+            print(pointed_list)
         getattr(model_inst,fieldname).set(pointed_list)
-        model_inst.save()
+        # model_inst.save()not here! no no no no!
 
         return True
 
