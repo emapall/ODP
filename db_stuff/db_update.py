@@ -19,6 +19,10 @@ from django.core.files import File
     ] # each model a list of instances
  }"""
 
+global debug_flag 
+debug_flag = False
+
+
 MEDIA_BACKUP_PATH = "/home/ema/projects/LiderLab/odp/ODP/db_stuff/copia_media/media/copia-media"
 DB_STUFF_PATH = "/home/ema/projects/LiderLab/odp/ODP/db_stuff"
 @transaction.atomic
@@ -27,14 +31,21 @@ def save_fileField(fieldname,jsonval,model_inst):
     if jsonval == None:
         return None
     file_name = jsonval.split("/var/lib/django-media/")[1]
-    f = open(os.path.join(MEDIA_BACKUP_PATH,file_name),"rb") #reading binary is vital!
+    
+    # try to find the file, if it exists
+    try:
+        f = open(os.path.join(MEDIA_BACKUP_PATH,file_name),"rb") #reading binary is vital!
+    except:
+        logfile.write("FILE NOT FOUND" + file_name+"\n")
+        return None
+
     ff = File(f)
     getattr(model_inst,fieldname).save(file_name,ff)
     model_inst.save()
     return True
 
 @transaction.atomic
-def saveManyMany(fieldname,t,jsonval,model_name,model_inst):
+def save_ManyMany(fieldname,t,jsonval,model_name,model_inst):
     # shall save, not return
     if t == "d": # direct many to many relationship 
         pointed_modelname = models_dict[model_name]["fields_dict"][str(fieldname+"_name")]
@@ -56,6 +67,7 @@ def saveManyMany(fieldname,t,jsonval,model_name,model_inst):
 
 def field_value(fieldname,fieldtype, jsonval, model_name):
     # ^ second element in tuple 
+    global debug_flag
     if jsonval == None: # if there none, blanks or so....
         return None
     
@@ -64,6 +76,11 @@ def field_value(fieldname,fieldtype, jsonval, model_name):
     if fieldtype == "str": 
         return jsonval # may be ''
     if fieldtype == "date": #like YYYYMMGG
+        if jsonval == "20011129":
+            debug_flag = True
+            print("ciaissimo!------------------",debug_flag)
+            input()
+            
         return date(int(jsonval[0:4]),int(jsonval[4:6]),int(jsonval[6:8]))
 
     if fieldtype == "foreignkey":
@@ -82,16 +99,29 @@ def save_row(row_dict, model_obj,model_name):
     # saves a SINGLE INSTANCE of a model, given the dict with its attributes
     # is like {"field1":value1,"filed2",field}
     i = model_obj()
+    if debug_flag:
+        print("chiavi dict:",row_dict.keys())
+    count = 0
     for fieldname, jsonval in row_dict.items():# sett all the attributes apart old_pk
+        if debug_flag: #and fieldname != "ocr":
+            print("salvo field",count,"-",len(row_dict.keys()),fieldname,jsonval)
+            count += 1
+            input()
         if fieldname != "old_pk":
             fieldtype = models_dict[model_name]["fields_dict"][fieldname]
             if fieldtype == "file":
-                save_fileField(fieldname=fieldname,jsonval=jsonval,model_inst=i)
-            elif fieldtype = "manytomany-d":
-                save_manyMany(fieldname=fieldname)
+                fieldval = save_fileField(fieldname=fieldname,jsonval=jsonval,model_inst=i)
+            elif fieldtype == "manytomany-d":
+                fieldval = save_ManyMany(fieldname=fieldname,t=fieldtype,jsonval=jsonval,model_name=model_name,model_inst=i)
             else:
                 fieldval = field_value(fieldname,fieldtype, jsonval, model_name)
                 setattr(i,fieldname,fieldval)
+        if debug_flag and fieldname != "old_pk" and "name" not in fieldname:
+            try:
+                print("fatto field",count,"-",len(row_dict.keys()),fieldname,getattr(i,fieldname),"\n")
+            except:
+                print("getattr fails: writerule returned",fieldval)
+
     # save the pk remappings
     try:
         print("Sto per salvare",i)
@@ -160,6 +190,9 @@ def save_group(ng):
     pk_rel_path = "pk_remap.json"
     pk_file = open(os.path.join(DB_STUFF_PATH,pk_rel_path),"w")
     json.dump(pk_remap,pk_file)
+    pk_file.close()
+    logfile.close()
+
 
 models_list = []
 try: 
@@ -170,13 +203,16 @@ try:
     pk_remap = {}
     # create the pk remap dict
     for m_name, m_remap_dict in pk_remap_json.items():
-        print("creo remap per modello",m_name,m_remap_dict)
         pk_remap.update({m_name:{}})
         pk_remap[m_name].update({int(k):v for k,v in m_remap_dict.items()})
+    print("successfully created pk_remap")
+
 except IOError:
     print("File con le pk non trovato!")
     pk_remap = {}
 
+logfile_rel_path = "errori.log"
+logfile = open(os.path.join(DB_STUFF_PATH,logfile_rel_path),"w")
 
 
 models_dict = {
