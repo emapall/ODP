@@ -45,10 +45,10 @@ def save_fileField(fieldname,jsonval,model_inst):
 
 def save_ManyMany(fieldname,t,jsonval,model_name,model_inst):
     # shall save, not return
-    if t == "d": # direct many to many relationship 
+    if t == 'd': # direct many to many relationship 
         pointed_modelname = models_dict[model_name]["fields_dict"][str(fieldname+"_name")]
         pointed_model = models_dict[pointed_modelname]["model_obj"]
-
+        print("manymany!",jsonval,pointed_model)
         pointed_list = [] # the list of objects due to this manymany relationship
         for old_pk in jsonval: # jsonval is the old pk's list
             assert(type(old_pk) is int)
@@ -58,9 +58,11 @@ def save_ManyMany(fieldname,t,jsonval,model_name,model_inst):
             pointed_list.append(pointed_inst)
         
         # now save the new queryset
-        if debug_flag:
-            print(pointed_list)
+        
+        print(len(pointed_list))
+        input()
         getattr(model_inst,fieldname).set(pointed_list)
+        input("schifo")
         # model_inst.save()not here! no no no no!
 
         return True
@@ -111,11 +113,13 @@ def save_row(row_dict, model_obj,model_name):
             fieldtype = models_dict[model_name]["fields_dict"][fieldname]
             if fieldtype == "file":
                 fieldval = save_fileField(fieldname=fieldname,jsonval=jsonval,model_inst=i)
-            elif fieldtype == "manytomany-d":
-                fieldval = save_ManyMany(fieldname=fieldname,t=fieldtype[-1],jsonval=jsonval,model_name=model_name,model_inst=i)
+            # elif fieldtype == "manytomany-d":
+            #     fieldval = save_ManyMany(fieldname=fieldname,t=fieldtype[-1],jsonval=jsonval,model_name=model_name,model_inst=i)
             else:
                 fieldval = field_value(fieldname,fieldtype, jsonval, model_name)
                 setattr(i,fieldname,fieldval)
+
+
         if debug_flag and fieldname != "old_pk" and "name" not in fieldname:
             try:
                 print("fatto field",count,"-",len(row_dict.keys()),fieldname,getattr(i,fieldname),"\n")
@@ -124,11 +128,14 @@ def save_row(row_dict, model_obj,model_name):
 
     # save the pk remappings
     try:
-        print("Sto per salvare",i)
+        print("Finished normal fields",i)
     except:
-        pass
+        print("cannot print obj,saving it")
     i.save()
     pk_remap[model_name].update({row_dict["old_pk"]:i.pk})
+
+    # after creating the object in the db, save the many to many relationships
+    for 
     return i.pk
 
 def save_model(instances_list, model_obj, model_name):
@@ -303,6 +310,8 @@ models_dict = {
                 "numero_terzi":"int",
                 "ocr":"str",
                 "riconvenzionale":"str",
+            },
+            "many_to_many_dict":{
                 "esaminatore":"manytomany-d",
                 "esaminatore_name":"Esaminatore",
                 "osservatorio":"manytomany-d",
