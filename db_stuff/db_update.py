@@ -111,6 +111,7 @@ def save_row(row_json_dict, model_obj,model_name):
         # get the field type
         fieldtype = models_dict[model_name]["fields_dict"][fieldname]
         if fieldtype == "file":
+            assert(False)
             fieldval = save_fileField(fieldname=fieldname,jsonval=jsonval,model_inst=i) # fieldval is taken just as backup
         # elif fieldtype == "other":
         else:
@@ -150,6 +151,13 @@ def save_row(row_json_dict, model_obj,model_name):
                 print("problems printing",fieldname)
                 print(type(getattr(i,fieldname)))
     i.save() # save the many to many added relationships
+
+    for fieldname in models_dict[model_name]["files_list"]:
+        jsonval = row_json_dict[fieldname] # get the json-field relative value
+        retval = save_fileField(fieldname=fieldname,jsonval=jsonval,model_inst=i) # fieldval is taken just as backup        
+
+    i.save()
+
     print("Finished saving instance",i)
     input()
 
@@ -316,9 +324,6 @@ models_dict = {
                 "estctu":"bool",
                 "estensore":"str",
                 "fatto":"str",
-                "file_cmn":"file",
-                "file_img":"file",
-                "file_sch":"file",
                 "forza_esclusione":"bool",
                 "grado_di_giudizio":"str",
                 "note_profili_rilevanti":"str",
@@ -348,5 +353,6 @@ models_dict = {
                 "assicurazione":"manytomany-d",
                 # "assicurazione_name":"Assicurazione",
             },
+            "files_list":["file_cmn","file_img","file_sch"],
         },
 }
