@@ -105,14 +105,15 @@ def save_row(row_json_dict, model_obj,model_name):
     count = 0
     for fieldname, fieldtype in models_dict[model_name]["fields_dict"].items():
         jsonval = row_json_dict[fieldname] # get the json-field relative value
-        # if debug_flag: #and fieldname != "ocr":
-        print("salvo field",count,"-",len(row_json_dict.keys()),fieldname,jsonval)
+        if fieldname != "ocr": #debug_flag: #and 
+            print("salvo field",count,"-",len(row_json_dict.keys()),fieldname,jsonval)
+        else:
+            print("salvo l'ocr, lungo",len(jsonval))
         count += 1
         # get the field type
         fieldtype = models_dict[model_name]["fields_dict"][fieldname]
         if fieldtype == "file":
             assert(False)
-            fieldval = save_fileField(fieldname=fieldname,jsonval=jsonval,model_inst=i) # fieldval is taken just as backup
         # elif fieldtype == "other":
         else:
             fieldval = field_value(fieldname,fieldtype, jsonval, model_name)
@@ -120,7 +121,8 @@ def save_row(row_json_dict, model_obj,model_name):
 
         if debug_flag and fieldname != "old_pk":
             try:
-                print("fatto field",count,"-",len(row_json_dict.keys()),fieldname,getattr(i,fieldname),"\n")
+                if fieldname != "ocr":
+                    print("fatto field",count,"-",len(row_json_dict.keys()),fieldname,getattr(i,fieldname),"\n")
             except:
                 print("getattr fails: writerule returned",fieldval)
     print("preparing to save")
@@ -135,6 +137,7 @@ def save_row(row_json_dict, model_obj,model_name):
 
     # after creating the object in the db, save the many to many relationships
     for fieldname, fieldtype in models_dict[model_name]["many_to_many_dict"].items():
+        jsonval = row_json_dict[fieldname] # get the json-field relative value
         assert(
             save_ManyMany(
                 fieldname=fieldname,
@@ -151,7 +154,7 @@ def save_row(row_json_dict, model_obj,model_name):
                 print("problems printing",fieldname)
                 print(type(getattr(i,fieldname)))
     i.save() # save the many to many added relationships
-
+    print()
     for fieldname in models_dict[model_name]["files_list"]:
         jsonval = row_json_dict[fieldname] # get the json-field relative value
         retval = save_fileField(fieldname=fieldname,jsonval=jsonval,model_inst=i) # fieldval is taken just as backup        
