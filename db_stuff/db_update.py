@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #! /usr/bin/pythonimport json
+# exec(open("/home/ema/projects/LiderLab/odp/ODP/db_stuff/db_update.py","r").read())
 from odp_app.models import *
 from django.db import transaction
 from datetime import date
@@ -20,7 +21,7 @@ from django.core.files import File
  }"""
 
 global debug_flag 
-debug_flag = False
+debug_flag = True
 
 
 MEDIA_BACKUP_PATH = "/home/ema/projects/LiderLab/odp/ODP/db_stuff/copia_media/media/copia-media"
@@ -36,6 +37,8 @@ def save_fileField(fieldname,jsonval,model_inst):
         f = open(os.path.join(MEDIA_BACKUP_PATH,file_name),"rb") #reading binary is vital!
     except:
         logfile.write("FILE NOT FOUND" + file_name+"\n")
+        print("---------FILE NOT FOUND:"+file_name+"---------")
+        input()
         return None
 
     ff = File(f)
@@ -46,25 +49,23 @@ def save_fileField(fieldname,jsonval,model_inst):
 def save_ManyMany(fieldname,t,jsonval,model_name,model_inst):
     # shall save, not return
     if t == 'd': # direct many to many relationship 
-        pointed_modelname = models_dict[model_name]["fields_dict"][str(fieldname+"_name")]
+        pointed_modelname = models_dict[model_name]["foreign_dict"][fieldname]
         pointed_model = models_dict[pointed_modelname]["model_obj"]
-        print("manymany!",jsonval,pointed_model)
+        print("manymany!","json:",jsonval,"modello:",pointed_model) # DEBUG
         pointed_list = [] # the list of objects due to this manymany relationship
         for old_pk in jsonval: # jsonval is the old pk's list
             assert(type(old_pk) is int)
             new_pk = pk_remap[pointed_modelname][int(old_pk)]# get the new pk of the associated model instance. old_pk è gia un int
-            pointed_inst = pointed_model.objects.get(pk=new_pk)# get the object
-            # 
+            pointed_inst = pointed_model.objects.get(pk=new_pk)# get the object 
             pointed_list.append(pointed_inst)
         
         # now save the new queryset
-        
-        print(len(pointed_list))
-        input()
+        try:
+            print(len(pointed_list),pointed_list)
+        except:
+            print("Something wrong - manymany")
         getattr(model_inst,fieldname).set(pointed_list)
-        input("schifo")
-        # model_inst.save()not here! no no no no!
-
+        # model_inst.save() could be but not really
         return True
 
 def field_value(fieldname,fieldtype, jsonval, model_name):
@@ -86,63 +87,78 @@ def field_value(fieldname,fieldtype, jsonval, model_name):
         return date(int(jsonval[0:4]),int(jsonval[4:6]),int(jsonval[6:8]))
 
     if fieldtype == "foreignkey":
-        pointed_modelname = models_dict[model_name]["fields_dict"][str(fieldname+"_name")]
+        pointed_modelname = models_dict[model_name]["foreign_dict"][fieldname]
         pointed_model = models_dict[pointed_modelname]["model_obj"]
         pointed_pk = pk_remap[pointed_modelname][int(jsonval)] #jsonval is the old pk that is pointed to!
-        return pointed_model.objects.get(pk=pointed_pk) # the foreignkey stores the obj, not the pk
-    
+        return pointed_model.objects.get(pk=pointed_pk) # the foreignkey is the obj
     
     if fieldtype == "bool":
-        return jsonval # may NOT be none
-
+        return jsonval
 
 @transaction.atomic
-def save_row(row_dict, model_obj,model_name):
+def save_row(row_json_dict, model_obj,model_name):
     # saves a SINGLE INSTANCE of a model, given the dict with its attributes
     # is like {"field1":value1,"filed2",field}
     i = model_obj()
     if debug_flag:
-        print("chiavi dict:",row_dict.keys())
+        print("chiavi dict:",row_json_dict.keys())
     count = 0
-    for fieldname, jsonval in row_dict.items():# sett all the attributes apart old_pk
-        if debug_flag: #and fieldname != "ocr":
-            print("salvo field",count,"-",len(row_dict.keys()),fieldname,jsonval)
-            count += 1
-            input()
-        if fieldname != "old_pk":
-            fieldtype = models_dict[model_name]["fields_dict"][fieldname]
-            if fieldtype == "file":
-                fieldval = save_fileField(fieldname=fieldname,jsonval=jsonval,model_inst=i)
-            # elif fieldtype == "manytomany-d":
-            #     fieldval = save_ManyMany(fieldname=fieldname,t=fieldtype[-1],jsonval=jsonval,model_name=model_name,model_inst=i)
-            else:
-                fieldval = field_value(fieldname,fieldtype, jsonval, model_name)
-                setattr(i,fieldname,fieldval)
+    for fieldname, fieldtype in models_dict[model_name]["fields_dict"].items():
+        jsonval = row_json_dict[fieldname] # get the json-field relative value
+        # if debug_flag: #and fieldname != "ocr":
+        print("salvo field",count,"-",len(row_json_dict.keys()),fieldname,jsonval)
+        count += 1
+        # get the field type
+        fieldtype = models_dict[model_name]["fields_dict"][fieldname]
+        if fieldtype == "file":
+            fieldval = save_fileField(fieldname=fieldname,jsonval=jsonval,model_inst=i) # fieldval is taken just as backup
+        # elif fieldtype == "other":
+        else:
+            fieldval = field_value(fieldname,fieldtype, jsonval, model_name)
+            setattr(i,fieldname,fieldval)
 
-
-        if debug_flag and fieldname != "old_pk" and "name" not in fieldname:
+        if debug_flag and fieldname != "old_pk":
             try:
-                print("fatto field",count,"-",len(row_dict.keys()),fieldname,getattr(i,fieldname),"\n")
+                print("fatto field",count,"-",len(row_json_dict.keys()),fieldname,getattr(i,fieldname),"\n")
             except:
                 print("getattr fails: writerule returned",fieldval)
+    print("preparing to save")
+    i.save() # save the model
 
-    # save the pk remappings
     try:
         print("Finished normal fields",i)
     except:
         print("cannot print obj,saving it")
-    i.save()
-    pk_remap[model_name].update({row_dict["old_pk"]:i.pk})
+    # save the pk remappings
+    pk_remap[model_name].update({row_json_dict["old_pk"]:i.pk})
 
     # after creating the object in the db, save the many to many relationships
-    for 
+    for fieldname, fieldtype in models_dict[model_name]["many_to_many_dict"].items():
+        assert(
+            save_ManyMany(
+                fieldname=fieldname,
+                t=fieldtype[-1],
+                jsonval=jsonval,
+                model_name=model_name,
+                model_inst=i
+                )
+        )
+        if debug_flag:
+            try:
+                print("manymany:",fieldname,"value:",getattr(i,fieldname).all(),"jsonval:",jsonval)
+            except:
+                print("problems printing",fieldname)
+                print(type(getattr(i,fieldname)))
+    i.save() # save the many to many added relationships
+    print("Finished saving instance",i)
+    input()
+
     return i.pk
 
 def save_model(instances_list, model_obj, model_name):
     # saves an entire table
-    print("inizio a salvare",model_obj,model_name)
-    input("Continuare")
-    input("segur")
+    print("beginning to save",model_obj,model_name)
+    input("continue")
     pk_remap.update({model_name:{}})
     n = 0
     for row_dict in instances_list:
@@ -233,19 +249,23 @@ models_dict = {
             "model_obj":Provincia,
             "fields_dict":{
                 "regione":"foreignkey",
-                # "regione_name":"Regione",
                 "provincia":"str",
                 "targa":"str",
+            },
+            "foreign_dict":{ # the dict containing the foreing keys and manytomany associations
+                "regione":"Regione",                
             },
         },
         "Comune":{
             "model_obj":Comune,
             "fields_dict":{
                 "provincia":"foreignkey",
-                # "provincia_name":"Provincia",
                 "comune":"str",
                 "codice":"str",
             },
+            "foreign_dict":{ # the dict containing the foreing keys and manytomany associations
+                "provincia":"Provincia",                
+            },        
         },
         "Esaminatore":{
             "model_obj":Esaminatore,
@@ -281,11 +301,11 @@ models_dict = {
             "model_obj":Sentenza,
             "fields_dict":{
                 "provenienza":"foreignkey",
-                "provenienza_name":"Provenienza",
+                # "provenienza_name":"Provenienza",
                 "responsabilita":"foreignkey",
-                "responsabilita_name":"Responsabilita",
+                # "responsabilita_name":"Responsabilita",
                 "sede_tribunale":"foreignkey",
-                "sede_tribunale_name":"Comune",
+                # "sede_tribunale_name":"Comune",
                 "anno_del_deposito":"int",
                 "anno_di_arrivo":"int",
                 "codice":"str",
@@ -311,13 +331,22 @@ models_dict = {
                 "ocr":"str",
                 "riconvenzionale":"str",
             },
+            "foreign_dict":{ # the dict containing the foreing keys and manytomany associations
+                "provenienza":"Provenienza",
+                "responsabilita":"Responsabilita",
+                "sede_tribunale":"Comune",
+                "esaminatore":"Esaminatore",
+                "osservatorio":"Osservatorio",
+                "assicurazione":"Assicurazione",
+                                
+            },
             "many_to_many_dict":{
                 "esaminatore":"manytomany-d",
-                "esaminatore_name":"Esaminatore",
+                # "esaminatore_name":"Esaminatore",
                 "osservatorio":"manytomany-d",
-                "osservatorio_name":"Osservatorio",
+                # "osservatorio_name":"Osservatorio",
                 "assicurazione":"manytomany-d",
-                "assicurazione_name":"Assicurazione",
+                # "assicurazione_name":"Assicurazione",
             },
         },
 }
