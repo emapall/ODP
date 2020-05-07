@@ -36,14 +36,24 @@ from django.views.decorators.cache import cache_page
 from lider.odp.models import *
 # from odp_app.models import *
 import random, json
+from decimal import Decimal
 
 
 def write_rule(fieldval,t):
+    if fieldval is None:
+        return None
+    
     if t == "int":
         try:
             return int(fieldval)
         except:
             assert(fieldval == None)
+            return None
+    if t == "dec":
+        try:
+            return Decimal(fieldval)
+        except:
+            assert(fieldval is None)
             return None
     if t == "str":
         return fieldval #may be none, '' or else
@@ -85,6 +95,8 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
                 continue
         
         instance_dict={}  # each instance is a dict of field_name:field_value
+        
+        #save base fields
         for fieldname, t in model_dict["fields_dict"].items():
             # print(model_name,":",fieldname)
             try:
@@ -96,9 +108,31 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
             # print "provo a salvare field", fieldname,t,field
             # raw_input()
             instance_dict.update({fieldname:write_rule(field,t)})
+        # many to many
+        if "many_to_many_dict" in model_dict.keys():
+            for fieldname, t in model_dict["many_to_many_dict"].items():
+                try:
+                    field = getattr(m_inst, fieldname) # get the value of the field for that instance
+                except:
+                    print fieldname
+                    assert(False)
+                assert(fieldname not in instance_dict)
+                instance_dict.update({fieldname:write_rule(field,t)})
+        # files
+        if "files_list" in model_dict.keys():
+            for fieldname, t in model_dict["files_list"].items():
+                try:
+                    field = getattr(m_inst, fieldname) # get the value of the field for that instance
+                except:
+                    print fieldname
+                    assert(False)
+                assert(fieldname not in instance_dict)
+                instance_dict.update({fieldname:write_rule(field,t)})
+
         instance_dict.update({"old_pk":int(m_inst.pk)})
         instances_list.append(instance_dict) 
         print "Saved ",m_inst, "with pk",m_inst.pk
+    # endfor on object instances    
     dump_dict.update({model_name:instances_list})
 
 dump_dict = {}
@@ -124,10 +158,32 @@ def group2():
 
     return models_list
 
-def save_group(ng, scaledown = None):
+def group3():
+    models_list = [
+        ("Lesione",Lesione),
+        ("Postumo",Postumo),
+        ("Postumo_tabulato",Postumo_tabulato),
+        ("RichiestaParteAttrice",RichiestaParteAttrice),
+        ("DannoPatrimoniale",DannoPatrimoniale),
+        ("DirittoInviolabile",DirittoInviolabile),
+        ("Professione",Professione),
+        ("FattoreLiquidazione",FattoreLiquidazione),
+        ("FattoreLiquidazioneDP",FattoreLiquidazioneDP),
+        ("ProvaDelDNP",ProvaDelDNP),
+        ("ProvaDelDP",ProvaDelDP),
+        ("TrendLiquidazione",TrendLiquidazione),
+    ]
+    
+    return models_list
+
+    
+def save_group(ngr, scaledown = None):
+    global ng
+    ng = ngr
     handle_dict = {
         1:group1,
         2:group2,
+        3:group3,
     }
     handle=handle_dict[ng]
     models_list = handle()
@@ -142,7 +198,7 @@ def save_group(ng, scaledown = None):
     json.dump(dump_dict,out)
     out.close()
 
-
+global ng
 
 models_dict_complete = {
         "Regione":{
@@ -155,19 +211,23 @@ models_dict_complete = {
             "model_obj":Provincia,
             "fields_dict":{
                 "regione":"foreignkey",
-                # "regione_name":"Regione",
                 "provincia":"str",
                 "targa":"str",
+            },
+            "foreign_dict":{ # the dict containing the foreing keys and manytomany associations
+                "regione":"Regione",                
             },
         },
         "Comune":{
             "model_obj":Comune,
             "fields_dict":{
                 "provincia":"foreignkey",
-                # "provincia_name":"Provincia",
                 "comune":"str",
                 "codice":"str",
             },
+            "foreign_dict":{ # the dict containing the foreing keys and manytomany associations
+                "provincia":"Provincia",                
+            },        
         },
         "Esaminatore":{
             "model_obj":Esaminatore,
@@ -218,9 +278,6 @@ models_dict_complete = {
                 "estctu":"bool",
                 "estensore":"str",
                 "fatto":"str",
-                "file_cmn":"file",
-                "file_img":"file",
-                "file_sch":"file",
                 "forza_esclusione":"bool",
                 "grado_di_giudizio":"str",
                 "note_profili_rilevanti":"str",
@@ -232,12 +289,94 @@ models_dict_complete = {
                 "numero_terzi":"int",
                 "ocr":"str",
                 "riconvenzionale":"str",
+            },
+            "foreign_dict":{ # the dict containing the foreing keys and manytomany associations
+                "provenienza":"Provenienza",
+                "responsabilita":"Responsabilita",
+                "sede_tribunale":"Comune",
+                "esaminatore":"Esaminatore",
+                "osservatorio":"Osservatorio",
+                "assicurazione":"Assicurazione",
+                                
+            },
+            "many_to_many_dict":{
                 "esaminatore":"manytomany-d",
-                # "esaminatore_name":"Esaminatore",
                 "osservatorio":"manytomany-d",
-                # "osservatorio_name":"Osservatorio",
                 "assicurazione":"manytomany-d",
-                # "assicurazione_name":"Assicurazione",
+            },
+            "files_list":["file_cmn","file_img","file_sch"],
+        },
+        "Lesione":{
+            "model_obj":Lesione,
+            "fields_dict":{
+                "lesione":"str",
             },
         },
+        "Postumo":{
+            "model_obj":Postumo,
+            "fields_dict":{
+                "postumo":"str",
+            },
+        },
+        "Postumo_tabulato":{
+            "model_obj":Postumo_tabulato,
+            "fields_dict":{
+                "postumo_tabulato":"str",
+            },
+        },
+        "RichiestaParteAttrice":{
+            "model_obj":RichiestaParteAttrice,
+            "fields_dict":{
+                "richiesta":"str",
+            },
+        },
+        "DannoPatrimoniale":{
+            "model_obj":DannoPatrimoniale,
+            "fields_dict":{
+                "tipo":"str",
+            },
+        },
+        "DirittoInviolabile":{
+            "model_obj":DirittoInviolabile,
+            "fields_dict":{
+                "diritto":"str",
+            },
+        },
+        "Professione":{
+            "model_obj":Professione,
+            "fields_dict":{
+                "professione":"str",
+            },
+        },
+        "FattoreLiquidazione":{
+            "model_obj":FattoreLiquidazione,
+            "fields_dict":{
+                "fattore":"str",
+            },
+        },
+        "FattoreLiquidazioneDP":{
+            "model_obj":FattoreLiquidazioneDP,
+            "fields_dict":{
+                "fattore":"str",
+            },
+        },
+        "ProvaDelDNP":{
+            "model_obj":ProvaDelDNP,
+            "fields_dict":{
+                "prova":"str",
+            },
+        },
+        "ProvaDelDP":{
+            "model_obj":ProvaDelDP,
+            "fields_dict":{
+                "prova":"str",
+            },
+        },
+        "TrendLiquidazione":{
+            "model_obj":TrendLiquidazione,
+            "fields_dict":{
+                "trend":"str",
+            },
+        },
+        
 }
