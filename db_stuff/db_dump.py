@@ -83,6 +83,8 @@ def write_rule(fieldval,t):
     if t == "bool":
         return fieldval # may be none
 
+    assert(False)
+        
 def populate_model_dict(model_dict,model_name, scaledown = None):
     m_obj = model_dict["model_obj"] #class oject of the specific model
     instances_list = [] # list of instances ( == db rows) of the model
