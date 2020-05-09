@@ -39,8 +39,10 @@ import random, json
 from decimal import Decimal
 
 
+INFORTUNATO_BLACKLIST = [3625, 4658, 4684, 4685, 5221, 5284, 5295, 5310, 5333,]
+
 def write_rule(fieldval,t):
-    if fieldval is None:
+    if fieldval is None :
         return None
     
     if t == "int":
@@ -84,18 +86,57 @@ def write_rule(fieldval,t):
         return fieldval # may be none
 
     assert(False)
-        
+
+def scale_down(full_list,scaledown):
+    global ng
+    
+    if scaledown is None and ng != 4:
+        return full_list
+    
+    
+    object_list = []
+    if ng == 2:
+        for o in full_list:
+            if random.random() <= 1.0/scaledown:
+                object_list.append(o)
+        return object_list
+
+    if ng == 4:
+        if scaledown is None:
+            for o in full_list:
+                if o.pk not in INFORTUNATO_BLACKLIST:
+                    object_list.append(o)
+            return object_list
+            
+        # read the pk and check if infortunato is in the sentenze's
+        pk_file = open("pk_remap.json","r")
+        pk_remap_json = json.load(pk_file) # Le chiavi sono str!
+        pk_remap = {"Sentenza":{}}
+        # create the pk remap dict
+        for k, v in pk_remap_json["Sentenza"].items():
+            pk_remap["Sentenza"].update({int(k):v})
+        print("Sentenza-pk:",pk_remap)
+        for o in full_list:
+            print (o.sentenza,o.sentenza.pk)
+            if o.sentenza.pk in pk_remap["Sentenza"].keys():
+                object_list.append(o)
+        print("Finito scaldown infortunato,",object_list)
+        input()
+        return object_list
+    
+    return full_list
+
+
+
+
+
 def populate_model_dict(model_dict,model_name, scaledown = None):
     m_obj = model_dict["model_obj"] #class oject of the specific model
     instances_list = [] # list of instances ( == db rows) of the model
     # each instance is a dict of field_name:field_value for the various fields
     object_list = m_obj.objects.all() # list of the instances already in the db
-    for m_inst in object_list:  # m_inst model instance
-        if scaledown is not None: # cut the test db down
-            if random.random() >= 1.0/scaledown:
-                print "not saving, random -", m_inst
-                continue
-        
+    object_list = scale_down(object_list,scaledown)
+    for m_inst in object_list:  # m_inst model instance        
         instance_dict={}  # each instance is a dict of field_name:field_value
         
         #save base fields
@@ -178,7 +219,11 @@ def group3():
 
     return models_list
 
-    
+def group4():
+    return [
+        "Infortunato",
+    ]
+
 def save_group(ngr, scaledown = None):
     global ng
     ng = ngr
@@ -186,6 +231,7 @@ def save_group(ngr, scaledown = None):
         1:group1,
         2:group2,
         3:group3,
+        4:group4,
     }
     handle=handle_dict[ng]
     models_list = handle()
@@ -196,7 +242,8 @@ def save_group(ngr, scaledown = None):
                 model_name=m_name,
                 scaledown=scaledown
             )
-        print("----------------------------FINITO MODELLO",m_dict)
+        print("m_name",m_name,"keys:",models_dict[m_name].keys())
+        print("----------------------------FINITO MODELLO",m_name)
         raw_input()
 
     out = open("gruppo"+str(ng)+".json","w")
@@ -205,5 +252,5 @@ def save_group(ngr, scaledown = None):
 
 global ng
 
-file_models_dict = open("/home/snake/models_dict.py","r")
+file_models_dict = open("models_dict.py","r")
 exec(file_models_dict)
