@@ -53,7 +53,7 @@ def write_rule(fieldval,t):
             return None
     if t == "dec":
         try:
-            return Decimal(fieldval)
+            return str(Decimal(fieldval))
         except:
             assert(fieldval is None)
             return None
@@ -69,7 +69,7 @@ def write_rule(fieldval,t):
         try:
             if "sir_tiff/2001_12136" in fieldval.path:
                 print("sir sgualdreffo trovato!!!!!!")
-                input()
+                raw_input()
                 return None
             return fieldval.path #IT'S A STR!!!
         except ValueError:
@@ -107,7 +107,7 @@ def scale_down(full_list,scaledown):
                 if o.pk not in INFORTUNATO_BLACKLIST:
                     object_list.append(o)
             return object_list
-            
+
         # read the pk and check if infortunato is in the sentenze's
         pk_file = open("pk_remap.json","r")
         pk_remap_json = json.load(pk_file) # Le chiavi sono str!
@@ -117,11 +117,12 @@ def scale_down(full_list,scaledown):
             pk_remap["Sentenza"].update({int(k):v})
         print("Sentenza-pk:",pk_remap)
         for o in full_list:
-            print (o.sentenza,o.sentenza.pk)
+            if o.pk in INFORTUNATO_BLACKLIST:
+                continue
             if o.sentenza.pk in pk_remap["Sentenza"].keys():
                 object_list.append(o)
         print("Finito scaldown infortunato,",object_list)
-        input()
+        raw_input()
         return object_list
     
     return full_list
