@@ -141,41 +141,41 @@ dump_dict = {}
 
 def group1():
     models_list = [
-        ("Regione",Regione),
-        ("Provincia",Provincia),
-        ("Comune",Comune),
-        ("Esaminatore",Esaminatore),
-        ("Osservatorio",Osservatorio),
-        ("Assicurazione",Assicurazione),
-        ("Provenienza",Provenienza),
-        ("Responsabilita",Responsabilita),
+        "Regione",
+        "Provincia",
+        "Comune",
+        "Esaminatore",
+        "Osservatorio",
+        "Assicurazione",
+        "Provenienza",
+        "Responsabilita",
     ]
 
     return models_list
 
 def group2():
     models_list = [
-        ("Sentenza",Sentenza),
+        "Sentenza",
     ]
 
     return models_list
 
 def group3():
-    models_list = [
-        ("Lesione",Lesione),
-        ("Postumo",Postumo),
-        ("Postumo_tabulato",Postumo_tabulato),
-        ("RichiestaParteAttrice",RichiestaParteAttrice),
-        ("DannoPatrimoniale",DannoPatrimoniale),
-        ("DirittoInviolabile",DirittoInviolabile),
-        ("Professione",Professione),
-        ("FattoreLiquidazione",FattoreLiquidazione),
-        ("FattoreLiquidazioneDP",FattoreLiquidazioneDP),
-        ("ProvaDelDNP",ProvaDelDNP),
-        ("ProvaDelDP",ProvaDelDP),
-        ("TrendLiquidazione",TrendLiquidazione),
-    ]
-    
+    modes_list = [
+        "Lesione",
+        "Postumo",
+        "Postumo_tabulato",
+        "RichiestaParteAttrice",
+        "DannoPatrimoniale",
+        "DirittoInviolabile",
+        "Professione",
+        "FattoreLiquidazione",
+        "FattoreLiquidazioneDP",
+        "ProvaDelDNP",
+        "ProvaDelDP",
+        "TrendLiquidazione",
+    ]    
+
     return models_list
 
     
@@ -189,10 +189,13 @@ def save_group(ngr, scaledown = None):
     }
     handle=handle_dict[ng]
     models_list = handle()
-    models_dict = {m_name:models_dict_complete[m_name] for (m_name,m_obj) in models_list}
-    for m_name,m_dict in models_dict.items():
+    for m_name in models_list:
         print("----------------------------INIZIO MODELLO",m_name,scaledown)
-        populate_model_dict(m_dict,m_name,scaledown)
+        populate_model_dict(
+                model_dict=models_dict[m_name],
+                model_name=m_name,
+                scaledown=scaledown
+            )
         print("----------------------------FINITO MODELLO",m_dict)
         raw_input()
 
@@ -202,183 +205,5 @@ def save_group(ngr, scaledown = None):
 
 global ng
 
-models_dict_complete = {
-        "Regione":{
-            "model_obj":Regione,
-            "fields_dict":{
-                "regione":"str",
-            },
-        }, 
-        "Provincia":{
-            "model_obj":Provincia,
-            "fields_dict":{
-                "regione":"foreignkey",
-                "provincia":"str",
-                "targa":"str",
-            },
-            "foreign_dict":{ # the dict containing the foreing keys and manytomany associations
-                "regione":"Regione",                
-            },
-        },
-        "Comune":{
-            "model_obj":Comune,
-            "fields_dict":{
-                "provincia":"foreignkey",
-                "comune":"str",
-                "codice":"str",
-            },
-            "foreign_dict":{ # the dict containing the foreing keys and manytomany associations
-                "provincia":"Provincia",                
-            },        
-        },
-        "Esaminatore":{
-            "model_obj":Esaminatore,
-            "fields_dict":{
-                "esaminatore":"str",
-            },
-        },
-        "Osservatorio":{
-            "model_obj":Osservatorio,
-            "fields_dict":{
-                "osservatorio":"str",
-            },
-        },
-        "Assicurazione":{
-            "model_obj":Assicurazione,
-            "fields_dict":{
-                "assicurazione":"str",
-            },
-        },
-        "Provenienza":{
-            "model_obj":Provenienza,
-            "fields_dict":{
-                "provenienza":"str",
-            },
-        },
-        "Responsabilita":{
-            "model_obj":Responsabilita,
-            "fields_dict":{
-                "responsabilita":"str",
-            },
-        }, 
-        "Sentenza":{
-            "model_obj":Sentenza,
-            "fields_dict":{
-                "provenienza":"foreignkey",
-                # "provenienza_name":"Provenienza",
-                "responsabilita":"foreignkey",
-                # "responsabilita_name":"Responsabilita",
-                "sede_tribunale":"foreignkey",
-                # "sede_tribunale_name":"Comune",
-                "anno_del_deposito":"int",
-                "anno_di_arrivo":"int",
-                "codice":"str",
-                "data_del_deposito":"date",
-                "data_del_fatto":"date",
-                "data_della_citazione":"date",
-                "data_della_sentenza":"date",
-                "estctu":"bool",
-                "estensore":"str",
-                "fatto":"str",
-                "forza_esclusione":"bool",
-                "grado_di_giudizio":"str",
-                "note_profili_rilevanti":"str",
-                "note_sentenza":"str",
-                "numero_attori":"int",
-                "numero_convenuti":"int",
-                "numero_della_sentenza":"int",
-                "numero_della_sezione":"int",
-                "numero_terzi":"int",
-                "ocr":"str",
-                "riconvenzionale":"str",
-            },
-            "foreign_dict":{ # the dict containing the foreing keys and manytomany associations
-                "provenienza":"Provenienza",
-                "responsabilita":"Responsabilita",
-                "sede_tribunale":"Comune",
-                "esaminatore":"Esaminatore",
-                "osservatorio":"Osservatorio",
-                "assicurazione":"Assicurazione",
-                                
-            },
-            "many_to_many_dict":{
-                "esaminatore":"manytomany-d",
-                "osservatorio":"manytomany-d",
-                "assicurazione":"manytomany-d",
-            },
-            "files_list":["file_cmn","file_img","file_sch"],
-        },
-        "Lesione":{
-            "model_obj":Lesione,
-            "fields_dict":{
-                "lesione":"str",
-            },
-        },
-        "Postumo":{
-            "model_obj":Postumo,
-            "fields_dict":{
-                "postumo":"str",
-            },
-        },
-        "Postumo_tabulato":{
-            "model_obj":Postumo_tabulato,
-            "fields_dict":{
-                "postumo_tabulato":"str",
-            },
-        },
-        "RichiestaParteAttrice":{
-            "model_obj":RichiestaParteAttrice,
-            "fields_dict":{
-                "richiesta":"str",
-            },
-        },
-        "DannoPatrimoniale":{
-            "model_obj":DannoPatrimoniale,
-            "fields_dict":{
-                "tipo":"str",
-            },
-        },
-        "DirittoInviolabile":{
-            "model_obj":DirittoInviolabile,
-            "fields_dict":{
-                "diritto":"str",
-            },
-        },
-        "Professione":{
-            "model_obj":Professione,
-            "fields_dict":{
-                "professione":"str",
-            },
-        },
-        "FattoreLiquidazione":{
-            "model_obj":FattoreLiquidazione,
-            "fields_dict":{
-                "fattore":"str",
-            },
-        },
-        "FattoreLiquidazioneDP":{
-            "model_obj":FattoreLiquidazioneDP,
-            "fields_dict":{
-                "fattore":"str",
-            },
-        },
-        "ProvaDelDNP":{
-            "model_obj":ProvaDelDNP,
-            "fields_dict":{
-                "prova":"str",
-            },
-        },
-        "ProvaDelDP":{
-            "model_obj":ProvaDelDP,
-            "fields_dict":{
-                "prova":"str",
-            },
-        },
-        "TrendLiquidazione":{
-            "model_obj":TrendLiquidazione,
-            "fields_dict":{
-                "trend":"str",
-            },
-        },
-        
-}
+file_models_dict = open("/home/snake/models_dict.py","r")
+exec(file_models_dict)
