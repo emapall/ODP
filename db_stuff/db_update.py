@@ -190,42 +190,48 @@ def save_model(instances_list, model_obj, model_name):
 
 def group1():
     models_list = [
-        ("Regione",Regione),
-        ("Provincia",Provincia),
-        ("Comune",Comune),
-        ("Esaminatore",Esaminatore),
-        ("Osservatorio",Osservatorio),
-        ("Assicurazione",Assicurazione),
-        ("Provenienza",Provenienza),
-        ("Responsabilita",Responsabilita),
+        "Regione",
+        "Provincia",
+        "Comune",
+        "Esaminatore",
+        "Osservatorio",
+        "Assicurazione",
+        "Provenienza",
+        "Responsabilita",
     ]
 
     return models_list
 
 def group2():
     models_list = [
-        ("Sentenza",Sentenza),
+        "Sentenza",
     ]
 
     return models_list
 
 def group3():
-    models_list = [
-        ("Lesione",Lesione),
-        ("Postumo",Postumo),
-        ("Postumo_tabulato",Postumo_tabulato),
-        ("RichiestaParteAttrice",RichiestaParteAttrice),
-        ("DannoPatrimoniale",DannoPatrimoniale),
-        ("DirittoInviolabile",DirittoInviolabile),
-        ("Professione",Professione),
-        ("FattoreLiquidazione",FattoreLiquidazione),
-        ("FattoreLiquidazioneDP",FattoreLiquidazioneDP),
-        ("ProvaDelDNP",ProvaDelDNP),
-        ("ProvaDelDP",ProvaDelDP),
-        ("TrendLiquidazione",TrendLiquidazione),
-    ]
-    
+    modes_list = [
+        "Lesione",
+        "Postumo",
+        "Postumo_tabulato",
+        "RichiestaParteAttrice",
+        "DannoPatrimoniale",
+        "DirittoInviolabile",
+        "Professione",
+        "FattoreLiquidazione",
+        "FattoreLiquidazioneDP",
+        "ProvaDelDNP",
+        "ProvaDelDP",
+        "TrendLiquidazione",
+    ]    
+
     return models_list
+
+def group4():
+    return [
+        "Infortunato",
+    ]
+
 
 def save_group(ng):
     # open the relative file
@@ -241,10 +247,10 @@ def save_group(ng):
     handle = handle_dict[ng]
     models_list = handle() # get modellist
     # save each model in model list (in the group)
-    for (modelname,modelobj) in models_list:
+    for (modelname,) in models_list:
         save_model(
                 instances_list=db_dict[modelname],
-                model_obj=modelobj,
+                model_obj=models_dict[model_name]["model_obj"]],
                 model_name=modelname,
                 )
     pk_rel_path = "pk_remap.json"
