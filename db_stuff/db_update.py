@@ -6,6 +6,7 @@ from odp_app.models import *
 from django.db import transaction
 from datetime import date
 import json,os,re
+from decimal import Decimal
 from django.core.files import File
 
 """struttura: {
@@ -76,11 +77,11 @@ def field_value(fieldname,fieldtype, jsonval, model_name):
     
     if fieldtype == "int": 
         return int(jsonval) 
-    if t == "dec":
+    if fieldtype == "dec":
         try:
-            return Decimal(fieldval)
+            return Decimal(jsonval)
         except:
-            assert(fieldval is None)
+            assert(jsonval is None)
             return None
     if fieldtype == "str": 
         return jsonval # may be ''
@@ -97,9 +98,10 @@ def field_value(fieldname,fieldtype, jsonval, model_name):
         return jsonval
 
 @transaction.atomic
-def save_row(row_json_dict, model_obj,model_name):
+def save_row(row_json_dict,model_name):
     # saves a SINGLE INSTANCE of a model, given the dict with its attributes
     # is like {"field1":value1,"filed2",field}
+    model_obj = models_dict[model_name]["model_obj"]
     i = model_obj()
     if debug_flag:
         print("chiavi dict:",row_json_dict.keys())
@@ -173,14 +175,14 @@ def save_row(row_json_dict, model_obj,model_name):
 
     return i.pk
 
-def save_model(instances_list, model_obj, model_name):
+def save_model(instances_list, model_name):
     # saves an entire table
-    print("beginning to save",model_obj,model_name)
+    print("beginning to save",model_name)
     input("continue")
     pk_remap.update({model_name:{}})
     n = 0
     for row_dict in instances_list:
-        idx = save_row(row_dict, model_obj, model_name)
+        idx = save_row(row_dict, model_name)
         n += 1
     
     print("Saved table: ",model_name, "last pk:",idx, "n:",n)
@@ -243,14 +245,14 @@ def save_group(ng):
         1:group1,
         2:group2,
         3:group3,
+        4:group4,
     }
     handle = handle_dict[ng]
     models_list = handle() # get modellist
     # save each model in model list (in the group)
-    for (modelname,) in models_list:
+    for modelname in models_list:
         save_model(
                 instances_list=db_dict[modelname],
-                model_obj=models_dict[model_name]["model_obj"]],
                 model_name=modelname,
                 )
     pk_rel_path = "pk_remap.json"
