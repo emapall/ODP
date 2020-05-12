@@ -93,14 +93,15 @@ def create_pk_remap(names_list):
     pk_file = open("pk_remap.json","r")
     pk_remap_json = json.load(pk_file) # Le chiavi sono str!
     
-    pk_remap = {n:{} for n in names_list}
+    pk_remap = {n:[] for n in names_list}
     for n in names_list:
-        for k, v in pk_remap_json[n].items():
+        for k in pk_remap_json[n].keys():
             #since keys are not int but str in a json i have to cast them
-            pk_remap[n].update({int(k):v})
-    
-        print(n,"-pk:",pk_remap)
-        raw_input()
+            pk_remap[n].append(int(k))
+
+        pk_remap[n].sort()
+    print("pk-remaps:",pk_remap)
+    raw_input()
 
 
     return pk_remap
@@ -134,22 +135,29 @@ def scale_down(full_list,scaledown):
         for o in full_list:
             if o.pk in INFORTUNATO_BLACKLIST:
                 continue
-            if o.sentenza.pk in pk_remap["Sentenza"].keys():
+            if o.sentenza.pk in pk_remap["Sentenza"]:
                 object_list.append(o)
         print("Finito scaldown infortunato,",object_list)
         raw_input()
         return object_list
 
-    # invalidità temporanea
+    # invalidità temporanea - necessita degli infortunati giusti
     if ng == 5:
         pk_remap = create_pk_remap("Infortunato")
-        object_list = Invalidita_temporanea.objects.filter(infortunato__pk__in=pk_remap["Infortunato"].keys())
+        object_list = Invalidita_temporanea.objects.filter(infortunato__pk__in=pk_remap["Infortunato"])
         print("Finito scaldown Invalidità temporanea,",object_list)
         raw_input()
         return object_list
     
-    return full_list
+    # necessita di sentenze giuste
+    if ng == 7:
+        pk_remap = create_pk_remap("Sentenza")
+        object_list = TrendProfiloRilevanteContainer.objects.filter(sentenza__pk__in=pk_remap["Sentenza"])
+        print("Finito scaldown Trend prof riv cont,",object_list)
+        raw_input()
+        return object_list
 
+    return full_list
 
 
 
@@ -248,6 +256,21 @@ def group4():
         "Infortunato",
     ]
 
+def group5():
+    return [
+        "Invalidita_temporanea",
+    ]
+
+def group6():
+    return [
+        "TrendProfiloRilevante",
+        "ProfiloRilevante",
+    ]
+
+def group7():
+    return [
+        "TrendProfiloRilevanteContainer",
+    ]
 def save_group(ngr, scaledown = None):
     global ng
     ng = ngr
@@ -256,6 +279,10 @@ def save_group(ngr, scaledown = None):
         2:group2,
         3:group3,
         4:group4,
+        5:group5,
+        6:group6,
+        7:group7,
+
     }
     handle=handle_dict[ng]
     models_list = handle()

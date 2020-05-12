@@ -109,7 +109,7 @@ def save_row(row_json_dict,model_name):
     for fieldname, fieldtype in models_dict[model_name]["fields_dict"].items():
         jsonval = row_json_dict[fieldname] # get the json-field relative value
         if fieldname != "ocr": #debug_flag: #and 
-            print("salvo field",fieldname,jsonval)
+            print("prep field",fieldname,jsonval)
         else:
             print("ocr, len",len(jsonval))
         # get the field type
@@ -124,7 +124,7 @@ def save_row(row_json_dict,model_name):
         if debug_flag and fieldname != "old_pk":
             try:
                 if fieldname != "ocr":
-                    print("field",fieldname,getattr(i,fieldname),"\n")
+                    print("done field",fieldname,getattr(i,fieldname),"\n")
                 else:
                     print("ocr done")
             except:
@@ -172,7 +172,7 @@ def save_row(row_json_dict,model_name):
         i.save()
 
     print("Finished saving instance",i)
-
+    input("Continue with next row")
     return i.pk
 
 def save_model(instances_list, model_name):
@@ -234,6 +234,22 @@ def group4():
         "Infortunato",
     ]
 
+def group5():
+    return [
+        "Invalidita_temporanea",
+    ]
+
+def group6():
+    return [
+        "TrendProfiloRilevante",
+        "ProfiloRilevante",
+    ]
+
+def group7():
+    return [
+        "TrendProfiloRilevanteContainer",
+    ]
+
 
 def save_group(ng):
     # open the relative file
@@ -246,6 +262,9 @@ def save_group(ng):
         2:group2,
         3:group3,
         4:group4,
+        5:group5,
+        6:group6,
+        7:group7,
     }
     handle = handle_dict[ng]
     models_list = handle() # get modellist
