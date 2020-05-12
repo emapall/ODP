@@ -7,7 +7,7 @@ from . import views as core_views
 app_name = 'odp_app'
 
 urlpatterns = [
-    path("search/s_results/", core_views.s_results),
+    path("search/s_results/", core_views.s_results,name="s-results"),
     path("search/new_s_results/", core_views.new_s_results),
     path("search/s_details/", core_views.s_details),
 

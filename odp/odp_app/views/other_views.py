@@ -109,24 +109,32 @@ def new_s_results(request):
         return s_results(request)
 
     # TODO (per ora copio s_results)
+    # TODO USE par_danneggiato maybe? (or maybe not)
     from django.core.exceptions import ValidationError
 
     obj = Infortunato.objects.all()
     try:
         if request.GET.get("eta_danneggiato"):
             obj = obj.filter(eta=request.GET["eta_danneggiato"])
+        # invalidità permanente - min and max
         if request.GET.get("perc_ip_min"):  # 0 equals no filter
             obj = obj.filter(percentuale_das_ip__gte=request.GET["perc_ip_min"])
         if request.GET.get("perc_ip_max"):  # TODO 0?
             obj = obj.filter(percentuale_das_ip__lte=request.GET["perc_ip_max"])
+        # TODO: DOES NOT EXISTS IN HTML
         if "est_id" in request.GET:
             obj = obj.filter(est_it=True)
+        # danno morale
         if "est_dm" in request.GET:
             obj = obj.filter(est_dm=True)
+        # danno morte
         if "danno_morte" in request.GET:
             obj = obj.filter(dm_est=True)
+        # TODO DOES NOT EXISTS IN HTML
         if "danno_np" in request.GET:
             obj = obj.filter(sunt_diritti_lesi=True)
+        # TODO NOT FOUND/HIDDEN(?)
+        # dettagli danno morale (not displayed)
         if "metodo_dm" in request.GET:
             metodo = request.GET["metodo_dm"]
             if metodo == "equi":
@@ -135,24 +143,26 @@ def new_s_results(request):
                 obj = obj.filter(est_dm_ip=True)
             elif metodo == "temp":
                 obj = obj.filter(est_dm_it=True)
-
+        # Trendo liquidazione
         if request.GET.get("trend_liq"):  # TODO 0?
             trend = request.GET["trend_liq"]
             obj = obj.filter(trend_liquidazione__id=trend)
-
+        # altre tipologie di danno alla persona ->
+        # danno non patrimon. diverso da salute
         if request.GET.get("diritti_lesi"):
             diritto = request.GET["diritti_lesi"]
             obj = obj.filter(dirittoinviolabile__id=diritto)
-
+        # danno patrimoniale
         if "danno_p" in request.GET:
             obj = (
                 obj.filter(est_ss=True)
                 | obj.filter(est_ss_future=True)
                 | obj.filter(dannopatrimoniale=True)
             )
-            # TODO testare
+            # TODO testare TODO si testare
 
-        # Attributi della sentenza (probabilmente basta mettere sentenza__)
+        # -------- SENTENZA -------- 
+
         if request.GET.get("grado_di_giudizio"):
             obj = obj.filter(
                 sentenza__grado_di_giudizio__contains=request.GET["grado_di_giudizio"]
@@ -185,6 +195,7 @@ def new_s_results(request):
             normal_matches = chunks[
                 0::2
             ]  # Si lo so che fa cagare e non funziona sempre
+            #TODO FIX UNICODE IN OCR (?)
             for full_match in full_matches:
                 obj = obj.filter(sentenza__ocr__icontains=full_match.strip())
             for normal_match in normal_matches:
@@ -200,20 +211,24 @@ def new_s_results(request):
             + "</strong>"
         )
         return render(request, "errore.html", {"mess": mess})
-    else:
+    else: #TODO WHY USE TRY EXCEPT ELSE instead of try return except???
         return do_paging_response(request, obj, "odp/i_results.html")
 
 
 def s_results(request):
+    """
+        Praticamente è uguale a new_s_results, ma 
+        - manca tutta la parte di filtraggio sugli infortunati
+        - ci sono cose aggiuntive come parole_chiave, ante_2001, profili rilevanti
+        - praticamente tutta sta roba è stata sostituita da contesto testuale e basta (ma è giusto?)
+    """
     from django.core.exceptions import ValidationError
 
     obj = Sentenza.objects.all()
 
     try:
         if request.GET.get("grado_di_giudizio"):
-            obj = obj.filter(
-                grado_di_giudizio__contains=request.GET["grado_di_giudizio"]
-            )
+            obj = obj.filter(grado_di_giudizio__contains=request.GET["grado_di_giudizio"])
         if request.GET.get("data_della_sentenza"):
             obj = obj.filter(data_della_sentenza=request.GET["data_della_sentenza"])
         if request.GET.get("data_del_deposito"):
@@ -601,62 +616,6 @@ def json_profili_rilevanti(request):
 
 
 
-
-"""
-def singup(request):
-    from django.http import HttpResponseRedirect
-    from lider.odp.forms import SignUpForm
-    from lider.odp.tokens import account_activation_token
-    from django.template.loader import render_to_string
-    from django.utils.http import urlsafe_base64_encode
-    from django.utils.encoding import force_bytes
-
-    if request.method == "POST":
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
-            current_domain = "www.lider-lab.sssup.it"
-            subject = "Attiva il tuo Account ODP"
-            message = render_to_string(
-                "odp/account_activation_email.html",
-                {
-                    "user": user,
-                    "domain": current_domain,
-                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                    "token": account_activation_token.make_token(user),
-                },
-            )
-            user.email_user(subject, message)
-            return HttpResponseRedirect(base_url + "/account_activation_sent/")
-    else:
-        form = SignUpForm()
-    return render(request, "odp/signup.html", {"form": form})
-"""
-
-"""
-def activate(request, uidb64, token):
-    from django.http import HttpResponseRedirect
-    from django.contrib.auth.models import User
-    from django.utils.encoding import force_text
-    from django.utils.http import urlsafe_base64_decode
-    from lider.odp.tokens import account_activation_token
-
-    try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-
-    if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
-        user.profile.email_confirmed = True
-        user.save()
-        return HttpResponseRedirect(search_url)
-    else:
-        return render(request, "odp/account_activation_invalid.html")
-"""
 
 
 def account_activation_sent(request):
