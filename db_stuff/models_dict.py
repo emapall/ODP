@@ -337,5 +337,52 @@ models_dict = {
             },
         },
 
+        "Invalidita_temporanea":{
+            "model_obj":Invalidita_temporanea,
+            "fields_dict":{
+                "infortunato":"foreignkey",
+                "giorni":"int",
+                "percentuale":"dec",
+            },
+            "foreign_dict":{ # the dict containing the foreing keys and manytomany associations
+                "infortunato":"Infortunato",                              
+            },
+        },
         
+        "TrendProfiloRilevanteContainer":{
+            "model_obj":TrendProfiloRilevanteContainer,
+            "fields_dict":{
+                "sentenza":"foreignkey",
+                "trend":"foreignkey",
+            },
+            "foreign_dict":{ # the dict containing the foreing keys and manytomany associations
+                "sentenza":"Sentenza",    
+                "trend":"TrendProfiloRilevante", 
+                "profili_rilevanti":"ProfiloRilevante",                         
+            },
+            "many_to_many_dict":{
+                "profili_rilevanti":"manytomany-d",
+            }
+        },
+
+        "ProfiloRilevante":{
+            "model_obj":ProfiloRilevante,
+            "fields_dict":{
+                "trend":"foreignkey",
+                "profilo":"str",
+            },
+            "foreign_dict":{ # the dict containing the foreing keys and manytomany associations
+                "trend":"TrendProfiloRilevante", 
+            },
+        },
+
+        "TrendProfiloRilevante":{
+            "model_obj":TrendProfiloRilevante,
+            "fields_dict":{
+                "trend":"str",
+            },
+
+        },
+
+
 }
