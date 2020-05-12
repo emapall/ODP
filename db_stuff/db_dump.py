@@ -87,6 +87,26 @@ def write_rule(fieldval,t):
 
     assert(False)
 
+def create_pk_remap(names_list):
+    if type(names_list is str):
+        names_list = [names_list]
+    pk_file = open("pk_remap.json","r")
+    pk_remap_json = json.load(pk_file) # Le chiavi sono str!
+    
+    pk_remap = {n:{} for n in names_list}
+    for n in names_list:
+        for k, v in pk_remap_json[n].items():
+            #since keys are not int but str in a json i have to cast them
+            pk_remap[n].update({int(k):v})
+    
+        print(n,"-pk:",pk_remap)
+        raw_input()
+
+
+    return pk_remap
+
+
+
 def scale_down(full_list,scaledown):
     global ng
     
@@ -101,6 +121,7 @@ def scale_down(full_list,scaledown):
                 object_list.append(o)
         return object_list
 
+    #infortunati
     if ng == 4:
         if scaledown is None:
             for o in full_list:
@@ -109,19 +130,21 @@ def scale_down(full_list,scaledown):
             return object_list
 
         # read the pk and check if infortunato is in the sentenze's
-        pk_file = open("pk_remap.json","r")
-        pk_remap_json = json.load(pk_file) # Le chiavi sono str!
-        pk_remap = {"Sentenza":{}}
-        # create the pk remap dict
-        for k, v in pk_remap_json["Sentenza"].items():
-            pk_remap["Sentenza"].update({int(k):v})
-        print("Sentenza-pk:",pk_remap)
+        pk_remap = create_pk_remap("Sentenza")
         for o in full_list:
             if o.pk in INFORTUNATO_BLACKLIST:
                 continue
             if o.sentenza.pk in pk_remap["Sentenza"].keys():
                 object_list.append(o)
         print("Finito scaldown infortunato,",object_list)
+        raw_input()
+        return object_list
+
+    # invalidità temporanea
+    if ng == 5:
+        pk_remap = create_pk_remap("Infortunato")
+        object_list = Invalidita_temporanea.objects.filter(infortunato__pk__in=pk_remap["Infortunato"].keys())
+        print("Finito scaldown Invalidità temporanea,",object_list)
         raw_input()
         return object_list
     
