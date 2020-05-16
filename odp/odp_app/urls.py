@@ -7,17 +7,20 @@ from . import views as core_views
 app_name = 'odp_app'
 
 urlpatterns = [
-    path("search/s_results/", core_views.s_results,name="s-results"),
+    # path("search/s_results/", core_views.s_results,name="s-results"), 
+    # seems not utilized anymore ^
     path("search/new_s_results/", core_views.new_s_results),
     path("search/s_details/", core_views.s_details),
 
-    path("search/i_results/", core_views.i_results),
+    # path("search/i_results/", core_views.i_results), # NOT NEEDED, DONE IN NEW SEARCH
+    # .....maybe?? .
     path("search/i_details/", core_views.i_details),
 
     path("search/d_results/", core_views.d_results),
     # (r'^search/?$', 'django.views.generic.simple.direct_to_template', {'template':'odp/search.html'}) TODO TODO TODO
-    path("search/", core_views.new_search),
+    # path("search/", core_views.new_search),
     path("", core_views.new_search,name="home"),
+    path("old_search/",core_views.old_search), #TODO LEAVE, JUST FOR DEBUG
     # path("search_ns/", core_views.search_noscript), questa c'è sul sito vero
     path("ajax/assicurazioni.json", core_views.json_assicurazioni),
     path("ajax/professioni.json", core_views.json_professioni),
