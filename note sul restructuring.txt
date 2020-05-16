@@ -8,3 +8,7 @@ RICERCHE
             i_results viene chiamata solo dalla pagina di search vecchia (non new_search, ma search.html)
             i_results mi sembra tra l'altro un po' scarna come filtri
     Di tutto sto mandrone si potrebbe pensare di fare una (o due, come è gia) pagine e basta, con il processing del form in post e non in get (che dai....)
+
+
+    LE SENTENZE PRE 2001 NON VENGONO MAI VISUALIZZATE!!!
+    
