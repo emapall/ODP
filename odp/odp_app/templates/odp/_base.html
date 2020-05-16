@@ -15,19 +15,35 @@
 
 		{% block titolo_html_h1 %}<h1 id="titolo">{% block titolo_html %}Database Osservatorio sul Danno alla
 			Persona{% endblock %}</h1>{% endblock %}
-
-		<p class="angolo"><a href="/"><img alt="Home" width="20" height="20" src="/images/odp_database/home.gif" />
-				LIDER-Lab Homepage</a> | <a href="/odp/">ODP
-				homepage</a>{% block topleft %}{% endblock %}</p>
-
+		{# TODO IL LINK AL LEEDERLAB #}
+		<p class="angolo">
+			<a href="https://www.lider-lab.sssup.it/lider/"><img alt="Home" width="20" height="20" src="/images/odp_database/home.gif" />
+				LIDER-Lab Homepage
+			</a>
+			| 
+			<a href="{% url 'odp_app:home' %}">
+				ODP homepage
+			</a>
+			{% block topleft %}{% endblock %}
+		</p>
 		{% block logout %}
-		{% if user.is_authenticated %}
-		<p class="logout">{{ user.username }} | <a href="/odp/logout"><img alt="Logout" width="20" height="20"
-					src="/images/odp_database/exit.gif" /> Esci dalla banca dati</a></p>
-		{% else %}
-		<p class="logout"><a href="#" onclick="javascript:window.close(); return false;"><img alt="Logout" width="20"
-					height="20" src="/images/odp_database/exit.gif" /> {{ user.username }}Chiudi la finestra</a></p>
-		{% endif %}
+			{% if user.is_authenticated %}
+				<p class="logout">
+				{{ user.username }} | 
+					<a href="{% url 'odp_app:logout' %}">
+						<img alt="Logout" width="20" height="20" src="/images/odp_database/exit.gif" /> {# TODO MA PERCHE sta immagine #}
+						Esci dalla banca dati
+					</a>
+				</p>
+			{% else %}
+				{# MA PERCHE TODO è orribile..... #}
+				<p class="logout">
+					<a href="#" onclick="javascript:window.close(); return false;">
+						<img alt="Logout" width="20" height="20" src="/images/odp_database/exit.gif" />
+						Chiudi la finestra
+					</a>
+				</p>
+			{% endif %}
 		{% endblock %}
 
 		{% block pagina %}{% endblock %}
