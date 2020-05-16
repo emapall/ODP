@@ -7,27 +7,29 @@ from . import views as core_views
 app_name = 'odp_app'
 
 urlpatterns = [
-    # path("search/s_results/", core_views.s_results,name="s-results"), 
-    # seems not utilized anymore ^
-    path("search/new_s_results/", core_views.new_s_results),
-    path("search/s_details/", core_views.s_details),
+    # path("search/s_results/", core_views.s_results,name="s-results"),    # seems not utilized anymore ^ 
 
+    path("search_results/", core_views.new_s_results, name="search-results"),
     # path("search/i_results/", core_views.i_results), # NOT NEEDED, DONE IN NEW SEARCH
     # .....maybe?? .
-    path("search/i_details/", core_views.i_details),
-
-    path("search/d_results/", core_views.d_results),
+    # path("search/d_results/", core_views.d_results), # NOT NEEDED, INCORPORATED IN NEW_S_RESULTS
+    # infortunato and sentenza details
+    path("sentenza_details/", core_views.s_details,name="sentenza-details"),
+    path("infortunato_details/", core_views.i_details,name="infortunato-details"),
+   
+    path("", core_views.new_search,name="home"),
     # (r'^search/?$', 'django.views.generic.simple.direct_to_template', {'template':'odp/search.html'}) TODO TODO TODO
     # path("search/", core_views.new_search),
-    path("", core_views.new_search,name="home"),
-    path("old_search/",core_views.old_search), #TODO LEAVE, JUST FOR DEBUG
+    # path("old_search/",core_views.old_search), #TODO LEAVE, JUST FOR DEBUG
     # path("search_ns/", core_views.search_noscript), questa c'è sul sito vero
+
     path("ajax/assicurazioni.json", core_views.json_assicurazioni),
     path("ajax/professioni.json", core_views.json_professioni),
     path("ajax/lesioni.json", core_views.json_lesioni),
     path("ajax/postumi.json", core_views.json_postumi),
     path("ajax/profili_rilevanti.json", core_views.json_profili_rilevanti),
     # path("ajax/profilo.json", "lider.odp.ajax.update_profilo"),
+    
     path("login/", core_views.login_view,name="login"), 
     path("logout/", core_views.logout_view, name="logout"),
     # path("register/", core_views.singup), # TODO

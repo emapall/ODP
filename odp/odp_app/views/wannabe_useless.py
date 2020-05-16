@@ -132,75 +132,74 @@ i_results = check_auth(i_results)
 
 # --------------- SENTENZA RESULTS ------ PUÒ ESSERE UTILE
 
-def s_results(request):
-    """
-        Praticamente è uguale a new_s_results, ma 
-        - manca tutta la parte di filtraggio sugli infortunati
-        - ci sono cose aggiuntive come parole_chiave, ante_2001, profili rilevanti
-        - praticamente tutta sta roba è stata sostituita da contesto testuale e basta (ma è giusto?)
-    """
+def d_results(request):
     from django.core.exceptions import ValidationError
 
-    obj = Sentenza.objects.all()
+    obj = Infortunato.objects.all()
 
     try:
-        if request.GET.get("grado_di_giudizio"):
-            obj = obj.filter(grado_di_giudizio__contains=request.GET["grado_di_giudizio"])
-        if request.GET.get("data_della_sentenza"):
-            obj = obj.filter(data_della_sentenza=request.GET["data_della_sentenza"])
-        if request.GET.get("data_del_deposito"):
-            obj = obj.filter(data_del_deposito=request.GET["data_del_deposito"])
-        if request.GET.get("numero_della_sentenza"):
-            obj = obj.filter(numero_della_sentenza=request.GET["numero_della_sentenza"])
-        if request.GET.get("estensore"):
-            obj = obj.filter(estensore__contains=request.GET["estensore"])
-        if request.GET.get("anno_del_deposito"):
-            obj = obj.filter(
-                anno_del_deposito__contains=request.GET["anno_del_deposito"]
-            )
+        if request.GET.get("perc_ip_da"):
+            obj = obj.filter(percentuale_das_ip__gte=request.GET["perc_ip_da"])
+        if request.GET.get("perc_ip_a"):
+            obj = obj.filter(percentuale_das_ip__lte=request.GET["perc_ip_a"])
+        if request.GET.get("metodo_das_ip"):
+            obj = obj.filter(metodo_das_ip=request.GET["metodo_das_ip"])
 
-        if request.GET.get("sede_tribunale"):
-            obj = obj.filter(
-                sede_tribunale__comune__icontains=request.GET["sede_tribunale"]
-            )
+        if "sede_tabella" in request.GET:
+            obj = obj.filter(sede_tabella=request.GET["sede_tabella"])
 
-        # Ricerca testuale nell'OCR che supporta virgolette, DA TESTARE
-        if request.GET.get("contenuto_testuale"):
-            query = request.GET["contenuto_testuale"]
-            chunks = query.split('"')
-            full_matches = chunks[1::2]  # Elementi dispari son tra virgolette
-            normal_matches = chunks[
-                0::2
-            ]  # Si lo so che fa cagare e non funziona sempre
-            for full_match in full_matches:
-                obj = obj.filter(ocr__icontains=full_match.strip())
-            for normal_match in normal_matches:
-                for word in normal_match.split():
-                    obj = obj.filter(ocr__icontains=word.strip())
+        if "est_clg" in request.GET:
+            obj = obj.filter(est_clg=True)
+        if "est_cls" in request.GET:
+            obj = obj.filter(est_cls=True)
 
-        if request.GET.get("parola_chiave"):
-            trend_id = request.GET["parola_chiave"]
-            if trend_id != "":
-                containers = TrendProfiloRilevanteContainer.objects.filter(
-                    trend__id=trend_id
-                )
-                profili = request.GET.getlist("profili_rilevanti")
-                if len(profili) > 0:
-                    containers = containers.filter(profili_rilevanti__id__in=profili)
-                obj = obj.filter(trendprofilorilevantecontainer__in=containers)
+        if "est_lcip" in request.GET:
+            obj = obj.filter(est_lcip=True)
 
-        if request.GET.get("responsabilita"):
-            obj = obj.filter(responsabilita=request.GET["responsabilita"])
+        if "est_it" in request.GET:
+            obj = obj.filter(est_it=True)
+        if request.GET.get("metodo_das_it"):
+            obj = obj.filter(metodo_das_it=request.GET["metodo_das_it"])
+
+        if "est_lcit" in request.GET:
+            obj = obj.filter(est_lcit=True)
+
+        if "est_dm" in request.GET:
+            obj = obj.filter(est_dm=True)
+        if "metodo_dm" in request.GET:
+            metodo = request.GET["metodo_dm"]
+            if metodo == "equi":
+                obj = obj.filter(est_dm_vp=True)
+            elif metodo == "perma":
+                obj = obj.filter(est_dm_ip=True)
+            elif metodo == "temp":
+                obj = obj.filter(est_dm_it=True)
+
+        if "danno_np" in request.GET:
+            obj = obj.filter(sunt_diritti_lesi=True)
+        if "diritti_lesi" in request.GET:
+            diritto = request.GET["diritti_lesi"]
+            if diritto != "":
+                obj = obj.filter(dirittoinviolabile__id=diritto)
+
+        if "danno_morte" in request.GET:
+            obj = obj.filter(dm_est=True)
+
+        if "danno_p" in request.GET:
+            danno = request.GET["danno_p"]
+            if danno == "spese_sostenute":
+                obj = obj.filter(est_ss=True)
+            elif metodo == "spese_future":
+                obj = obj.filter(est_ss_future=True)
+            # TODO altri danni come fare??
+
+        if "trend_liq" in request.GET:
+            trend = request.GET["trend_liq"]
+            if trend != "":
+                obj = obj.filter(trend_liquidazione__id=trend)
+
         if "ante_2001" not in request.GET:
-            obj = (
-                obj.filter(anno_del_deposito__gte=2001)
-                | obj.filter(data_del_deposito__gte="2001-01-01")
-                | obj.filter(data_della_sentenza__gte="2001-01-01")
-            )
-        if not request.user.is_staff:
-            obj = obj.filter(forza_esclusione=False)
-
-        obj = obj.order_by("-data_del_deposito")
+            obj = obj.filter(pre2001=False)
 
     except ValidationError as e:
         mess = (
@@ -211,6 +210,29 @@ def s_results(request):
         return render(request, "errore.html", {"mess": mess})
 
     else:
-        return do_paging_response(request, obj, "odp/s_results.html")
+        return do_paging_response(request, obj, "odp/i_results.html")
 
-s_results = check_auth(s_results)
+d_results = check_auth(d_results)
+
+
+###### /search: ricerca ########################
+
+
+def search(request):
+    responsabilita = Responsabilita.objects.all()
+    diritti_lesi = DirittoInviolabile.objects.all()
+    trend_liq = TrendLiquidazione.objects.all()
+    parole_chiave = TrendProfiloRilevante.objects.all()
+    return render(
+        request,
+        "odp/search.html",
+        {
+            "responsabilita": responsabilita,
+            "diritti_lesi": diritti_lesi,
+            "trend_liq": trend_liq,
+            "parole_chiave": parole_chiave,
+        },
+    )
+
+search = check_auth(search)
+

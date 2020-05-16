@@ -21,7 +21,7 @@ from odp_app.models import (
 )
 
 formato_date = "j/m/Y"
-base_url = ""
+base_url = "odp" # TODO: DECIDE WITH URLS AND STUFF!
 search_url = base_url + "/search/"
 var_login_url = base_url + "/login"
 
@@ -77,6 +77,93 @@ def do_paging_response(request, obj, template):
 
     return resp
 
+def s_results(request):
+    """
+        Praticamente è uguale a new_s_results, ma 
+        - manca tutta la parte di filtraggio sugli infortunati
+        - ci sono cose aggiuntive come parole_chiave, ante_2001, profili rilevanti
+        - praticamente tutta sta roba è stata sostituita da contesto testuale e basta (ma è giusto?)
+    """
+    """
+        Same concept as new_s_results, but improved filtering for Sentenza
+        rather than Infortunato 
+    """
+    from django.core.exceptions import ValidationError
+
+    obj = Sentenza.objects.all()
+    print(request.GET)
+    try:
+        if request.GET.get("grado_di_giudizio"):
+            obj = obj.filter(grado_di_giudizio__contains=request.GET["grado_di_giudizio"])
+        if request.GET.get("data_della_sentenza"):
+            obj = obj.filter(data_della_sentenza=request.GET["data_della_sentenza"])
+        if request.GET.get("data_del_deposito"):
+            obj = obj.filter(data_del_deposito=request.GET["data_del_deposito"])
+        if request.GET.get("numero_della_sentenza"):
+            obj = obj.filter(numero_della_sentenza=request.GET["numero_della_sentenza"])
+        if request.GET.get("estensore"):
+            obj = obj.filter(estensore__contains=request.GET["estensore"])
+        if request.GET.get("anno_del_deposito"):
+            obj = obj.filter(
+                anno_del_deposito__contains=request.GET["anno_del_deposito"]
+            )
+
+        if request.GET.get("sede_tribunale"):
+            obj = obj.filter(
+                sede_tribunale__comune__icontains=request.GET["sede_tribunale"]
+            )
+
+        # Ricerca testuale nell'OCR che supporta virgolette, DA TESTARE
+        if request.GET.get("contenuto_testuale"):
+            query = request.GET["contenuto_testuale"]
+            chunks = query.split('"')
+            full_matches = chunks[1::2]  # Elementi dispari son tra virgolette
+            normal_matches = chunks[
+                0::2
+            ]  # Si lo so che fa cagare e non funziona sempre
+            for full_match in full_matches:
+                obj = obj.filter(ocr__icontains=full_match.strip())
+            for normal_match in normal_matches:
+                for word in normal_match.split():
+                    obj = obj.filter(ocr__icontains=word.strip())
+
+        if request.GET.get("parola_chiave"):
+            trend_id = request.GET["parola_chiave"]
+            if trend_id != "":
+                containers = TrendProfiloRilevanteContainer.objects.filter(
+                    trend__id=trend_id
+                )
+                profili = request.GET.getlist("profili_rilevanti")
+                if len(profili) > 0:
+                    containers = containers.filter(profili_rilevanti__id__in=profili)
+                obj = obj.filter(trendprofilorilevantecontainer__in=containers)
+
+        if request.GET.get("responsabilita"):
+            obj = obj.filter(responsabilita=request.GET["responsabilita"])
+        
+        # TODO 
+        if "ante_2001" not in request.GET:
+            obj = (
+                obj.filter(anno_del_deposito__gte=2001)
+                | obj.filter(data_del_deposito__gte="2001-01-01")
+                | obj.filter(data_della_sentenza__gte="2001-01-01")
+            ) 
+        # https://docs.djangoproject.com/en/3.0/ref/models/querysets/#or
+        if not request.user.is_staff:
+            obj = obj.filter(forza_esclusione=False)
+
+        obj = obj.order_by("-data_del_deposito")
+        print("FINITO FILTRAGGIO",len(obj)) #TODO DEBUG
+    except ValidationError as e:
+        mess = (
+            "Hai inserito una ricerca non valida:<br/><strong>"
+            + "<br/>".join(map(html.escape, e.messages))
+            + "</strong>"
+        )
+        return render(request, "errore.html", {"mess": mess})
+
+    else:
+        return do_paging_response(request, obj, "odp/s_results.html")
 
 def new_s_results(request):
     # TODO add column for matched infortunati
@@ -214,9 +301,6 @@ def new_s_results(request):
     else: #TODO WHY USE TRY EXCEPT ELSE instead of try return except???
         return do_paging_response(request, obj, "odp/i_results.html")
 
-
-
-
 def s_details(request):
     if request.GET.get("id"):
         from django.core.exceptions import ObjectDoesNotExist
@@ -274,9 +358,6 @@ def s_details(request):
     else:
         return HttpResponsePermanentRedirect(search_url)
 
-
-
-
 def i_details(request):
     if request.GET.get("id"):
         from django.core.exceptions import ObjectDoesNotExist
@@ -311,86 +392,6 @@ def i_details(request):
         return HttpResponsePermanentRedirect(search_url)
 
 
-def d_results(request):
-    from django.core.exceptions import ValidationError
-
-    obj = Infortunato.objects.all()
-
-    try:
-        if request.GET.get("perc_ip_da"):
-            obj = obj.filter(percentuale_das_ip__gte=request.GET["perc_ip_da"])
-        if request.GET.get("perc_ip_a"):
-            obj = obj.filter(percentuale_das_ip__lte=request.GET["perc_ip_a"])
-        if request.GET.get("metodo_das_ip"):
-            obj = obj.filter(metodo_das_ip=request.GET["metodo_das_ip"])
-
-        if "sede_tabella" in request.GET:
-            obj = obj.filter(sede_tabella=request.GET["sede_tabella"])
-
-        if "est_clg" in request.GET:
-            obj = obj.filter(est_clg=True)
-        if "est_cls" in request.GET:
-            obj = obj.filter(est_cls=True)
-
-        if "est_lcip" in request.GET:
-            obj = obj.filter(est_lcip=True)
-
-        if "est_it" in request.GET:
-            obj = obj.filter(est_it=True)
-        if request.GET.get("metodo_das_it"):
-            obj = obj.filter(metodo_das_it=request.GET["metodo_das_it"])
-
-        if "est_lcit" in request.GET:
-            obj = obj.filter(est_lcit=True)
-
-        if "est_dm" in request.GET:
-            obj = obj.filter(est_dm=True)
-        if "metodo_dm" in request.GET:
-            metodo = request.GET["metodo_dm"]
-            if metodo == "equi":
-                obj = obj.filter(est_dm_vp=True)
-            elif metodo == "perma":
-                obj = obj.filter(est_dm_ip=True)
-            elif metodo == "temp":
-                obj = obj.filter(est_dm_it=True)
-
-        if "danno_np" in request.GET:
-            obj = obj.filter(sunt_diritti_lesi=True)
-        if "diritti_lesi" in request.GET:
-            diritto = request.GET["diritti_lesi"]
-            if diritto != "":
-                obj = obj.filter(dirittoinviolabile__id=diritto)
-
-        if "danno_morte" in request.GET:
-            obj = obj.filter(dm_est=True)
-
-        if "danno_p" in request.GET:
-            danno = request.GET["danno_p"]
-            if danno == "spese_sostenute":
-                obj = obj.filter(est_ss=True)
-            elif metodo == "spese_future":
-                obj = obj.filter(est_ss_future=True)
-            # TODO altri danni come fare??
-
-        if "trend_liq" in request.GET:
-            trend = request.GET["trend_liq"]
-            if trend != "":
-                obj = obj.filter(trend_liquidazione__id=trend)
-
-        if "ante_2001" not in request.GET:
-            obj = obj.filter(pre2001=False)
-
-    except ValidationError as e:
-        mess = (
-            "Hai inserito una ricerca non valida:<br/><strong>"
-            + "<br/>".join(map(html.escape, e.messages))
-            + "</strong>"
-        )
-        return render(request, "errore.html", {"mess": mess})
-
-    else:
-        return do_paging_response(request, obj, "odp/i_results.html")
-
 
 def new_search(request):
     return render(request, "odp/new_search.html", {})
@@ -416,25 +417,6 @@ def search_noscript(request):
     )
 """
 
-
-###### /search: ricerca ########################
-
-
-def search(request):
-    responsabilita = Responsabilita.objects.all()
-    diritti_lesi = DirittoInviolabile.objects.all()
-    trend_liq = TrendLiquidazione.objects.all()
-    parole_chiave = TrendProfiloRilevante.objects.all()
-    return render(
-        request,
-        "odp/search.html",
-        {
-            "responsabilita": responsabilita,
-            "diritti_lesi": diritti_lesi,
-            "trend_liq": trend_liq,
-            "parole_chiave": parole_chiave,
-        },
-    )
 
 
 ############## AJAX da /search #################
@@ -507,12 +489,10 @@ def check_auth(view_func):
 
 
 new_s_results = check_auth(new_s_results)
-
+s_results = check_auth(s_results)
 s_details = check_auth(s_details)
 i_details = check_auth(i_details)
-d_results = check_auth(d_results)
 """search_noscript = user_passes_test(
     lambda u: u.is_authenticated(), login_url=var_login_url
 )(search_noscript)"""
-search = check_auth(search)
 new_search = check_auth(new_search)
