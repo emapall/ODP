@@ -12,3 +12,41 @@ RICERCHE
 
     LE SENTENZE PRE 2001 NON VENGONO MAI VISUALIZZATE!!!
     
+
+    gifs e roba vaira
+    ./var/www/archivio/images/odp_database/male.png
+./var/www/archivio/images/odp_database/clipboard.gif
+./var/www/archivio/images/odp_database/valid-xhtml.gif
+./var/www/archivio/images/odp_database/search.gif
+./var/www/archivio/images/odp_database/exit.gif
+./var/www/archivio/images/odp_database/male.gif
+./var/www/archivio/images/odp_database/martello.png
+./var/www/archivio/images/odp_database/errore.png
+./var/www/archivio/images/odp_database/logosfondo.png
+./var/www/archivio/images/odp_database/greentick.gif
+./var/www/archivio/images/odp_database/home.gif
+./var/www/archivio/images/odp_database/female.png
+./var/www/archivio/images/odp_database/pdf.gif
+./var/www/archivio/images/odp_database/female.gif
+./var/www/archivio/images/odp_database/pdf.png
+./var/www/archivio/images/odp_database/tick.png
+./var/www/archivio/images/odp_database/logosfondo-chiaro.png
+./var/www/archivio/images/odp_database/redcross.gif
+./var/www/images/odp_database/male.png
+./var/www/images/odp_database/clipboard.gif
+./var/www/images/odp_database/valid-xhtml.gif
+./var/www/images/odp_database/search.gif
+./var/www/images/odp_database/exit.gif
+./var/www/images/odp_database/male.gif
+./var/www/images/odp_database/martello.png
+./var/www/images/odp_database/errore.png
+./var/www/images/odp_database/logosfondo.png
+./var/www/images/odp_database/greentick.gif
+./var/www/images/odp_database/home.gif
+./var/www/images/odp_database/female.png
+./var/www/images/odp_database/pdf.gif
+./var/www/images/odp_database/female.gif
+./var/www/images/odp_database/pdf.png
+./var/www/images/odp_database/tick.png
+./var/www/images/odp_database/logosfondo-chiaro.png
+./var/www/images/odp_database/redcross.gif
