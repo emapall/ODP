@@ -14,8 +14,8 @@ urlpatterns = [
     # .....maybe?? .
     # path("search/d_results/", core_views.d_results), # NOT NEEDED, INCORPORATED IN NEW_S_RESULTS
     # infortunato and sentenza details
-    path("sentenza_details/", core_views.s_details,name="sentenza-details"),
-    path("infortunato_details/", core_views.i_details,name="infortunato-details"),
+    path("sentenza/<int:sent_id>", core_views.s_details,name="sentenza-details"),
+    path("infortunato/<int:infort_id>/", core_views.i_details,name="infortunato-details"),
    
     path("", core_views.new_search,name="home"),
     # (r'^search/?$', 'django.views.generic.simple.direct_to_template', {'template':'odp/search.html'}) TODO TODO TODO
