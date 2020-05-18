@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 import json
+
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse, HttpResponsePermanentRedirect
 from django.shortcuts import render
 from django.utils import html
 from django.views.decorators.cache import cache_page
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+
 from odp_app.models import (
     Assicurazione,
     DirittoInviolabile,
@@ -197,8 +201,7 @@ def new_s_results(request):
 
     # TODO (per ora copio s_results)
     # TODO USE par_danneggiato maybe? (or maybe not)
-    from django.core.exceptions import ValidationError
-
+    
     obj = Infortunato.objects.all()
     try:
         if request.GET.get("eta_danneggiato"):
@@ -301,35 +304,45 @@ def new_s_results(request):
     else: #TODO WHY USE TRY EXCEPT ELSE instead of try return except???
         return do_paging_response(request, obj, "odp/i_results.html")
 
-def s_details(request):
-    if request.GET.get("id"):
-        from django.core.exceptions import ObjectDoesNotExist
-
-        try:
-            sent_id = int(request.GET["id"])
-        except ValueError:
-            return render(
-                request,
-                "errore.html",
-                {"redir": search_url, "mess": "Richiesta non valida."},
-            )
-
-        try:
-            sent = Sentenza.objects.get(id__exact=sent_id)
-        except ObjectDoesNotExist:
-            return render(
-                request,
-                "errore.html",
-                {
-                    "redir": search_url,
-                    "mess": "Non esiste una sentenza con questo ID. Se hai salvato questo indirizzo, potrebbe essere stata cancellata o spostata. Per favore esegui di nuovo la ricerca.",
-                },
-            )
-        else:
-            suoi_infortunati = sent.infortunati.all()
-            cont = TrendProfiloRilevanteContainer.objects.filter(sentenza=sent)
-            if not request.user.is_staff:
-                if sent.forza_esclusione:
+@login_required
+def s_details(request,sent_id):
+    # if request.GET.get("id"):
+    #     try:
+    #         sent_id = int(request.GET["id"])
+    #     except ValueError:
+    #         return render(
+    #             request,
+    #             "errore.html",
+    #             {"redir": search_url, "mess": "Richiesta non valida."},
+    #         )
+    # tutto il resto della funzione andrebbe indentato
+    try:
+        sent = Sentenza.objects.get(id__exact=sent_id)
+    except ObjectDoesNotExist:
+        return render(
+            request,
+            "errore.html",
+            {
+                "redir": search_url,
+                "mess": "Non esiste una sentenza con questo ID. Se hai salvato questo indirizzo, potrebbe essere stata cancellata o spostata. Per favore esegui di nuovo la ricerca.",
+            },
+        )
+    else:
+        suoi_infortunati = sent.infortunati.all()
+        cont = TrendProfiloRilevanteContainer.objects.filter(sentenza=sent)
+        if not request.user.is_staff:
+            if sent.forza_esclusione:
+                return render(
+                    request,
+                    "errore.html",
+                    {
+                        "mess": "Questa scheda sentenza non &egrave; ancora pronta per la pubblicazione.",
+                        "redir": request.META["HTTP_REFERER"],
+                    },
+                )
+        if not request.user.is_staff:
+            for uninfortunato in suoi_infortunati:
+                if not uninfortunato.pubblicabile:
                     return render(
                         request,
                         "errore.html",
@@ -338,58 +351,46 @@ def s_details(request):
                             "redir": request.META["HTTP_REFERER"],
                         },
                     )
-            if not request.user.is_staff:
-                for uninfortunato in suoi_infortunati:
-                    if not uninfortunato.pubblicabile:
-                        return render(
-                            request,
-                            "errore.html",
-                            {
-                                "mess": "Questa scheda sentenza non &egrave; ancora pronta per la pubblicazione.",
-                                "redir": request.META["HTTP_REFERER"],
-                            },
-                        )
-            return render(
-                request,
-                "odp/s_details.html",
-                {"sent": sent, "cont": cont, "formato_date": formato_date},
-            )
-
-    else:
-        return HttpResponsePermanentRedirect(search_url)
-
-def i_details(request):
-    if request.GET.get("id"):
-        from django.core.exceptions import ObjectDoesNotExist
-
-        try:
-            infort_id = int(request.GET["id"])
-        except ValueError:
-            return render(
-                request,
-                "errore.html",
-                {"redir": search_url, "mess": "Richiesta non valida."},
-            )
-
-        try:
-            infort = Infortunato.objects.get(id__exact=infort_id)
-        except ObjectDoesNotExist:
-            return render(
-                request,
-                "errore.html",
-                {
-                    "redir": search_url,
-                    "mess": "Non esiste un infortunato con questo ID. Se hai salvato questo indirizzo, potrebbe essere stato cancellato o spostato. Per favore esegui di nuovo la ricerca.",
-                }
-            )
-
         return render(
             request,
-            "odp/i_details.html",
-            {"infort": infort, "formato_date": formato_date},
+            "odp/s_details.html",
+            {"sent": sent, "cont": cont, "formato_date": formato_date},
         )
-    else:
-        return HttpResponsePermanentRedirect(search_url)
+
+    # else:
+    #     return HttpResponsePermanentRedirect(search_url)
+@login_required
+def i_details(request, infort_id):
+    # if request.GET.get("id"):
+    #     from django.core.exceptions import ObjectDoesNotExist
+
+    #     try:
+    #         infort_id = int(request.GET["id"])
+    #     except ValueError:
+    #         return render(
+    #             request,
+    #             "errore.html",
+    #             {"redir": search_url, "mess": "Richiesta non valida."},
+    #         )
+    # TUTTA LA ROBA SEGUENTE ANDREBBE DENTRO L'IF
+    try:
+        infort = Infortunato.objects.get(pk=infort_id)
+    except ObjectDoesNotExist:
+        return render(
+            request,
+            "errore.html",
+            {
+                "redir": search_url,
+                "mess": "Non esiste un infortunato con questo ID. Se hai salvato questo indirizzo, potrebbe essere stato cancellato o spostato. Per favore esegui di nuovo la ricerca.",
+            }
+        )
+    return render(
+        request,
+        "odp/i_details.html",
+        {"infort": infort, "formato_date": formato_date},
+    )
+    # else:
+    #     return HttpResponsePermanentRedirect(search_url)
 
 
 
@@ -483,6 +484,9 @@ def account_activation_sent(request):
 
 
 def check_auth(view_func):
+    print("check aurth",view_func)
+    print(user_passes_test(lambda u: u.is_authenticated,login_url=var_login_url)(view_func
+    ))    
     return user_passes_test(lambda u: u.is_authenticated, login_url=var_login_url)(
         view_func
     )
@@ -490,8 +494,8 @@ def check_auth(view_func):
 
 new_s_results = check_auth(new_s_results)
 s_results = check_auth(s_results)
-s_details = check_auth(s_details)
-i_details = check_auth(i_details)
+# s_details = check_auth(s_details)
+# i_details = check_auth(i_details)
 """search_noscript = user_passes_test(
     lambda u: u.is_authenticated(), login_url=var_login_url
 )(search_noscript)"""
