@@ -12,166 +12,190 @@
 
 
 {% block topleft %}
-| <a href="/database/odp/search/" name="top" id="top"><img alt="Cerca" width="20" height="20" src="/images/odp_database/search.gif" /> Nuova ricerca</a>
-{% if user.is_staff %}
-| <a href="/database/admin/odp/sentenza/{{ sent.id|stringformat:"s" }}/">Modifica</a>
-{% endif %}
+| 	<a href="{% url 'odp_app:home' %}" name="top" id="top">
+			<img alt="Cerca" width="20" height="20" src="/images/odp_database/search.gif" />
+			Nuova ricerca
+		</a>
+	{% if user.is_staff %}
+		{# TODO/NOTE: HARD ENCODED ADRESS! #}
+| 		<a href="/admin/odp_app/sentenza/{{ sent.id|stringformat:"s" }}/">Modifica</a>
+	{% endif %}
 {% endblock %} 
 
 
 {% block pagina %}
 
 {% if sent %}
-{%comment%} Il controllo sulla pubblicabilità viene fatto da views.py {%endcomment%}
+	{%comment%} Il controllo sulla pubblicabilità viene fatto da views.py {%endcomment%}
 
-<div class="clr"></div>
+	<div class="clr"></div>
 
-<div class="box half sx">
-<h2>Danneggiati</h2>
-{% if sent.infortunati.all %}<ul>
-{% for undanneggiato in sent.infortunati.all %}<li>{% if undanneggiato.sesso %}{% ifnotequal undanneggiato.sesso 'N' %}<img src="/images/odp_database/{% ifequal undanneggiato.sesso 'F' %}female.png" alt="Femmina"{% endifequal %}{% ifequal undanneggiato.sesso 'M' %}male.png" alt="Maschio"{% endifequal %} height="30" width="30" class="icona" /> {% endifnotequal %}{% endif %}<a href="/odp_database/search/i_details/?id={{ undanneggiato.id|stringformat:"s" }}">{{ undanneggiato.professione }} (et&agrave; {{ undanneggiato.eta }})</a></li>
-{% endfor %}</ul>
-{% else %}<p>(nessuno in archivio)</p>
-{% endif %}</div>
+	<div class="box half sx">
+	<h2>Danneggiati</h2>
+	{% if sent.infortunati.all %}<ul>
+		{# TODO: INFORTUNATI? CASOMAI INFORTUNATO_SET!! #}
+		{# TODO: TORGLIERE TUTTI STI IFEQUAL, RIFARLO COME DIO COMANDA (INDENTATO) #}
+		{% for undanneggiato in sent.infortunati.all %}
+			<li>
+			{% if undanneggiato.sesso %}
+				{% ifnotequal undanneggiato.sesso 'N' %}
+					<img 
+						{% if undanneggiato.sesso == 'F' %} 
+							src="/images/odp_database/female.png" alt="Femmina"
+						{% elif undanneggiato.sesso == 'M' %}
+							src="/images/odp_database/male.png" alt="Maschio"
+						{% endif %} 
+					height="30" width="30" class="icona" /> 
+				{% endifnotequal %}
+			{% endif %}
+			<a href="{% url 'odp_app:infortunato-details' infort_id=undanneggiato.pk %}">{{ undanneggiato.professione }} (et&agrave; {{ undanneggiato.eta }})</a>
+			</li>	
+		{% endfor %}</ul>
+		{% else %}<p>Nessun infortunato trovato in archivio</p>
+	{% endif %}</div>
 
 
-{% if sent.file_cmn or sent.ocr or sent.file_img or sent.file_sch %}
-<div class="box half dx">
-	<h2>Leggi il testo integrale della sentenza</h2>
-	
-	{% if sent.file_cmn and sent.ocr %}
-	
-	  {% if sent.file_img and not sent.file_sch or not sent.file_sch and sent.file_img  %}
-		<ul class="materiali sx">
-			{% if sent.file_img %}<li><a href="/odp_pdf/{{ sent.file_img }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scansione</a></li>{% endif %}
-			{% if sent.file_sch %}<li><a href="/odp_pdf/{{ sent.file_sch }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scheda</a></li>{% endif %}
-			{% if sent.file_cmn %}<li><a href="/odp_pdf/{{ sent.file_cmn }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri il commento</a></li> {% endif %}
-		</ul>
-		<ul class="materiali half dx">
-		{% if sent.ocr %}<li><a href="#ocr"><img src="/images/odp_database/clipboard.gif" alt="Testo semplice" height="25" width="25" class="icona" /> Vai all'OCR</a></li>{% endif %}
-	</ul>
-	  {% endif %}
-	  
-	{% else %}
-	
-		{% if sent.file_img or sent.file_sch %}
-		<ul class="materiali sx">
-			{% if sent.file_img %}<li><a href="/odp_pdf/{{ sent.file_img }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scansione</a></li>{% endif %}
-			{% if sent.file_sch %}<li><a href="/odp_pdf/{{ sent.file_sch }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scheda</a></li>{% endif %}
-		</ul>
-		{% endif %}
-		{% if sent.file_cmn or sent.ocr %}
-		<ul class="materiali half dx">
-			{% if sent.file_cmn %}<li><a href="/odp_pdf/{{ sent.file_cmn }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri il commento</a></li> {% endif %}
-			{% if sent.ocr %}<li><a href="#ocr"><img src="/images/odp_database/clipboard.gif" alt="Testo semplice" height="25" width="25" class="icona" /> Vai all'OCR</a></li>{% endif %}
+	{% if sent.file_cmn or sent.ocr or sent.file_img or sent.file_sch %}
+	<div class="box half dx">
+		<h2>Leggi il testo integrale della sentenza</h2>
+		
+		{% if sent.file_cmn and sent.ocr %}
+		
+		{% if sent.file_img and not sent.file_sch or not sent.file_sch and sent.file_img  %}
+			<ul class="materiali sx">
+				{# TODO FILE DEPLOYMENT #}
+				{% if sent.file_img %}<li><a href="/odp_pdf/{{ sent.file_img }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scansione</a></li>{% endif %}
+				{% if sent.file_sch %}<li><a href="/odp_pdf/{{ sent.file_sch }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scheda</a></li>{% endif %}
+				{% if sent.file_cmn %}<li><a href="/odp_pdf/{{ sent.file_cmn }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri il commento</a></li> {% endif %}
+			</ul>
+			<ul class="materiali half dx">
+			{% if sent.ocr %}
+				<li><a href="#ocr"><img src="/images/odp_database/clipboard.gif" alt="Testo semplice" height="25" width="25" class="icona" /> Vai all'OCR</a></li>
+			{% endif %}
 		</ul>
 		{% endif %}
 		
-	{% endif %}
-</div>
-{% endif %}
-
-
-<div class="clr"></div>
-
-
-
-
-<div class="box">
-
-{% ifnotequal sent.profili_rilevanti.count 0 %}
-<div class="box half dx">
-	<h2>Profili rilevanti:</h2>
-		<ul>
-			{% for c in cont %}
-				<h4>{{ c.trend.trend }}</h4>
-				{% for p in c.profili_rilevanti.all %}
-					<li>
-						{{ p.profilo }}
-					</li>
-				{% endfor %}
-			{% endfor %}
-		</ul>
-		{% if sent.note_profili_rilevanti %}
-			<h4>Note:</h4>
-			<p>{{ sent.note_profili_rilevanti }}</p>
+		{% else %}
+		
+			{% if sent.file_img or sent.file_sch %}
+				<ul class="materiali sx">
+				{# TODO FILES, + capire perchè è sdoppiato..? #}
+					{% if sent.file_img %}<li><a href="/odp_pdf/{{ sent.file_img }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scansione</a></li>{% endif %}
+					{% if sent.file_sch %}<li><a href="/odp_pdf/{{ sent.file_sch }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scheda</a></li>{% endif %}
+				</ul>
+			{% endif %}
+			{% if sent.file_cmn or sent.ocr %}
+				<ul class="materiali half dx">
+					{% if sent.file_cmn %}<li><a href="/odp_pdf/{{ sent.file_cmn }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri il commento</a></li> {% endif %}
+					{% if sent.ocr %}{# qua è tutto sdoppiato TODO #}
+					<li><a href="#ocr"><img src="/images/odp_database/clipboard.gif" alt="Testo semplice" height="25" width="25" class="icona" /> Vai all'OCR</a></li>
+					{% endif %}
+				</ul>
+			{% endif %}
+			
 		{% endif %}
-</div>
-{% endifnotequal %}
+	</div>
+	{% endif %}
 
 
-<h2>Informazioni generali</h2>
+	<div class="clr"></div>
 
-<table>
-{% if sent.forza_esclusione %} <tr><th>Esclusione forzata:</th><td><font color="red"><b>INVISIBILE AL PUBBLICO</b></font></td></tr>  {% endif %}
-	<tr><th>Grado di giudizio:</th><td>{{ sent.get_grado_di_giudizio_display }}</td></tr>
-{% if sent.numero_della_sezione %}	<tr><th>Numero della sezione:</th><td>{{ sent.numero_della_sezione }}</td></tr>{% endif %}
-	<tr><th>Sede tribunale:</th><td>{{ sent.sede_tribunale }}</td></tr>
-{% if sent.numero_della_sentenza %}	<tr><th>Numero della sentenza:</th><td>{{ sent.numero_della_sentenza }}</td></tr>{% endif %}
-{% if sent.data_del_fatto %}	<tr><th>Data del fatto:</th><td>{{ sent.data_del_fatto }}</td></tr>{% endif %}
-{% if sent.data_della_citazione %}	<tr><th>Data della citazione:</th><td>{{ sent.data_della_citazione }}</td></tr>{% endif %}
-{% if sent.data_della_sentenza %}	<tr><th>Data della sentenza:</th><td>{{ sent.data_della_sentenza }}</td></tr>{% endif %}
-{% if sent.data_del_deposito %}	<tr><th>Data del deposito:</th><td>{{ sent.data_del_deposito }}</td></tr>{% endif %}
-{% if sent.anno_del_deposito %}	<tr><th>Anno del deposito:</th><td>{{ sent.anno_del_deposito | unlocalize }}</td></tr>{% endif %}
-	<tr><th>Numero attori:</th><td>{{ sent.numero_attori }}</td></tr>
-	<tr><th>Numero convenuti:</th><td>{{ sent.numero_convenuti }}</td></tr>
-	<tr><th>Numero terzi:</th><td>{{ sent.numero_terzi }}</td></tr>
-</table>
-<div class="clr"></div>
-</div>
 
-<div class="clr"></div>
 
-<div class="box half sx">
-<h2>Descrizione del fatto:</h2>
+
+	<div class="box">
+
+	{% ifnotequal sent.profili_rilevanti.count 0 %}
+	<div class="box half dx">
+		<h2>Profili rilevanti:</h2>
+			<ul>
+				{% for c in cont %}
+					<h4>{{ c.trend.trend }}</h4>
+					{% for p in c.profili_rilevanti.all %}
+						<li>
+							{{ p.profilo }}
+						</li>
+					{% endfor %}
+				{% endfor %}
+			</ul>
+			{% if sent.note_profili_rilevanti %}
+				<h4>Note:</h4>
+				<p>{{ sent.note_profili_rilevanti }}</p>
+			{% endif %}
+	</div>
+	{% endifnotequal %}
+
+
+	<h2>Informazioni generali</h2>
+
 	<table>
-	<tr><td>{{ sent.fatto|capfirst }}</td></tr>
-	<tr><th>Responsabilit&agrave;:</th><td>{{ sent.responsabilita }}</td></tr>
-{% for una in sent.assicurazione.all %}
-	<tr><th>Assicurazione:</th><td>{{ una.assicurazione }}</td></tr>
-{% endfor %}
-	<tr><th>Riconvenzionale:</th><td>{{ sent.get_riconvenzionale_display }}</td></tr>
+	{% if sent.forza_esclusione %} <tr><th>Esclusione forzata:</th><td><font color="red"><b>INVISIBILE AL PUBBLICO</b></font></td></tr>  {% endif %}
+		<tr><th>Grado di giudizio:</th><td>{{ sent.get_grado_di_giudizio_display }}</td></tr>
+	{% if sent.numero_della_sezione %}	<tr><th>Numero della sezione:</th><td>{{ sent.numero_della_sezione }}</td></tr>{% endif %}
+		<tr><th>Sede tribunale:</th><td>{{ sent.sede_tribunale }}</td></tr>
+	{% if sent.numero_della_sentenza %}	<tr><th>Numero della sentenza:</th><td>{{ sent.numero_della_sentenza }}</td></tr>{% endif %}
+	{% if sent.data_del_fatto %}	<tr><th>Data del fatto:</th><td>{{ sent.data_del_fatto }}</td></tr>{% endif %}
+	{% if sent.data_della_citazione %}	<tr><th>Data della citazione:</th><td>{{ sent.data_della_citazione }}</td></tr>{% endif %}
+	{% if sent.data_della_sentenza %}	<tr><th>Data della sentenza:</th><td>{{ sent.data_della_sentenza }}</td></tr>{% endif %}
+	{% if sent.data_del_deposito %}	<tr><th>Data del deposito:</th><td>{{ sent.data_del_deposito }}</td></tr>{% endif %}
+	{% if sent.anno_del_deposito %}	<tr><th>Anno del deposito:</th><td>{{ sent.anno_del_deposito | unlocalize }}</td></tr>{% endif %}
+		<tr><th>Numero attori:</th><td>{{ sent.numero_attori }}</td></tr>
+		<tr><th>Numero convenuti:</th><td>{{ sent.numero_convenuti }}</td></tr>
+		<tr><th>Numero terzi:</th><td>{{ sent.numero_terzi }}</td></tr>
 	</table>
-</div>
+	<div class="clr"></div>
+	</div>
 
-<div class="box half dx">
-<h2>Osservatorio</h2>
-	<table>
-	<tr><th>Codice:</th><td>{{ sent.codice }}</td></tr>
-	<tr><th>Anno di arrivo:</th><td> {{ sent.anno_di_arrivo | unlocalize}} </td></tr>
-	<tr><th>Estensore:</th><td>{{ sent.estensore|title }}</td></tr>
-	<tr><th>Esaminatori:</th><td>
-		{% ifequal sent.esaminatore.count 1 %}{{ sent.esaminatore.all.0.esaminatore|title }}
-	{% else %}<ul>
-			{% for unesaminatore in sent.esaminatore.all %}<li>{{ unesaminatore.esaminatore|title }}</li>
-			{% endfor %}</ul>
-	{% endifequal %}</td></tr>
-	</table>
-</div>
+	<div class="clr"></div>
 
-{% if sent.note_sentenza %}<div class="clr"></div>
+	<div class="box half sx">
+	<h2>Descrizione del fatto:</h2>
+		<table>
+		<tr><td>{{ sent.fatto|capfirst }}</td></tr>
+		<tr><th>Responsabilit&agrave;:</th><td>{{ sent.responsabilita }}</td></tr>
+	{% for una in sent.assicurazione.all %}
+		<tr><th>Assicurazione:</th><td>{{ una.assicurazione }}</td></tr>
+	{% endfor %}
+		<tr><th>Riconvenzionale:</th><td>{{ sent.get_riconvenzionale_display }}</td></tr>
+		</table>
+	</div>
 
-<div class="box">
-	<h2>Note sulla sentenza</h2>
-	<p class="dato">{{ sent.note_sentenza|escape|linebreaksbr }}</p>
-</div>{% endif %}
+	<div class="box half dx">
+	<h2>Osservatorio</h2>
+		<table>
+		<tr><th>Codice:</th><td>{{ sent.codice }}</td></tr>
+		<tr><th>Anno di arrivo:</th><td> {{ sent.anno_di_arrivo | unlocalize}} </td></tr>
+		<tr><th>Estensore:</th><td>{{ sent.estensore|title }}</td></tr>
+		<tr><th>Esaminatori:</th><td>
+			{% ifequal sent.esaminatore.count 1 %}{{ sent.esaminatore.all.0.esaminatore|title }}
+		{% else %}<ul>
+				{% for unesaminatore in sent.esaminatore.all %}<li>{{ unesaminatore.esaminatore|title }}</li>
+				{% endfor %}</ul>
+		{% endifequal %}</td></tr>
+		</table>
+	</div>
 
-{% if sent.ocr %}
+	{% if sent.note_sentenza %}<div class="clr"></div>
 
-<p style="text-align: right;"><a href="#top" name="ocr" id="ocr">Torna all'inizio</a> | <a href="/odp_database/search/">Nuova ricerca</a></p>
+	<div class="box">
+		<h2>Note sulla sentenza</h2>
+		<p class="dato">{{ sent.note_sentenza|escape|linebreaksbr }}</p>
+	</div>{% endif %}
 
-<div id="box_ocr">
-	<h1 >Anteprima sentenza (OCR)</h1>
-	<div style="font: 90% monospace">{{ sent.ocr|escape|linebreaksbr }}</div>
-</div>
-{% endif %}
+	{% if sent.ocr %}
+	{# TODO FARE STA PARTE IN UN TEMPLATE A PARTE PERCHÈ NON È POSSIBILE AVERLA OGNI VOLTA #}
+	<p style="text-align: right;"><a href="#top" name="ocr" id="ocr">Torna in cima alla pagina</a> | <a href="{% url 'odp_app:home' %}">Nuova ricerca</a></p>
 
-<p style="clear: both; text-align: right;"><a href="#top">Torna all'inizio</a> | <a href="/odp_database/search/">Nuova ricerca</a> |	<a href="http://validator.w3.org/check?uri=referer"><img src="/images/odp_database/valid-xhtml.gif" alt="Markup XHTML 1.0 Strict valido" width="78" height="13" style="border:none;" /></a></p>
+	<div id="box_ocr">
+		<h1 >Anteprima sentenza (OCR)</h1>
+		<div style="font: 90% monospace">{{ sent.ocr|escape|linebreaksbr }}</div>
+	</div>
+	{% endif %}
 
-<!--<p style="clear: both; text-align: left; font-size: small; color: black">Per creare link a questa scheda copiare il seguente codice HTML:<br /><code>&lt;a href=&quot;http://www.lider-lab.sssup.it/odp_database/search/s_details/?id={{ sent.id|stringformat:"s" }}&quot;&gt;Testo del link&lt;/a&gt;</code></p>-->
+	<p style="clear: both; text-align: right;"><a href="#top">Torna in cima alla pagina</a> | <a href="{% url 'odp_app:home' %}">Nuova ricerca</a> |	<a href="http://validator.w3.org/check?uri=referer"><img src="/images/odp_database/valid-xhtml.gif" alt="Markup XHTML 1.0 Strict valido" width="78" height="13" style="border:none;" /></a></p>
 
-{% else %}
-Si &egrave; verificato un errore dal lato server!
+{% else %} {# sta cosa si può verificare nel python invece che indentare tutto il context #}
+	Si &egrave; verificato un errore dal lato server!
 {% endif %}
 
 {% endblock %}
