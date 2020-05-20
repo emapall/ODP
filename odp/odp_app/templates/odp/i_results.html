@@ -54,7 +54,7 @@ $(window).ready(function () {
 		<tr>
 			<td{% ifequal o.sesso 'M' %} class="m"{% endifequal %}{% ifequal o.sesso 'F' %} class="f"{% endifequal %}{% ifequal o.sesso 'N' %} class="n"{% endifequal %}>{% if o.eta %}{{o.eta}}{% else %}{% ifequal o.est_maggiorenne '1' %}<abbr title="Maggiorenne">&gt;18</abbr>{% endifequal %}{% ifequal o.est_maggiorenne '0' %}<abbr title="Minorenne">&lt;18</abbr>{% endifequal %}{% endif %}/{% ifequal o.sesso "N" %}?{% else %}{{ o.sesso }}{% endifequal %}</td>
 			<td class="p">{% ifequal o.pubblicabile 1 %}<img src="/images/odp_database/greentick.gif" width="15" height="15" alt="S&igrave;" />{% else %}<img src="/images/odp_database/redcross.gif" width="15" height="15" alt="No" />{% endifequal %}</td>
-			<td><a href="{% url 'odp_app:sentenza-detail' sent_id=o.sentenza.pk %}">{{ o.sentenza }}</a></td>
+			<td><a href="{% url 'odp_app:sentenza-details' sent_id=o.sentenza.pk %}">{{ o.sentenza }}</a></td>
 			<td><a href="{% url 'odp_app:infortunato-details' infort_id=o.pk %}">{{ o.professione }}</a></td>
 			<td>{% if o.est_it %}S{% else %}N{% endif %}</td>
 			<td>{{ o.percentuale_das_ip }}</td>

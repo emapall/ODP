@@ -61,7 +61,7 @@
 			
 			{% if infort.sentenza %}
 				<p id="sentenza">
-				<a href="{% url 'odp_app:sentenza-detail' sent_id=infort.sentenza.pk %}"{# "/odp/sentenza?id={{ infort.sentenza.id|stringformat:"s" }}" #}>
+				<a href="{% url 'odp_app:sentenza-details' sent_id=infort.sentenza.pk %}"{# "/odp/sentenza?id={{ infort.sentenza.id|stringformat:"s" }}" #}>
 					<img src="/images/odp_database/martello.png" alt="Sentenza" height="29" width="29" class="icona" id="martello" />
 					Vai alla sentenza: {{ infort.sentenza }}
 				</a>
