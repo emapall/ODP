@@ -65,7 +65,7 @@ target/
 startbootstrap-sb-admin-2-gh-pages
 
 # staticfiles
-static/
+/static/
 db.sqlite3
 remote-apache.conf
 
