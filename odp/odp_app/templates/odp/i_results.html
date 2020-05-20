@@ -18,61 +18,62 @@ $(window).ready(function () {
 
 
 {% block topleft %}
- | <a href="/odp_database/search/" name="top" id="top"><img alt="Cerca" width="20" height="20" src="/images/odp_database/search.gif" /> Nuova ricerca</a>
+ | <a href="{% url 'odp_app:home' %}" name="top" id="top"><img alt="Cerca" width="20" height="20" src="/images/odp_database/search.gif" /> Nuova ricerca</a>
 {% endblock %}
 
 
 {% block pagina %}
-{% if obj %}
-<div id="legenda">
-<h2 id="titolo_legenda">Legenda</h2>
-<div id="testo_legenda"><dl>
-<dt><abbr title="Et&agrave; e sesso">Et&agrave;/Sex</abbr></dt>
-	<dd>Visualizza l'et&agrave; ed il sesso del danneggiato, se noti</dd>
-<dt><abbr title="Minorenne">&lt;18</abbr></dt>
-	<dd>Il danneggiato &egrave; minorenne, ma l'et&agrave; esatta &egrave; sconosciuta</dd>
-<dt><abbr title="Maggiorenne">&gt;18</abbr></dt>
-	<dd>Il danneggiato &egrave; maggiorenne, ma l'et&agrave; esatta &egrave; sconosciuta</dd>
-<dt><abbr title="Questa scheda &egrave; pubblicabile?">P</abbr></dt>
-	<dd>Questa scheda &egrave; pubblicata? Le schede possono essere visualizzate solo dopo la revisione da parte di un giurista e di un medico legale.</dd>
-</dl></div>
-</div>
-<table>
-<caption>{% ifequal obj.count 1 %}
-	1 risultato
-{% else %}
-	{{ pag.da }} - {{ pag.a }} di {{ pag.totali }} risultati
-{% endifequal %}</caption>
-<thead><tr><th><abbr title="Et&agrave; e sesso">Et&agrave;/Sex</abbr></th>
-<th><abbr title="Questa scheda &egrave; pubblicabile?">P</abbr></th>
-<th>Sentenza (clicca per dettagli)</th>
-<th>Danneggiato (clicca per dettagli)</th>
-<th><abbr title="C'&egrave; invalidit&agrave; temporanea?">IT?</abbr></th>
-<th><abbr title="Percentuale danno alla salute per invalidit&agrave; permanente">% IP</abbr></th></tr></thead>
-<tbody>
-{% for o in obj %}
-<tr>
-<td{% ifequal o.sesso 'M' %} class="m"{% endifequal %}{% ifequal o.sesso 'F' %} class="f"{% endifequal %}{% ifequal o.sesso 'N' %} class="n"{% endifequal %}>{% if o.eta %}{{o.eta}}{% else %}{% ifequal o.est_maggiorenne '1' %}<abbr title="Maggiorenne">&gt;18</abbr>{% endifequal %}{% ifequal o.est_maggiorenne '0' %}<abbr title="Minorenne">&lt;18</abbr>{% endifequal %}{% endif %}/{% ifequal o.sesso "N" %}?{% else %}{{ o.sesso }}{% endifequal %}</td>
-<td class="p">{% ifequal o.pubblicabile 1 %}<img src="/images/odp_database/greentick.gif" width="15" height="15" alt="S&igrave;" />{% else %}<img src="/images/odp_database/redcross.gif" width="15" height="15" alt="No" />{% endifequal %}</td>
-<td><a href="/odp_database/search/s_details/?id={{ o.sentenza.id|stringformat:"s"}}">{{ o.sentenza}}</a></td>
-<td><a href="/odp_database/search/i_details/?id={{ o.id|stringformat:"s" }}">{{ o.professione }}</a></td>
-<td>{% if o.est_it %}S{% else %}N{% endif %}</td>
-<td>{{ o.percentuale_das_ip }}</td></tr>
-{% endfor %}
-</tbody></table>
+	{% if obj %}
+		<div id="legenda">
+		<h2 id="titolo_legenda">Legenda</h2>
+		<div id="testo_legenda"><dl>
+		<dt><abbr title="Et&agrave; e sesso">Et&agrave;/Sex</abbr></dt>
+			<dd>Visualizza l'et&agrave; ed il sesso del danneggiato, se noti</dd>
+		<dt><abbr title="Minorenne">&lt;18</abbr></dt>
+			<dd>Il danneggiato &egrave; minorenne, ma l'et&agrave; esatta &egrave; sconosciuta</dd>
+		<dt><abbr title="Maggiorenne">&gt;18</abbr></dt>
+			<dd>Il danneggiato &egrave; maggiorenne, ma l'et&agrave; esatta &egrave; sconosciuta</dd>
+		<dt><abbr title="Questa scheda &egrave; pubblicabile?">P</abbr></dt>
+			<dd>Questa scheda &egrave; pubblicata? Le schede possono essere visualizzate solo dopo la revisione da parte di un giurista e di un medico legale.</dd>
+		</dl></div>
+		</div>
+		<table>
+		<caption>{% ifequal obj.count 1 %}
+			1 risultato
+		{% else %}
+			{{ pag.da }} - {{ pag.a }} di {{ pag.totali }} risultati
+		{% endifequal %}</caption>
+		<thead><tr><th><abbr title="Et&agrave; e sesso">Et&agrave;/Sex</abbr></th>
+		<th><abbr title="Questa scheda &egrave; pubblicabile?">P</abbr></th>
+		<th>Sentenza (clicca per dettagli)</th>
+		<th>Danneggiato (clicca per dettagli)</th>
+		<th><abbr title="C'&egrave; invalidit&agrave; temporanea?">IT?</abbr></th>
+		<th><abbr title="Percentuale danno alla salute per invalidit&agrave; permanente">% IP</abbr></th></tr></thead>
+		<tbody>
+		{% for o in obj %}
+		<tr>
+			<td{% ifequal o.sesso 'M' %} class="m"{% endifequal %}{% ifequal o.sesso 'F' %} class="f"{% endifequal %}{% ifequal o.sesso 'N' %} class="n"{% endifequal %}>{% if o.eta %}{{o.eta}}{% else %}{% ifequal o.est_maggiorenne '1' %}<abbr title="Maggiorenne">&gt;18</abbr>{% endifequal %}{% ifequal o.est_maggiorenne '0' %}<abbr title="Minorenne">&lt;18</abbr>{% endifequal %}{% endif %}/{% ifequal o.sesso "N" %}?{% else %}{{ o.sesso }}{% endifequal %}</td>
+			<td class="p">{% ifequal o.pubblicabile 1 %}<img src="/images/odp_database/greentick.gif" width="15" height="15" alt="S&igrave;" />{% else %}<img src="/images/odp_database/redcross.gif" width="15" height="15" alt="No" />{% endifequal %}</td>
+			<td><a href="{% url 'odp_app:sentenza-detail' sent_id=o.sentenza.pk %}"</a></td>
+			<td><a href="{% url 'odp_app:infortunato-details' infort_id=o.pk %}">{{ o.professione }}</a></td>
+			<td>{% if o.est_it %}S{% else %}N{% endif %}</td>
+			<td>{{ o.percentuale_das_ip }}</td>
+		</tr>
+		{% endfor %}
+		</tbody></table>
 
-<form action="" enctype="application/x-www-form-urlencoded" method="get">
-{% for campo in query.items %}<input type="hidden" name="{{ campo.0 }}" value="{{ campo.1|stringformat:"s"|escape }}" />{% endfor %}
-<p style="clear: both; text-align: center;">
-{% if pag.precedente %}<a href="?inizia_da={{ pag.precedente }}{% for campo in query.items %}&{{ campo.0|urlencode }}={{ campo.1|stringformat:"s"|urlencode }}{% endfor %}">&lt;&lt; Risultati precedenti</a> | {% endif %}
-Mostra <input type="text" id="quante" name="quante" value="{{ pag.quante }}" size="3" maxlength="3" alt="Numero di risultati da visualizzare" /> risultati per volta: <input type="submit" value="Aggiorna" />
-{% if pag.prossima %} | <a href="?inizia_da={{ pag.prossima }}{% for campo in query.items %}&{{ campo.0|urlencode }}={{ campo.1|stringformat:"s"|urlencode }}{% endfor %}">Risultati successivi &gt;&gt;</a>{% endif %}
-</p></form>
+		<form action="" enctype="application/x-www-form-urlencoded" method="get">
+		{% for campo in query.items %}<input type="hidden" name="{{ campo.0 }}" value="{{ campo.1|stringformat:"s"|escape }}" />{% endfor %}
+		<p style="clear: both; text-align: center;">
+		{% if pag.precedente %}<a href="?inizia_da={{ pag.precedente }}{% for campo in query.items %}&{{ campo.0|urlencode }}={{ campo.1|stringformat:"s"|urlencode }}{% endfor %}">&lt;&lt; Risultati precedenti</a> | {% endif %}
+		Mostra <input type="text" id="quante" name="quante" value="{{ pag.quante }}" size="3" maxlength="3" alt="Numero di risultati da visualizzare" /> risultati per volta: <input type="submit" value="Aggiorna" />
+		{% if pag.prossima %} | <a href="?inizia_da={{ pag.prossima }}{% for campo in query.items %}&{{ campo.0|urlencode }}={{ campo.1|stringformat:"s"|urlencode }}{% endfor %}">Risultati successivi &gt;&gt;</a>{% endif %}
+		</p></form>
 
-<p style="clear: both; text-align: right;"><a href="#top">Torna all'inizio</a> | <a href="/odp_database/search/">Nuova ricerca</a> | <a href="http://validator.w3.org/check?uri=referer"><img src="/images/odp_database/valid-xhtml.gif" alt="Markup XHTML 1.0 Strict valido" width="78" height="13" style="border:none;" /></a></p>
+		<p style="clear: both; text-align: right;"><a href="#top">Torna in cima alla pagina</a> | <a href="{% url 'odp_app:home' %}">Nuova ricerca</a> | <a href="http://validator.w3.org/check?uri=referer"><img src="/images/odp_database/valid-xhtml.gif" alt="Markup XHTML 1.0 Strict valido" width="78" height="13" style="border:none;" /></a></p>
 
-{% else %}
-La ricerca non ha restituito risultati.
-{% endif %}
+	{% else %}
+		La ricerca non ha restituito risultati.
+	{% endif %}
 
 {% endblock %}
