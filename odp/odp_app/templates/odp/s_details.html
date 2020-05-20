@@ -1,13 +1,14 @@
 {% extends "odp/_base.html" %}
 
 {% load l10n %}
+{% load static %}
 
 {% block titolo %}Dettagli sentenza{% endblock %}
 {% block titolo_html %}Database <acronym title="Osservatorio sul Danno alla Persona">ODP</acronym> - Dettagli sentenza{% endblock %}
 
 
 {% block head %}
-<link rel="stylesheet" type="text/css" href="/styles/odp_database/dettagli.css" />
+<link rel="stylesheet" type="text/css" href="{% static 'odp_app/css/dettagli.css' %}" />
 {% endblock %}
 
 

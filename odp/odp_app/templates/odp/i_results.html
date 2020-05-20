@@ -1,12 +1,12 @@
 {% extends "odp/_base.html" %}
-
+{% load static %}
 
 {% block titolo %}Risultati ricerca per danneggiato{% endblock %}
 {% block titolo_html %}Ricerca per danneggiato <acronym title="Osservatorio sul Danno alla Persona">ODP</acronym> - Risultati{% endblock %}
 
 
 {% block head %}
-<link rel="stylesheet" type="text/css" href="/styles/odp_database/risultati.css" />
+<link rel="stylesheet" type="text/css" href="{% static 'odp_app/css/risultati.css' %}" />
 <script type="text/javascript" src="/scripts/jquery.js"></script>
 <script type="text/javascript" src="/scripts/cassetto.js"></script>
 <script type="text/javascript">
