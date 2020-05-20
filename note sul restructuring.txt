@@ -50,3 +50,13 @@ RICERCHE
 ./var/www/images/odp_database/tick.png
 ./var/www/images/odp_database/logosfondo-chiaro.png
 ./var/www/images/odp_database/redcross.gif
+
+
+STATIC FILES
+
+I files vengono collezzionati da django per il server deployment 
+nella cartella main del django-startproject (quella dove sta il manage.py),
+(in realtà nella STATIC_ROOT, che è appunto la base_dir di cui sopra, /static)
+
+Ora questi gli voglio git-ignore ma gli static dentro il sito no!
+(quindi dentro base_dir/odp_app/static/cose varie*, oppure base_dir/odp_site/static/file admin di django).
