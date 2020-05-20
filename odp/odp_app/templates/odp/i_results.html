@@ -8,7 +8,7 @@
 {% block head %}
 <link rel="stylesheet" type="text/css" href="{% static 'odp_app/css/risultati.css' %}" />
 <script type="text/javascript" src="/scripts/jquery.js"></script>
-<script type="text/javascript" src="/scripts/cassetto.js"></script>
+<script type="text/javascript" src="{% static 'odp_app/js/cassetto.js' %}"></script>
 <script type="text/javascript">
 $(window).ready(function () {
 	cassetto('legenda', 'titolo_legenda', 'testo_legenda')
