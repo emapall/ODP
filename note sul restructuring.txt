@@ -51,6 +51,7 @@ RICERCHE
 ./var/www/images/odp_database/logosfondo-chiaro.png
 ./var/www/images/odp_database/redcross.gif
 
+I CSS SONO SU /var/www/styles/odp_database
 
 STATIC FILES
 
@@ -60,3 +61,7 @@ nella cartella main del django-startproject (quella dove sta il manage.py),
 
 Ora questi gli voglio git-ignore ma gli static dentro il sito no!
 (quindi dentro base_dir/odp_app/static/cose varie*, oppure base_dir/odp_site/static/file admin di django).
+https://stackoverflow.com/questions/5861280/gitignore-folder-vs-folder
+
+
+E JQUERY.JS? che è quella roba? non viene usata quasi mai.
