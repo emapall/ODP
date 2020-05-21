@@ -17,7 +17,7 @@
 		</a>
 	{% if user.is_staff %}
 		{# TODO/NOTE: HARD ENCODED ADRESS! #}
-		<a href="/admin/odp_app/infortunato/{{ infort.id|stringformat:"s" }}/">Modifica</a>
+		|	<a href="/admin/odp_app/infortunato/{{ infort.id|stringformat:"s" }}/">Modifica</a>
 	{% if infort.pubblicabile %}
 	| <span style="color: green;">PUBBLICABILE</span>
 	{% else %}
