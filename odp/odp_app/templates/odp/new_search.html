@@ -7,8 +7,9 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Demo nuova ricerca</title>
+  {# TODO? #}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.css">
-  <link rel="stylesheet" href="{% static "odp/new_search.css" %}">
+  <link rel="stylesheet" href="{% static "odp_app/css/new_search.css" %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css">
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/css/foundation-datepicker.css">
@@ -17,8 +18,9 @@
 <body>
 
   <div class="search-box large-11 medium-12 small-12 medium-centered-column row">
+    {# TOODO: METTERE STA ROBA COL METHOD POST(?)! #}
     <form id="search_form" enctype="application/x-www-form-urlencoded" title="Ricerca per sentenza"
-      action="/odp/search/new_s_results/" method="get" autocomplete="off">
+      action="{% url 'odp_app:search-results' %}" method="get" autocomplete="off">
       <h3 id="titolo_form" class="text-center">
         Criteri di ricerca
         {% if user.is_staff %}
@@ -250,7 +252,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/what-input/5.2.6/what-input.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.5.3/js/foundation.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation-datepicker/1.5.6/js/foundation-datepicker.js"></script>
-  <script src="{% static "odp/new_search.js" %}"></script>
+  <script src="{% static "odp_app/js/new_search.js" %}"></script>
 </body>
 
 </html>

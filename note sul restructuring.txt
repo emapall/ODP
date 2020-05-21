@@ -1,0 +1,70 @@
+RICERCHE
+
+    -   search e new_search sono le pagine di RICERCA (coi form)
+    -   s_details e new_s_detalis sono le pagine DEI RISULTATI (vecchia e nuova)
+    delle sentenze.
+    -   La pagina new_search porta a new_s_results in ogni caso
+    -   Anche con la ricerca per infortunato, porta a new_s_results
+            i_results viene chiamata solo dalla pagina di search vecchia (non new_search, ma search.html)
+            i_results mi sembra tra l'altro un po' scarna come filtri
+    Di tutto sto mandrone si potrebbe pensare di fare una (o due, come è gia) pagine e basta, con il processing del form in post e non in get (che dai....)
+
+
+    LE SENTENZE PRE 2001 NON VENGONO MAI VISUALIZZATE!!!
+    
+
+    gifs e roba vaira
+./var/www/archivio/images/odp_database/male.png
+./var/www/archivio/images/odp_database/clipboard.gif
+./var/www/archivio/images/odp_database/valid-xhtml.gif
+./var/www/archivio/images/odp_database/search.gif
+./var/www/archivio/images/odp_database/exit.gif
+./var/www/archivio/images/odp_database/male.gif
+./var/www/archivio/images/odp_database/martello.png
+./var/www/archivio/images/odp_database/errore.png
+./var/www/archivio/images/odp_database/logosfondo.png
+./var/www/archivio/images/odp_database/greentick.gif
+./var/www/archivio/images/odp_database/home.gif
+./var/www/archivio/images/odp_database/female.png
+./var/www/archivio/images/odp_database/pdf.gif
+./var/www/archivio/images/odp_database/female.gif
+./var/www/archivio/images/odp_database/pdf.png
+./var/www/archivio/images/odp_database/tick.png
+./var/www/archivio/images/odp_database/logosfondo-chiaro.png
+./var/www/archivio/images/odp_database/redcross.gif
+./var/www/images/odp_database/male.png
+./var/www/images/odp_database/clipboard.gif
+./var/www/images/odp_database/valid-xhtml.gif
+./var/www/images/odp_database/search.gif
+./var/www/images/odp_database/exit.gif
+./var/www/images/odp_database/male.gif
+./var/www/images/odp_database/martello.png
+./var/www/images/odp_database/errore.png
+./var/www/images/odp_database/logosfondo.png
+./var/www/images/odp_database/greentick.gif
+./var/www/images/odp_database/home.gif
+./var/www/images/odp_database/female.png
+./var/www/images/odp_database/pdf.gif
+./var/www/images/odp_database/female.gif
+./var/www/images/odp_database/pdf.png
+./var/www/images/odp_database/tick.png
+./var/www/images/odp_database/logosfondo-chiaro.png
+./var/www/images/odp_database/redcross.gif
+
+rexeg di ricerca immagini:
+(gif|img|jp(e)?g|img|png)
+
+I CSS SONO SU /var/www/styles/odp_database
+
+STATIC FILES
+
+I files vengono collezzionati da django per il server deployment 
+nella cartella main del django-startproject (quella dove sta il manage.py),
+(in realtà nella STATIC_ROOT, che è appunto la base_dir di cui sopra, /static)
+
+Ora questi gli voglio git-ignore ma gli static dentro il sito no!
+(quindi dentro base_dir/odp_app/static/cose varie*, oppure base_dir/odp_site/static/file admin di django).
+https://stackoverflow.com/questions/5861280/gitignore-folder-vs-folder
+
+
+E JQUERY.JS? che è quella roba? non viene usata quasi mai.

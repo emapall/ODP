@@ -7,141 +7,142 @@ Risultati{% endblock %}
 
 
 {% block head %}
-<link rel="stylesheet" type="text/css" href="{% static "odp/risultati.css" %}">
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<!-- <script type="text/javascript" src="/scripts/jquery.tooltip.pack.js"></script> -->
-<script type="text/javascript" src="{% static "odp/cassetto.js" %}"></script>
+	<link rel="stylesheet" type="text/css" href="{% static "odp_app/css/risultati.css" %}">
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<!-- <script type="text/javascript" src="/scripts/jquery.tooltip.pack.js"></script> -->
+	<script type="text/javascript" src="{% static "odp_app/js/cassetto.js" %}"></script>
 
 
-{% if user.is_staff %}
-<!-- <script type="text/javascript">
-	$(window).ready(function () {
-		$('#risultati td.giudizio').tooltip({
-			bodyHandler: function () {
-				return $(this).siblings('td.a').children('div.tooltip').html();
-			}
-		});
-	});
-</script> -->
-<!-- <link rel="stylesheet" type="text/css" href="/styles/jquery.tooltip.css" /> -->
-{% endif %}
+	{% if user.is_staff %}
+		<!-- <script type="text/javascript">
+			$(window).ready(function () {
+				$('#risultati td.giudizio').tooltip({
+					bodyHandler: function () {
+						return $(this).siblings('td.a').children('div.tooltip').html();
+					}
+				});
+			});
+		</script> -->
+		<!-- <link rel="stylesheet" type="text/css" href="/styles/jquery.tooltip.css" /> -->
+		{# TODO: CAPIRE CHE È STA ROBA #}
+	{% endif %}
 {% endblock %}
 
 
 {% block topleft %}
-| <a href="/odp/search/" name="top" id="top"><img alt="Cerca" width="20" height="20"
-		src="/images/odp_database/search.gif" /> Nuova ricerca</a>
+	| <a href="{% url 'odp_app:home' %}" name="top" id="top">
+	<img alt="Cerca" width="20" height="20" src="{% static 'odp_app/images/search.gif' %}" /> Nuova ricerca
+	</a>
 {% endblock %}
 
 
 {% block pagina %}
 
 {% if obj %}
-<div id="legenda">
-	<h2 id="titolo_legenda">Legenda</h2>
-	<div id="testo_legenda">
-		<dl>
-			<dt><abbr title="Data del deposito">(dep.)</abbr></dt>
-			<dd>Data del deposito</dd>
-			<dt><abbr title="Data della sentenza">(sent.)</abbr></dt>
-			<dd>Data della sentenza</dd>
-			<dt><abbr title="Data della citazione">(cit.)</abbr></dt>
-			<dd>Data della citazione</dd>
-			<dt><abbr title="&Egrave; presente la scansione della sentenza?">IMG</abbr></dt>
-			<dd>&Egrave; presente la scansione della sentenza? (se s&igrave; clicca l'icona per visualizzarla)</dd>
-			<dt><abbr title="&Egrave; presente la scansione della scheda?">SCH</abbr></dt>
-			<dd>&Egrave; presente la scansione della scheda? (se s&igrave; clicca l'icona per visualizzarla)</dd>
-			<dt><abbr title="&Egrave; presente la scansione dei commenti?">COM</abbr></dt>
-			<dd>&Egrave; presente la scansione dei commenti? (se s&igrave; clicca l'icona per visualizzarla)</dd>
-		</dl>
+	<div id="legenda">
+		<h2 id="titolo_legenda">Legenda</h2>
+		<div id="testo_legenda">
+			<dl>
+				<dt><abbr title="Data del deposito">(dep.)</abbr></dt>
+				<dd>Data del deposito</dd>
+				<dt><abbr title="Data della sentenza">(sent.)</abbr></dt>
+				<dd>Data della sentenza</dd>
+				<dt><abbr title="Data della citazione">(cit.)</abbr></dt>
+				<dd>Data della citazione</dd>
+				<dt><abbr title="&Egrave; presente la scansione della sentenza?">IMG</abbr></dt>
+				<dd>&Egrave; presente la scansione della sentenza? (se s&igrave; clicca l'icona per visualizzarla)</dd>
+				<dt><abbr title="&Egrave; presente la scansione della scheda?">SCH</abbr></dt>
+				<dd>&Egrave; presente la scansione della scheda? (se s&igrave; clicca l'icona per visualizzarla)</dd>
+				<dt><abbr title="&Egrave; presente la scansione dei commenti?">COM</abbr></dt>
+				<dd>&Egrave; presente la scansione dei commenti? (se s&igrave; clicca l'icona per visualizzarla)</dd>
+			</dl>
+		</div>
 	</div>
-</div>
-<table id="risultati">
-	<caption>{% ifequal obj.count 1 %}
-		1 risultato
-		{% else %}
-		{{ pag.da }} - {{ pag.a }} di {{ pag.totali }} risultati
-		{% endifequal %}</caption>
-	<thead>
-		<tr>
-			<th>Data</th>
-			<th>Organo giudicante</th>
-			<th><abbr title="&Egrave; presente la scansione della sentenza?">IMG</abbr></th>
-			<th><abbr title="&Egrave; presente la scansione della scheda?">SCH</abbr></th>
-			<th><abbr title="&Egrave; presente la scansione dei commenti?">COM</abbr></th>
-			<th>Dettagli</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for o in obj %}
-		<tr>
-			<td>{% if o.data_del_deposito %}{{ o.data_del_deposito }} <abbr
-					title="Data del deposito">(dep.)</abbr>{% else %}{% if o.data_della_sentenza %}{{ o.data_della_sentenza }}
-				<abbr
-					title="Data della sentenza">(sent.)</abbr>{% else %}{% if o.data_della_citazione %}{{ o.data_della_citazione }}
-				<abbr title="Data della citazione">(cit.)</abbr>{% else %}(sconosciuta){% endif %}{% endif %}{% endif %}
-			</td>
-			<td class="giudizio">{% if o.grado_di_giudizio %}{{ o.get_grado_di_giudizio_display }} di
-				{% if o.sede_tribunale %}{{ o.sede_tribunale.comune }}{% else %}(sconosciuto){% endif %}{% else %}({% if o.sede_tribunale %}{{ o.sede_tribunale.comune }}{% else %}sconosciuto{% endif %}){% endif %}
-			</td>
-			<td class="i">{% if o.file_img %}<a href="/odp_pdf/{{ o.file_img }}"><img src="/images/odp_database/pdf.gif"
-						width="25" height="25" alt="Apri immagine" /></a>{% else %}&nbsp;{% endif %}</td>
-			<td class="i">{% if o.file_sch %}<a href="/odp_pdf/{{ o.file_sch }}"><img src="/images/odp_database/pdf.gif"
-						width="25" height="25" alt="Apri scheda" /></a>{% else %}&nbsp;{% endif %}</td>
-			<td class="i">{% if o.file_cmn %}<a href="/odp_pdf/{{ o.file_cmn }}"><img src="/images/odp_database/pdf.gif"
-						width="25" height="25" alt="Apri commento" /></a>{% else %}&nbsp;{% endif %}</td>
-			<td class="a"><a
-					href="/odp_database/search/s_details/?id={{ o.id|stringformat:"s" }}">apri{% ifnotequal o.numero_della_sentenza 0 %}
-					n.{{ o.numero_della_sentenza }}{% else %}...{% endifnotequal %}</a>
-				<div style="display:none;" class="tooltip">
-					<h4>(ALFA solo per amministratori)<br />Interessante per:</h4>
-					<ul>
-						{% if o.so %}<li>ordinaria</li>{% endif %}
-						{% if o.si_it %}<li>invalidit&agrave; temporanea</li>{% endif %}
-						{% if o.si_ip %}<li>invalidit&agrave; permanente</li>{% endif %}
-						{% if o.si_dm %}<li>danno morale</li>{% endif %}
-						{% if o.si_mo %}<li>danno da morte</li>{% endif %}
-						{% if o.si_rp %}<li>responsabilit&agrave; professionale</li>{% endif %}
-						{% if o.si_de %}<li>danno non patrimoniale</li>{% endif %}
-						{% if o.si_codice_assicurazioni %}<li>codice assicurazioni</li>{% endif %}
-						{% if o.si_altro %}<li>altro</li>{% endif %}
-					</ul>
-				</div>
-			</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-</table>
+	<table id="risultati">
+		<caption>{% ifequal obj.count 1 %}
+			1 risultato
+			{% else %}
+			{{ pag.da }} - {{ pag.a }} di {{ pag.totali }} risultati
+			{% endifequal %}</caption>
+		<thead>
+			<tr>
+				<th>Data</th>
+				<th>Organo giudicante</th>
+				<th><abbr title="&Egrave; presente la scansione della sentenza?">IMG</abbr></th>
+				<th><abbr title="&Egrave; presente la scansione della scheda?">SCH</abbr></th>
+				<th><abbr title="&Egrave; presente la scansione dei commenti?">COM</abbr></th>
+				<th>Dettagli</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for o in obj %}
+			<tr>
+				<td>{% if o.data_del_deposito %}{{ o.data_del_deposito }} <abbr
+						title="Data del deposito">(dep.)</abbr>{% else %}{% if o.data_della_sentenza %}{{ o.data_della_sentenza }}
+					<abbr
+						title="Data della sentenza">(sent.)</abbr>{% else %}{% if o.data_della_citazione %}{{ o.data_della_citazione }}
+					<abbr title="Data della citazione">(cit.)</abbr>{% else %}(sconosciuta){% endif %}{% endif %}{% endif %}
+				</td>
+				<td class="giudizio">{% if o.grado_di_giudizio %}{{ o.get_grado_di_giudizio_display }} di
+					{% if o.sede_tribunale %}{{ o.sede_tribunale.comune }}{% else %}(sconosciuto){% endif %}{% else %}({% if o.sede_tribunale %}{{ o.sede_tribunale.comune }}{% else %}sconosciuto{% endif %}){% endif %}
+				</td>
+				{# TODO FILES TODO FILES! #}
+				<td class="i">{% if o.file_img %}<a href="/odp_pdf/{{ o.file_img }}"><img src="{% static 'odp_app/images/pdf.gif' %}"
+							width="25" height="25" alt="Apri immagine" /></a>{% else %}&nbsp;{% endif %}</td>
+				<td class="i">{% if o.file_sch %}<a href="/odp_pdf/{{ o.file_sch }}"><img src="{% static 'odp_app/images/pdf.gif' %}"
+							width="25" height="25" alt="Apri scheda" /></a>{% else %}&nbsp;{% endif %}</td>
+				<td class="i">{% if o.file_cmn %}<a href="/odp_pdf/{{ o.file_cmn }}"><img src="{% static 'odp_app/images/pdf.gif' %}"
+							width="25" height="25" alt="Apri commento" /></a>{% else %}&nbsp;{% endif %}</td>
+				<td class="a"><a
+						href="{% url 'odp_app:sentenza-details' sent_id=o.pk %}">apri{% ifnotequal o.numero_della_sentenza 0 %}
+						n.{{ o.numero_della_sentenza }}{% else %}...{% endifnotequal %}</a>
+					<div style="display:none;" class="tooltip">
+						<h4>(ALFA solo per amministratori)<br />Interessante per:</h4>
+						<ul>
+							{% if o.so %}<li>ordinaria</li>{% endif %}
+							{% if o.si_it %}<li>invalidit&agrave; temporanea</li>{% endif %}
+							{% if o.si_ip %}<li>invalidit&agrave; permanente</li>{% endif %}
+							{% if o.si_dm %}<li>danno morale</li>{% endif %}
+							{% if o.si_mo %}<li>danno da morte</li>{% endif %}
+							{% if o.si_rp %}<li>responsabilit&agrave; professionale</li>{% endif %}
+							{% if o.si_de %}<li>danno non patrimoniale</li>{% endif %}
+							{% if o.si_codice_assicurazioni %}<li>codice assicurazioni</li>{% endif %}
+							{% if o.si_altro %}<li>altro</li>{% endif %}
+						</ul>
+					</div>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 
-<form action="" enctype="application/x-www-form-urlencoded" method="get">
-	{% for campo in query.items %}<input type="hidden" name="{{ campo.0|urlencode }}"
-		value="{{ campo.1|stringformat:"s"|urlencode }}" />{% endfor %}
-	<p style="clear: both; text-align: center;">
-		{% if pag.precedente %}<a
-			href="?inizia_da={{ pag.precedente }}{% for campo in query.items %}&{{ campo.0|urlencode }}={{ campo.1|stringformat:"s"|urlencode }}{% endfor %}">&lt;&lt;
-			Risultati precedenti</a> | {% endif %}
-		Mostra <input type="text" id="quante" name="quante" value="{{ pag.quante }}" size="3" maxlength="3"
-			alt="Numero di risultati da visualizzare" /> risultati per volta: <input type="submit" value="Aggiorna" />
-		{% if pag.prossima %} | <a
-			href="?inizia_da={{ pag.prossima }}{% for campo in query.items %}&{{ campo.0|urlencode }}={{ campo.1|stringformat:"s"|urlencode }}{% endfor %}">Risultati
-			successivi &gt;&gt;</a>{% endif %}
-	</p>
-</form>
+	<form action="" enctype="application/x-www-form-urlencoded" method="get">
+		{% for campo in query.items %}<input type="hidden" name="{{ campo.0|urlencode }}"
+			value="{{ campo.1|stringformat:"s"|urlencode }}" />{% endfor %}
+		<p style="clear: both; text-align: center;">
+			{% if pag.precedente %}<a
+				href="?inizia_da={{ pag.precedente }}{% for campo in query.items %}&{{ campo.0|urlencode }}={{ campo.1|stringformat:"s"|urlencode }}{% endfor %}">&lt;&lt;
+				Risultati precedenti</a> | {% endif %}
+			Mostra <input type="text" id="quante" name="quante" value="{{ pag.quante }}" size="3" maxlength="3"
+				alt="Numero di risultati da visualizzare" /> risultati per volta: <input type="submit" value="Aggiorna" />
+			{% if pag.prossima %} | <a
+				href="?inizia_da={{ pag.prossima }}{% for campo in query.items %}&{{ campo.0|urlencode }}={{ campo.1|stringformat:"s"|urlencode }}{% endfor %}">Risultati
+				successivi &gt;&gt;</a>{% endif %}
+		</p>
+	</form>
 
-<p style="clear: both; text-align: right;"><a href="#top">Torna all'inizio</a> | <a href="/odp_database/search/">Nuova
-		ricerca</a> | <a href="http://validator.w3.org/check?uri=referer"><img
-			src="/images/odp_database/valid-xhtml.gif" alt="Markup XHTML 1.0 Strict valido" width="78" height="13"
-			style="border:none;" /></a></p>
+	<p style="clear: both; text-align: right;"><a href="#top">Torna in cima alla pagina</a> | <a href="{% url 'odp_app:home' %}">Nuova
+			ricerca</a> | <a href="http://validator.w3.org/check?uri=referer"><img
+				src="{% static 'odp_app/images/valid-xhtml.gif' %}" alt="Markup XHTML 1.0 Strict valido" width="78" height="13"
+				style="border:none;" /></a></p>
 
-<script type="text/javascript">
-	$(window).ready(function () {
-		cassetto('legenda', 'titolo_legenda', 'testo_legenda')
-	});
-</script>
+	<script type="text/javascript">
+		$(window).ready(function () {
+			cassetto('legenda', 'titolo_legenda', 'testo_legenda')
+		});
+	</script>
 {% else %}
-
-La ricerca non ha restituito risultati.
-
+	La ricerca non ha restituito risultati.
 {% endif %}
 
 {% endblock %}

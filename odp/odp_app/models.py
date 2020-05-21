@@ -24,12 +24,14 @@ from django.dispatch import receiver
 
 
 # User registration with confirmation email
+# TODO: ELIMINARE QUESTA CLASSE: EITHER USARE class ConfirmedUser(User) 
+# oppure banalmente usare il flag actuve dei standard django users!
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email_confirmed = models.BooleanField(default=False)
-    # TODO vedere di sistemare Nome e Cognome
-    first_name = models.CharField(max_length=30, blank=True)
-    last_name = models.CharField(max_length=30, blank=True)
+    # TODO vedere di sistemare Nome e Cognome 
+    first_name = models.CharField(max_length=30, blank=True) #TODO self.user.first_name
+    last_name = models.CharField(max_length=30, blank=True) #TODO self.user.last_name
 
 
 @receiver(post_save, sender=User)
@@ -460,7 +462,7 @@ class Sentenza(models.Model):
         null=True,
         blank=False,
         on_delete=models.PROTECT,
-    )
+    ) #TODO (VEDI LINESTR)
     assicurazione = models.ManyToManyField(
         Assicurazione, verbose_name="assicurazione", blank=False
     )  # filter_interface=models.HORIZONTAL,
@@ -521,13 +523,14 @@ class Sentenza(models.Model):
         #                linestr = '(' + link[1+link.rfind('/'):link.rfind('.')] + ') '
 
         if self.grado_di_giudizio == u"":
-            linestr = self.sede_tribunale.comune
+            linestr = self.sede_tribunale.comune #TODO non possibile: questo è blank = True, se 
+            # si fa il print e sede_tribunale è none crasha tutto. Fix!!
         else:
             linestr = (
                 self.get_grado_di_giudizio_display()
                 + u" di "
                 + self.sede_tribunale.comune
-            )
+            ) # TODO VEDI SOPRA
 
         if self.data_della_sentenza:
             linestr += u" (" + date(self.data_della_sentenza, "j/m/Y") + u")"

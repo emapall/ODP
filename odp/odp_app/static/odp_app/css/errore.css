@@ -1,0 +1,20 @@
+h1 { 
+	text-align: left; 
+}
+div#messaggio {
+	font-size: medium;
+	padding: 1em 2em 2em;
+	border: 3px dashed red;
+	margin-top: 3em;
+	background: white url(/images/odp_database/logosfondo-chiaro.png) center center no-repeat fixed;
+}
+div#img-errore {
+	float: left;
+	margin: 1.5em 1.5em 1em 0;
+}
+p#btn {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	margin: 0.5em;
+}
