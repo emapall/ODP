@@ -14,7 +14,7 @@
 
 {% block topleft %}
 | 	<a href="{% url 'odp_app:home' %}" name="top" id="top">
-			<img alt="Cerca" width="20" height="20" src="/images/odp_database/search.gif" />
+			<img alt="Cerca" width="20" height="20" src="{% static 'odp_app/images/search.gif' %}" />
 			Nuova ricerca
 		</a>
 	{% if user.is_staff %}
@@ -42,9 +42,9 @@
 				{% ifnotequal undanneggiato.sesso 'N' %}
 					<img 
 						{% if undanneggiato.sesso == 'F' %} 
-							src="/images/odp_database/female.png" alt="Femmina"
+							src="{% static 'odp_app/images/female.png' %}" alt="Femmina"
 						{% elif undanneggiato.sesso == 'M' %}
-							src="/images/odp_database/male.png" alt="Maschio"
+							src="{% static 'odp_app/images/male.png' %}" alt="Maschio"
 						{% endif %} 
 					height="30" width="30" class="icona" /> 
 				{% endifnotequal %}
@@ -65,13 +65,13 @@
 		{% if sent.file_img and not sent.file_sch or not sent.file_sch and sent.file_img  %}
 			<ul class="materiali sx">
 				{# TODO FILE DEPLOYMENT #}
-				{% if sent.file_img %}<li><a href="/odp_pdf/{{ sent.file_img }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scansione</a></li>{% endif %}
-				{% if sent.file_sch %}<li><a href="/odp_pdf/{{ sent.file_sch }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scheda</a></li>{% endif %}
-				{% if sent.file_cmn %}<li><a href="/odp_pdf/{{ sent.file_cmn }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri il commento</a></li> {% endif %}
+				{% if sent.file_img %}<li><a href="/odp_pdf/{{ sent.file_img }}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scansione</a></li>{% endif %}
+				{% if sent.file_sch %}<li><a href="/odp_pdf/{{ sent.file_sch }}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scheda</a></li>{% endif %}
+				{% if sent.file_cmn %}<li><a href="/odp_pdf/{{ sent.file_cmn }}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri il commento</a></li> {% endif %}
 			</ul>
 			<ul class="materiali half dx">
 			{% if sent.ocr %}
-				<li><a href="#ocr"><img src="/images/odp_database/clipboard.gif" alt="Testo semplice" height="25" width="25" class="icona" /> Vai all'OCR</a></li>
+				<li><a href="#ocr"><img src="{% static 'odp_app/images/clipboard.gif' %}" alt="Testo semplice" height="25" width="25" class="icona" /> Vai all'OCR</a></li>
 			{% endif %}
 		</ul>
 		{% endif %}
@@ -81,15 +81,15 @@
 			{% if sent.file_img or sent.file_sch %}
 				<ul class="materiali sx">
 				{# TODO FILES, + capire perchè è sdoppiato..? #}
-					{% if sent.file_img %}<li><a href="/odp_pdf/{{ sent.file_img }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scansione</a></li>{% endif %}
-					{% if sent.file_sch %}<li><a href="/odp_pdf/{{ sent.file_sch }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scheda</a></li>{% endif %}
+					{% if sent.file_img %}<li><a href="/odp_pdf/{{ sent.file_img }}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scansione</a></li>{% endif %}
+					{% if sent.file_sch %}<li><a href="/odp_pdf/{{ sent.file_sch }}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scheda</a></li>{% endif %}
 				</ul>
 			{% endif %}
 			{% if sent.file_cmn or sent.ocr %}
 				<ul class="materiali half dx">
-					{% if sent.file_cmn %}<li><a href="/odp_pdf/{{ sent.file_cmn }}"><img src="/images/odp_database/pdf.gif" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri il commento</a></li> {% endif %}
+					{% if sent.file_cmn %}<li><a href="/odp_pdf/{{ sent.file_cmn }}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri il commento</a></li> {% endif %}
 					{% if sent.ocr %}{# qua è tutto sdoppiato TODO #}
-					<li><a href="#ocr"><img src="/images/odp_database/clipboard.gif" alt="Testo semplice" height="25" width="25" class="icona" /> Vai all'OCR</a></li>
+					<li><a href="#ocr"><img src="{% static 'odp_app/images/clipboard.gif' %}" alt="Testo semplice" height="25" width="25" class="icona" /> Vai all'OCR</a></li>
 					{% endif %}
 				</ul>
 			{% endif %}
@@ -193,7 +193,7 @@
 	</div>
 	{% endif %}
 
-	<p style="clear: both; text-align: right;"><a href="#top">Torna in cima alla pagina</a> | <a href="{% url 'odp_app:home' %}">Nuova ricerca</a> |	<a href="http://validator.w3.org/check?uri=referer"><img src="/images/odp_database/valid-xhtml.gif" alt="Markup XHTML 1.0 Strict valido" width="78" height="13" style="border:none;" /></a></p>
+	<p style="clear: both; text-align: right;"><a href="#top">Torna in cima alla pagina</a> | <a href="{% url 'odp_app:home' %}">Nuova ricerca</a> |	<a href="http://validator.w3.org/check?uri=referer"><img src="{% static 'odp_app/images/valid-xhtml.gif' %}" alt="Markup XHTML 1.0 Strict valido" width="78" height="13" style="border:none;" /></a></p>
 
 {% else %} {# sta cosa si può verificare nel python invece che indentare tutto il context #}
 	Si &egrave; verificato un errore dal lato server!

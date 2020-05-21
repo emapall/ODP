@@ -12,7 +12,7 @@
 
 {% block topleft %}
 | 		<a href="{% url 'odp_app:home' %}" name="top" id="top">
-			<img alt="Cerca" width="20" height="20" src="/images/odp_database/search.gif" />
+			<img alt="Cerca" width="20" height="20" src="{% static 'odp_app/images/search.gif' %}"/>
 			Nuova ricerca
 		</a>
 	{% if user.is_staff %}
@@ -58,11 +58,11 @@
 				<tr><th scope="row">Liquidazione totale:</th><td style="border-top:1px solid black; font-weight:bold;">{{ infort.liquidazione_totale|default:"0,00" }} &euro;</td></tr>
 			</table>
 			</div>
-			
+
 			{% if infort.sentenza %}
 				<p id="sentenza">
 				<a href="{% url 'odp_app:sentenza-details' sent_id=infort.sentenza.pk %}"{# "/odp/sentenza?id={{ infort.sentenza.id|stringformat:"s" }}" #}>
-					<img src="/images/odp_database/martello.png" alt="Sentenza" height="29" width="29" class="icona" id="martello" />
+					<img src="{% static 'odp_app/images/martello.png' %}" alt="Sentenza" height="29" width="29" class="icona" id="martello" />
 					Vai alla sentenza: {{ infort.sentenza }}
 				</a>
 				</p>
@@ -422,7 +422,7 @@
 			</p>
 			<p style="clear: both; text-align: right;">
 				<a href="#top">Torna in cima alla pagina</a> | <a h	ref="/odp_database/search/">Nuova ricerca</a> | <a href="{% url 'odp_app:home' %}">
-				<img src="/images/odp_database/valid-xhtml.gif" alt="Markup XHTML 1.0 Strict valido" width="78" height="13" style="border:none;" />
+				<img src="{% static 'odp_app/images/valid-xhtml.gif' %}" alt="Markup XHTML 1.0 Strict valido" width="78" height="13" style="border:none;" />
 				</a>
 			</p>
 	

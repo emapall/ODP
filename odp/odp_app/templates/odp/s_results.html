@@ -31,7 +31,7 @@ Risultati{% endblock %}
 
 {% block topleft %}
 	| <a href="{% url 'odp_app:home' %}" name="top" id="top">
-	<img alt="Cerca" width="20" height="20" src="/images/odp_database/search.gif" /> Nuova ricerca
+	<img alt="Cerca" width="20" height="20" src="{% static 'odp_app/images/search.gif' %}" /> Nuova ricerca
 	</a>
 {% endblock %}
 
@@ -87,11 +87,11 @@ Risultati{% endblock %}
 					{% if o.sede_tribunale %}{{ o.sede_tribunale.comune }}{% else %}(sconosciuto){% endif %}{% else %}({% if o.sede_tribunale %}{{ o.sede_tribunale.comune }}{% else %}sconosciuto{% endif %}){% endif %}
 				</td>
 				{# TODO FILES TODO FILES! #}
-				<td class="i">{% if o.file_img %}<a href="/odp_pdf/{{ o.file_img }}"><img src="/images/odp_database/pdf.gif"
+				<td class="i">{% if o.file_img %}<a href="/odp_pdf/{{ o.file_img }}"><img src="{% static 'odp_app/images/pdf.gif' %}"
 							width="25" height="25" alt="Apri immagine" /></a>{% else %}&nbsp;{% endif %}</td>
-				<td class="i">{% if o.file_sch %}<a href="/odp_pdf/{{ o.file_sch }}"><img src="/images/odp_database/pdf.gif"
+				<td class="i">{% if o.file_sch %}<a href="/odp_pdf/{{ o.file_sch }}"><img src="{% static 'odp_app/images/pdf.gif' %}"
 							width="25" height="25" alt="Apri scheda" /></a>{% else %}&nbsp;{% endif %}</td>
-				<td class="i">{% if o.file_cmn %}<a href="/odp_pdf/{{ o.file_cmn }}"><img src="/images/odp_database/pdf.gif"
+				<td class="i">{% if o.file_cmn %}<a href="/odp_pdf/{{ o.file_cmn }}"><img src="{% static 'odp_app/images/pdf.gif' %}"
 							width="25" height="25" alt="Apri commento" /></a>{% else %}&nbsp;{% endif %}</td>
 				<td class="a"><a
 						href="{% url 'odp_app:sentenza-details' sent_id=o.pk %}">apri{% ifnotequal o.numero_della_sentenza 0 %}
@@ -133,7 +133,7 @@ Risultati{% endblock %}
 
 	<p style="clear: both; text-align: right;"><a href="#top">Torna in cima alla pagina</a> | <a href="{% url 'odp_app:home' %}">Nuova
 			ricerca</a> | <a href="http://validator.w3.org/check?uri=referer"><img
-				src="/images/odp_database/valid-xhtml.gif" alt="Markup XHTML 1.0 Strict valido" width="78" height="13"
+				src="{% static 'odp_app/images/valid-xhtml.gif' %}" alt="Markup XHTML 1.0 Strict valido" width="78" height="13"
 				style="border:none;" /></a></p>
 
 	<script type="text/javascript">

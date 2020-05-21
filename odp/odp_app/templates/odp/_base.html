@@ -17,7 +17,7 @@
 			Persona{% endblock %}</h1>{% endblock %}
 		{# TODO IL LINK AL LEEDERLAB #}
 		<p class="angolo">
-			<a href="https://www.lider-lab.sssup.it/lider/"><img alt="Home" width="20" height="20" src="/images/odp_database/home.gif" />
+			<a href="https://www.lider-lab.sssup.it/lider/"><img alt="Home" width="20" height="20" src="{% static 'odp_app/images/home.gif' %}" />
 				LIDER-Lab Homepage
 			</a>
 			| 
@@ -31,7 +31,7 @@
 				<p class="logout">
 				{{ user.username }} | 
 					<a href="{% url 'odp_app:logout' %}">
-						<img alt="Logout" width="20" height="20" src="/images/odp_database/exit.gif" /> {# TODO MA PERCHE sta immagine #}
+						<img alt="Logout" width="20" height="20" src="{% static 'odp_app/images/exit.gif' %}" /> {# TODO MA PERCHE sta immagine #}
 						Esci dalla banca dati
 					</a>
 				</p>
@@ -39,7 +39,7 @@
 				{# MA PERCHE TODO è orribile..... #}
 				<p class="logout">
 					<a href="#" onclick="javascript:window.close(); return false;">
-						<img alt="Logout" width="20" height="20" src="/images/odp_database/exit.gif" />
+						<img alt="Logout" width="20" height="20" src="{% static 'odp_app/images/exit.gif' %}" />
 						Chiudi la finestra
 					</a>
 				</p>
