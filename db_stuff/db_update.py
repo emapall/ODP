@@ -172,7 +172,6 @@ def save_row(row_json_dict,model_name):
         i.save()
 
     print("Finished saving instance",i)
-    input("Continue with next row")
     return i.pk
 
 def save_model(instances_list, model_name):
@@ -186,8 +185,7 @@ def save_model(instances_list, model_name):
         n += 1
     
     print("Saved table: ",model_name, "last pk:",idx, "n:",n)
-    input("Continuare")
-    input("segur")
+    input("Continue")
 
 
 def group1():
