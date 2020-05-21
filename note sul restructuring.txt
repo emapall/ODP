@@ -14,7 +14,7 @@ RICERCHE
     
 
     gifs e roba vaira
-    ./var/www/archivio/images/odp_database/male.png
+./var/www/archivio/images/odp_database/male.png
 ./var/www/archivio/images/odp_database/clipboard.gif
 ./var/www/archivio/images/odp_database/valid-xhtml.gif
 ./var/www/archivio/images/odp_database/search.gif
@@ -50,6 +50,9 @@ RICERCHE
 ./var/www/images/odp_database/tick.png
 ./var/www/images/odp_database/logosfondo-chiaro.png
 ./var/www/images/odp_database/redcross.gif
+
+rexeg di ricerca immagini:
+(gif|img|jp(e)?g|img|png)
 
 I CSS SONO SU /var/www/styles/odp_database
 
