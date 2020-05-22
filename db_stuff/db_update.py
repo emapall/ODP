@@ -248,8 +248,6 @@ def group7():
         "TrendProfiloRilevanteContainer",
     ]
 
-def aux():
-    pass
 
 def save_group(ng):
     # open the relative file
@@ -265,7 +263,6 @@ def save_group(ng):
         5:group5,
         6:group6,
         7:group7,
-        99:aux,
     }
     handle = handle_dict[ng]
     models_list = handle() # get modellist
