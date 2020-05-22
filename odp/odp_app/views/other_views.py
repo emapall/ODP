@@ -81,6 +81,7 @@ def do_paging_response(request, obj, template):
 
     return resp
 
+@login_required
 def s_results(request):
     """
         Praticamente è uguale a new_s_results, ma 
@@ -154,10 +155,10 @@ def s_results(request):
             ) 
         # https://docs.djangoproject.com/en/3.0/ref/models/querysets/#or
         if not request.user.is_staff:
-            obj = obj.filter(forza_esclusione=False)
+            obj = obj.filter(forza_esclusione=False) # false perchè forza esclusione
+            # se è true allora va esclusa
 
         obj = obj.order_by("-data_del_deposito")
-        print("FINITO FILTRAGGIO",len(obj)) #TODO DEBUG
     except ValidationError as e:
         mess = (
             "Hai inserito una ricerca non valida:<br/><strong>"
@@ -169,6 +170,7 @@ def s_results(request):
     else:
         return do_paging_response(request, obj, "odp/s_results.html")
 
+@login_required
 def new_s_results(request):
     # TODO add column for matched infortunati
 
@@ -276,7 +278,7 @@ def new_s_results(request):
         if request.GET.get("sede_tribunale"):
             sede = request.GET["sede_tribunale"]
             obj = obj.filter(sentenza__sede_tribunale__comune__icontains=sede)
-
+        
         # Ricerca testuale nell'OCR che supporta virgolette, DA SISTEMARE (matchare le parole)
         if request.GET.get("contenuto_testuale"):
             query = request.GET["contenuto_testuale"]
@@ -291,6 +293,11 @@ def new_s_results(request):
             for normal_match in normal_matches:
                 for word in normal_match.split():
                     obj = obj.filter(sentenza__ocr__icontains=word.strip())
+        
+        #security check
+        if not request.user.is_staff:
+            obj = obj.filter(forza_esclusione=False) # false perchè forza esclusione
+            # se è true allora va esclusa
 
         obj = obj.order_by("-sentenza__data_del_deposito")
 
@@ -330,16 +337,17 @@ def s_details(request,sent_id):
     else:
         suoi_infortunati = sent.infortunati.all()
         cont = TrendProfiloRilevanteContainer.objects.filter(sentenza=sent)
-        if not request.user.is_staff:
-            if sent.forza_esclusione:
-                return render(
-                    request,
-                    "errore.html",
-                    {
-                        "mess": "Questa scheda sentenza non &egrave; ancora pronta per la pubblicazione.",
-                        "redir": request.META["HTTP_REFERER"],
-                    },
-                )
+        if sent.forza_esclusione and (not request.user.is_staff):
+            return render(
+                request,
+                "errore.html",
+                {
+                    "mess": "Questa scheda sentenza non &egrave; ancora pronta per la pubblicazione.",
+                    "redir": request.META["HTTP_REFERER"],
+                },
+            )
+        # security check: if at LEAST 1 INFORTUNATO IS not pubblicabile, 
+        # then throw an error
         if not request.user.is_staff:
             for uninfortunato in suoi_infortunati:
                 if not uninfortunato.pubblicabile:
@@ -384,6 +392,7 @@ def i_details(request, infort_id):
                 "mess": "Non esiste un infortunato con questo ID. Se hai salvato questo indirizzo, potrebbe essere stato cancellato o spostato. Per favore esegui di nuovo la ricerca.",
             }
         )
+    # TODO: la security farla qui, non nel template (pubblicabile/staff :\)
     return render(
         request,
         "odp/i_details.html",
@@ -393,7 +402,7 @@ def i_details(request, infort_id):
     #     return HttpResponsePermanentRedirect(search_url)
 
 
-
+@login_required
 def new_search(request):
     return render(request, "odp/new_search.html", {})
 
@@ -421,8 +430,6 @@ def search_noscript(request):
 
 
 ############## AJAX da /search #################
-
-
 @cache_page(2 * 60 * 60)  # cachea la json per 2 ore
 def json_assicurazioni(request):
     dati = Assicurazione.objects.all()
@@ -430,7 +437,6 @@ def json_assicurazioni(request):
         json.dumps(tuple(dati.values()), ensure_ascii=False),
         content_type="application/json; charset=UTF-8",
     )
-
 
 @cache_page(2 * 60 * 60)
 def json_professioni(request):
@@ -440,7 +446,6 @@ def json_professioni(request):
         content_type="application/json; charset=UTF-8",
     )
 
-
 @cache_page(2 * 60 * 60)
 def json_lesioni(request):
     dati = Lesione.objects.all()
@@ -449,7 +454,6 @@ def json_lesioni(request):
         content_type="application/json; charset=UTF-8",
     )
 
-
 @cache_page(2 * 60 * 60)
 def json_postumi(request):
     dati = Postumo.objects.all()
@@ -457,7 +461,6 @@ def json_postumi(request):
         json.dumps(tuple(dati.values()), ensure_ascii=False),
         content_type="application/json; charset=UTF-8",
     )
-
 
 @cache_page(2 * 60 * 60)
 def json_profili_rilevanti(request):
@@ -474,14 +477,8 @@ def json_profili_rilevanti(request):
 
 ###### autenticazione ##########################
 
-
-
-
-
-
 def account_activation_sent(request):
     return render(request, "odp/account_activation_sent.html")
-
 
 def check_auth(view_func):
     print("check aurth",view_func)
@@ -492,11 +489,11 @@ def check_auth(view_func):
     )
 
 
-new_s_results = check_auth(new_s_results)
-s_results = check_auth(s_results)
+# new_s_results = check_auth(new_s_results)
+# s_results = check_auth(s_results)
 # s_details = check_auth(s_details)
 # i_details = check_auth(i_details)
 """search_noscript = user_passes_test(
     lambda u: u.is_authenticated(), login_url=var_login_url
 )(search_noscript)"""
-new_search = check_auth(new_search)
+# new_search = check_auth(new_search)

@@ -36,6 +36,7 @@
 	{% if sent.infortunati.all %}<ul>
 		{# TODO: INFORTUNATI? CASOMAI INFORTUNATO_SET!! #}
 		{# TODO: TORGLIERE TUTTI STI IFEQUAL, RIFARLO COME DIO COMANDA (INDENTATO) #}
+		{# TODO: INFORTUNATI, PUBBLICABILE E FORZA ESCLUSIONE? #}
 		{% for undanneggiato in sent.infortunati.all %}
 			<li>
 			{% if undanneggiato.sesso %}
@@ -101,35 +102,33 @@
 
 	<div class="clr"></div>
 
-
-
-
 	<div class="box">
 
 	{% ifnotequal sent.profili_rilevanti.count 0 %}
-	<div class="box half dx">
-		<h2>Profili rilevanti:</h2>
-			<ul>
-				{% for c in cont %}
-					<h4>{{ c.trend.trend }}</h4>
-					{% for p in c.profili_rilevanti.all %}
-						<li>
-							{{ p.profilo }}
-						</li>
+		<div class="box half dx">
+			<h2>Profili rilevanti:</h2>
+				<ul>
+					{% for c in cont %}
+						<h4>{{ c.trend.trend }}</h4>
+						{% for p in c.profili_rilevanti.all %}
+							<li>
+								{{ p.profilo }}
+							</li>
+						{% endfor %}
 					{% endfor %}
-				{% endfor %}
-			</ul>
-			{% if sent.note_profili_rilevanti %}
-				<h4>Note:</h4>
-				<p>{{ sent.note_profili_rilevanti }}</p>
-			{% endif %}
-	</div>
+				</ul>
+				{% if sent.note_profili_rilevanti %}
+					<h4>Note:</h4>
+					<p>{{ sent.note_profili_rilevanti }}</p>
+				{% endif %}
+		</div>
 	{% endifnotequal %}
 
 
 	<h2>Informazioni generali</h2>
 
 	<table>
+	{# TODO: AUTH IS CHECKED IN VIEW, BUT REDUNDANCY NEVER HURTS #}
 	{% if sent.forza_esclusione %} <tr><th>Esclusione forzata:</th><td><font color="red"><b>INVISIBILE AL PUBBLICO</b></font></td></tr>  {% endif %}
 		<tr><th>Grado di giudizio:</th><td>{{ sent.get_grado_di_giudizio_display }}</td></tr>
 	{% if sent.numero_della_sezione %}	<tr><th>Numero della sezione:</th><td>{{ sent.numero_della_sezione }}</td></tr>{% endif %}
