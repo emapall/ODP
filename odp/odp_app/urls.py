@@ -14,6 +14,7 @@ urlpatterns = [
     # .....maybe?? .
     # path("search/d_results/", core_views.d_results), # NOT NEEDED, INCORPORATED IN NEW_S_RESULTS
     # infortunato and sentenza details
+    path("sentenza/<int:sent_id>/<str:field_name>",core_views.get_file,name="get-file"),
     path("sentenza/<int:sent_id>", core_views.s_details,name="sentenza-details"),
     path("infortunato/<int:infort_id>/", core_views.i_details,name="infortunato-details"),
    
