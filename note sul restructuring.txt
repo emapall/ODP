@@ -68,3 +68,17 @@ https://stackoverflow.com/questions/5861280/gitignore-folder-vs-folder
 
 
 E JQUERY.JS? che è quella roba? non viene usata quasi mai.
+
+
+SICUREZZA E FORZA ESCLUSIONE:
+
+alcuni check sono fatti nei template (infortunato details), mentre altri nelle 
+view: s_results, new_s_results (aggiunto nuovo), s_details
+
+Regola: se c'è anche solo un infortunato non pubblicabile, o la sentenza ha forza esclusione allora i dettagli della sentenza non sono visibili
+Regola: se infortunato non è pubblicabile, i suoi dettagli non sono visibili
+
+NOTA - PROBLEMA: perchè in infortunato-results le sentenze con infortunati non pubblicabili, e le sentenze con forza esclusione sono visualizzate nella lista, mentre nell'old s_results non lo erano, e in new_s_results si (ma ora no per coerenza)? O non lo sono mai, o lo sono sempre. 
+
+TODO: per l'infortunato la pubblicabilità viene controllata nel template.
+Pls no, farlo nella vista

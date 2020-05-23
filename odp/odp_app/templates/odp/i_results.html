@@ -53,6 +53,7 @@ $(window).ready(function () {
 		{% for o in obj %}
 		<tr>
 			<td{% ifequal o.sesso 'M' %} class="m"{% endifequal %}{% ifequal o.sesso 'F' %} class="f"{% endifequal %}{% ifequal o.sesso 'N' %} class="n"{% endifequal %}>{% if o.eta %}{{o.eta}}{% else %}{% ifequal o.est_maggiorenne '1' %}<abbr title="Maggiorenne">&gt;18</abbr>{% endifequal %}{% ifequal o.est_maggiorenne '0' %}<abbr title="Minorenne">&lt;18</abbr>{% endifequal %}{% endif %}/{% ifequal o.sesso "N" %}?{% else %}{{ o.sesso }}{% endifequal %}</td>
+			{# TODO: SECURITY (vedere vista i_results) #}
 			<td class="p">{% ifequal o.pubblicabile 1 %}<img src="{% static 'odp_app/images/greentick.gif' %}" width="15" height="15" alt="S&igrave;" />{% else %}<img src="{% static 'odp_app/images/redcross.gif' %}" width="15" height="15" alt="No" />{% endifequal %}</td>
 			<td><a href="{% url 'odp_app:sentenza-details' sent_id=o.sentenza.pk %}">{{ o.sentenza }}</a></td>
 			<td><a href="{% url 'odp_app:infortunato-details' infort_id=o.pk %}">{{ o.professione }}</a></td>

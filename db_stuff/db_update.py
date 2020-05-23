@@ -27,6 +27,9 @@ debug_flag = True
 
 MEDIA_BACKUP_PATH = "/home/ema/projects/LiderLab/odp/ODP/db_stuff/copia_media/media/copia-media"
 DB_STUFF_PATH = "/home/ema/projects/LiderLab/odp/ODP/db_stuff"
+LOGFILE_REL_PATH = "errori.log"
+
+
 def save_fileField(fieldname,jsonval,model_inst):
     # jsonval is the old path -> get the newname
     if jsonval == None:
@@ -37,6 +40,7 @@ def save_fileField(fieldname,jsonval,model_inst):
     try:
         f = open(os.path.join(MEDIA_BACKUP_PATH,file_relpath),"rb") #reading binary is vital!
     except:
+        global logfile
         logfile.write("FILE NOT FOUND" + file_relpath+"\n")
         print("---------FILE NOT FOUND:"+file_relpath+"---------")
         input()
@@ -172,7 +176,6 @@ def save_row(row_json_dict,model_name):
         i.save()
 
     print("Finished saving instance",i)
-    input("Continue with next row")
     return i.pk
 
 def save_model(instances_list, model_name):
@@ -186,12 +189,11 @@ def save_model(instances_list, model_name):
         n += 1
     
     print("Saved table: ",model_name, "last pk:",idx, "n:",n)
-    input("Continuare")
-    input("segur")
+    input("Continue")
 
 
 def group1():
-    models_list = [
+    return [
         "Regione",
         "Provincia",
         "Comune",
@@ -202,17 +204,13 @@ def group1():
         "Responsabilita",
     ]
 
-    return models_list
-
 def group2():
-    models_list = [
+    return [
         "Sentenza",
     ]
 
-    return models_list
-
 def group3():
-    modes_list = [
+    return [
         "Lesione",
         "Postumo",
         "Postumo_tabulato",
@@ -226,8 +224,6 @@ def group3():
         "ProvaDelDP",
         "TrendLiquidazione",
     ]    
-
-    return models_list
 
 def group4():
     return [
@@ -251,23 +247,30 @@ def group7():
     ]
 
 
-def save_group(ng):
+def save_group(ng, handle_dict=None):
     # open the relative file
     json_rel_path = "gruppo"+str(ng)+".json"
     f = open(os.path.join(DB_STUFF_PATH,json_rel_path),"r")
     db_dict = json.load(f)
+    
+    # open in append mode
+    global logfile 
+    logfile = open(os.path.join(DB_STUFF_PATH,LOGFILE_REL_PATH),"a")
+
     #get the function to call
-    handle_dict = {
-        1:group1,
-        2:group2,
-        3:group3,
-        4:group4,
-        5:group5,
-        6:group6,
-        7:group7,
-    }
+    if handle_dict is None:
+        handle_dict = {
+            1:group1,
+            2:group2,
+            3:group3,
+            4:group4,
+            5:group5,
+            6:group6,
+            7:group7,
+        }
     handle = handle_dict[ng]
     models_list = handle() # get modellist
+    print("Moldels list for this group:",models_list)
     # save each model in model list (in the group)
     for modelname in models_list:
         save_model(
@@ -275,13 +278,16 @@ def save_group(ng):
                 model_name=modelname,
                 )
     pk_rel_path = "pk_remap.json"
+    # open with write because it's the pk_remap obj that gets updated, 
+    # the file can be overwritten
     pk_file = open(os.path.join(DB_STUFF_PATH,pk_rel_path),"w")
     json.dump(pk_remap,pk_file)
     pk_file.close()
     logfile.close()
 
-
 models_list = []
+global logfile
+
 try: 
     # read pks  
     pk_rel_path = "pk_remap.json" 
@@ -298,8 +304,5 @@ try:
 except IOError:
     print("File con le pk non trovato!")
     pk_remap = {}
-
-logfile_rel_path = "errori.log"
-logfile = open(os.path.join(DB_STUFF_PATH,logfile_rel_path),"w")
 
 exec(open(os.path.join(DB_STUFF_PATH,"models_dict.py"),"r").read())
