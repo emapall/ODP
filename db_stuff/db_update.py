@@ -25,7 +25,7 @@ global debug_flag
 debug_flag = True
 
 
-MEDIA_BACKUP_PATH = "DA DEFINIRE!!!"
+MEDIA_BACKUP_PATH = "/home/allievo/odp_files/odp/ODP/db_stuff/copia_media"
 DB_STUFF_PATH = "/home/allievo/odp_files/odp/ODP/db_stuff"
 LOGFILE_REL_PATH = "errori.log"
 
