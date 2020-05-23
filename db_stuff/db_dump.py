@@ -67,10 +67,6 @@ def write_rule(fieldval,t):
             return None
     if t == "file":
         try:
-            if "sir_tiff/2001_12136" in fieldval.path:
-                print("sir sgualdreffo trovato!!!!!!")
-                raw_input()
-                return None
             return fieldval.path #IT'S A STR!!!
         except ValueError:
             return None
@@ -106,15 +102,12 @@ def create_pk_remap(names_list):
 
     return pk_remap
 
-
-
 def scale_down(full_list,scaledown):
     global ng
     
     if scaledown is None and ng != 4:
         return full_list
-    
-    
+        
     object_list = []
     if ng == 2:
         for o in full_list:
@@ -131,6 +124,7 @@ def scale_down(full_list,scaledown):
             return object_list
 
         # read the pk and check if infortunato is in the sentenze's
+        # NOTE: SI POTEVA FARE MEGLIO, CON GLI EXCLUDE/filter: più rapido
         pk_remap = create_pk_remap("Sentenza")
         for o in full_list:
             if o.pk in INFORTUNATO_BLACKLIST:
@@ -159,9 +153,6 @@ def scale_down(full_list,scaledown):
 
     return full_list
 
-
-
-
 def populate_model_dict(model_dict,model_name, scaledown = None):
     m_obj = model_dict["model_obj"] #class oject of the specific model
     instances_list = [] # list of instances ( == db rows) of the model
@@ -177,7 +168,7 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
             try:
                 field = getattr(m_inst, fieldname) # get the value of the field for that instance
             except:
-                print fieldname
+                print(fieldname,"for instance with local pk:", getattr(m_inst,"pk")) 
                 assert(False)
             assert(fieldname not in instance_dict)
             # print "provo a salvare field", fieldname,t,field
@@ -195,14 +186,14 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
                 instance_dict.update({fieldname:write_rule(field,t)})
         # files
         if "files_list" in model_dict.keys():
-            for fieldname, t in model_dict["files_list"].items():
+            for fieldname in model_dict["files_list"]:
                 try:
                     field = getattr(m_inst, fieldname) # get the value of the field for that instance
                 except:
-                    print fieldname
+                    print (fieldname,":file not found for instance with local pk",getattr(m_inst,"pk"))
                     assert(False)
                 assert(fieldname not in instance_dict)
-                instance_dict.update({fieldname:write_rule(field,t)})
+                instance_dict.update({fieldname:write_rule(field,"file")})
 
         instance_dict.update({"old_pk":int(m_inst.pk)})
         instances_list.append(instance_dict) 
@@ -234,7 +225,7 @@ def group2():
     return models_list
 
 def group3():
-    modes_list = [
+    return  [
         "Lesione",
         "Postumo",
         "Postumo_tabulato",
@@ -247,9 +238,7 @@ def group3():
         "ProvaDelDNP",
         "ProvaDelDP",
         "TrendLiquidazione",
-    ]    
-
-    return models_list
+    ]
 
 def group4():
     return [
@@ -271,6 +260,7 @@ def group7():
     return [
         "TrendProfiloRilevanteContainer",
     ]
+
 def save_group(ngr, scaledown = None):
     global ng
     ng = ngr
@@ -294,7 +284,7 @@ def save_group(ngr, scaledown = None):
                 scaledown=scaledown
             )
         print("m_name",m_name,"keys:",models_dict[m_name].keys())
-        print("----------------------------FINITO MODELLO",m_name)
+        print("----------------------------finished model",m_name)
         raw_input()
 
     out = open("gruppo"+str(ng)+".json","w")
