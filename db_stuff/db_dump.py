@@ -39,7 +39,7 @@ import random, json
 from decimal import Decimal
 
 
-INFORTUNATO_BLACKLIST = [3625, 4658, 4684, 4685, 5221, 5284, 5295, 5310, 5333,]
+INFORTUNATO_BLACKLIST = [3625, 4658, 4684, 4685, 5221, 5284, 5295, 5310, 5333,5571,3841]
 
 def write_rule(fieldval,t):
     if fieldval is None :
@@ -97,8 +97,7 @@ def create_pk_remap(names_list):
 
         pk_remap[n].sort()
     print("pk-remaps:",pk_remap)
-    input("continue")
-
+    raw_input()
 
     return pk_remap
 
@@ -126,13 +125,17 @@ def scale_down(full_list,scaledown):
         # read the pk and check if infortunato is in the sentenze's
         # NOTE: SI POTEVA FARE MEGLIO, CON GLI EXCLUDE/filter: più rapido
         pk_remap = create_pk_remap("Sentenza")
+        counter = 0
+        print(len(full_list))
         for o in full_list:
+            print(counter,"/",len(full_list))
             if o.pk in INFORTUNATO_BLACKLIST:
                 continue
             if o.sentenza.pk in pk_remap["Sentenza"]:
                 object_list.append(o)
+            counter+=1
         print("Finito scaldown infortunato,",object_list)
-        input("continue")
+        raw_input()
         return object_list
 
     # invalidità temporanea - necessita degli infortunati giusti
@@ -140,7 +143,7 @@ def scale_down(full_list,scaledown):
         pk_remap = create_pk_remap("Infortunato")
         object_list = Invalidita_temporanea.objects.filter(infortunato__pk__in=pk_remap["Infortunato"])
         print("Finito scaldown Invalidità temporanea,",object_list)
-        input("continue")
+        raw_input()
         return object_list
     
     # necessita di sentenze giuste
@@ -148,7 +151,7 @@ def scale_down(full_list,scaledown):
         pk_remap = create_pk_remap("Sentenza")
         object_list = TrendProfiloRilevanteContainer.objects.filter(sentenza__pk__in=pk_remap["Sentenza"])
         print("Finito scaldown Trend prof riv cont,",object_list)
-        input("continue")
+        raw_input()
         return object_list
 
     return full_list
@@ -161,10 +164,8 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
     object_list = scale_down(object_list,scaledown)
     for m_inst in object_list:  # m_inst model instance        
         instance_dict={}  # each instance is a dict of field_name:field_value
-        
         #save base fields
         for fieldname, t in model_dict["fields_dict"].items():
-            # print(model_name,":",fieldname)
             try:
                 field = getattr(m_inst, fieldname) # get the value of the field for that instance
             except:
@@ -172,7 +173,7 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
                 assert(False)
             assert(fieldname not in instance_dict)
             # print "provo a salvare field", fieldname,t,field
-            # input("continue")
+            # raw_input()
             instance_dict.update({fieldname:write_rule(field,t)})
         # many to many
         if "many_to_many_dict" in model_dict.keys():
@@ -285,7 +286,7 @@ def save_group(ngr, scaledown = None):
             )
         print("m_name",m_name,"keys:",models_dict[m_name].keys())
         print("----------------------------finished model",m_name)
-        input("continue")
+        raw_input()
 
     out = open("gruppo"+str(ng)+".json","w")
     json.dump(dump_dict,out)
