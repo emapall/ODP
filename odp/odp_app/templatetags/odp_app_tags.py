@@ -14,11 +14,12 @@ register = template.Library()
 @register.simple_tag
 def sentenza_file_url(sent_id, field_name):
     try:
-        return reverse('odp_app:sfs-get-file', kwargs={
+        return reverse('odp_app:get-file', kwargs={
             'sent_id': sent_id,
             'field_name': field_name,
         })
     except:
         # Wrong format
-        logger.warning("Could not convert file path: %s" % relpath)
+        logger.warning("Could not convert %s for sentenza %s" %(field_name,str(sent_id)))
+        # TODO return a 404, 503 or something like that
         return None
