@@ -98,7 +98,6 @@ def create_pk_remap(names_list):
         pk_remap[n].sort()
     print("pk-remaps:",pk_remap)
     raw_input()
-    print("dio can")
 
     return pk_remap
 
@@ -163,14 +162,10 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
     # each instance is a dict of field_name:field_value for the various fields
     object_list = m_obj.objects.all() # list of the instances already in the db
     object_list = scale_down(object_list,scaledown)
-    print("porco dio cane")
     for m_inst in object_list:  # m_inst model instance        
         instance_dict={}  # each instance is a dict of field_name:field_value
-        print("model_inst:",m_inst.pk)
         #save base fields
         for fieldname, t in model_dict["fields_dict"].items():
-            print("   fieldname:",fieldname)
-            # print(model_name,":",fieldname)
             try:
                 field = getattr(m_inst, fieldname) # get the value of the field for that instance
             except:
