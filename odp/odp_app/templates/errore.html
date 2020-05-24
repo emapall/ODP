@@ -1,27 +1,27 @@
 {% extends "odp/_base.html" %}
-
+{% load static %}
 
 {% block titolo %}Errore{% endblock %}
 {% block titolo_html_h1 %}{% endblock %}
 
 
 {% block head %}
-<link rel="stylesheet" type="text/css" href="{% static 'odp_app/css/errore.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'odp_app/css/errore.css' %}" />
 {% endblock %}
 
 
 {% block pagina %}
-<div id="messaggio">
-<div id="img-errore"><img src="{% static 'odp_app/images/errore.png' %}" alt="Errore" width="80" height="80" /></div>
-<h1>{% block titolo_errore %}Ops! Si &egrave; verificato un errore{% endblock %}</h1>
-{% if mess %}
-<p>{{ mess|safe }}</p>
-{% else %}
-<p>{% block desc %}Si &egrave; verificato un errore sconosciuto sul server. Il webmaster &egrave; stato informato.{% endblock %}<p>
-{% endif %}
-<p>
-	{# TODO MA CHE È STA CAFONATA #}
-	{% block link %}{% ifnotequal redir "/odp_database/search/" %}<a href="{% if redir %}{{ redir }}{% else %}javascript:history.back(){% endif %}">Torna indietro</a> oppure vai{% else %}Torna{% endifnotequal %} alla <a href="{% url 'odp_app:home' %}">pagina di ricerca</a>.{% endblock %}
-</p>
-</div>
+	<div id="messaggio">
+	<div id="img-errore"><img src="{% static 'odp_app/images/errore.png' %}" alt="Errore" width="80" height="80" /></div>
+	<h1>{% block titolo_errore %}Ops! Si &egrave; verificato un errore{% endblock %}</h1>
+	{% if mess %}
+	<p>{{ mess|safe }}</p>
+	{% else %}
+	<p>{% block desc %}Si &egrave; verificato un errore sconosciuto sul server. Il webmaster &egrave; stato informato.{% endblock %}<p>
+	{% endif %}
+	<p>
+		{# TODO IN EFFETTI IL REDIR al precedente NON È UNA CATTIVA IDEA, ma c'è anche la freccia sul browser per il back... #}
+		{% block link %}Torna alla <a href="{% url 'odp_app:home' %}">home</a>.{% endblock %}
+	</p>
+	</div>
 {% endblock %}
