@@ -90,9 +90,9 @@ Risultati{% endblock %}
 				{# TODO FILES TODO FILES! #}
 				<td class="i">{% if o.file_img %}<a href="{% sentenza_file_url o.pk "file_img" %}"><img src="{% static 'odp_app/images/pdf.gif' %}"
 							width="25" height="25" alt="Apri immagine" /></a>{% else %}&nbsp;{% endif %}</td>
-				<td class="i">{% if o.file_sch %}<a href="/odp_pdf/{{ o.file_sch }}"><img src="{% static 'odp_app/images/pdf.gif' %}"
+				<td class="i">{% if o.file_sch %}<a href="{% sentenza_file_url o.pk "file_sch" %}"><img src="{% static 'odp_app/images/pdf.gif' %}"
 							width="25" height="25" alt="Apri scheda" /></a>{% else %}&nbsp;{% endif %}</td>
-				<td class="i">{% if o.file_cmn %}<a href="/odp_pdf/{{ o.file_cmn }}"><img src="{% static 'odp_app/images/pdf.gif' %}"
+				<td class="i">{% if o.file_cmn %}<a href="{% sentenza_file_url o.pk "file_cmn" %}"><img src="{% static 'odp_app/images/pdf.gif' %}"
 							width="25" height="25" alt="Apri commento" /></a>{% else %}&nbsp;{% endif %}</td>
 				<td class="a"><a
 						href="{% url 'odp_app:sentenza-details' sent_id=o.pk %}">apri{% ifnotequal o.numero_della_sentenza 0 %}
