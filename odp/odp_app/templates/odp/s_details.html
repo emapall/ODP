@@ -66,9 +66,9 @@
 		{% if sent.file_img and not sent.file_sch or not sent.file_sch and sent.file_img  %}
 			<ul class="materiali sx">
 				{# TODO FILE DEPLOYMENT #}
-				{% if sent.file_img %}<li><a href="/odp_pdf/{{ sent.file_img }}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scansione</a></li>{% endif %}
-				{% if sent.file_sch %}<li><a href="/odp_pdf/{{ sent.file_sch }}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scheda</a></li>{% endif %}
-				{% if sent.file_cmn %}<li><a href="/odp_pdf/{{ sent.file_cmn }}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri il commento</a></li> {% endif %}
+				{% if sent.file_img %}<li><a href="{% sentenza_file_url sent.pk "sent.file_img" %}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scansione</a></li>{% endif %}
+				{% if sent.file_sch %}<li><a href="{% sentenza_file_url sent.pk "file_sch" %}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scheda</a></li>{% endif %}
+				{% if sent.file_cmn %}<li><a href="{% sentenza_file_url sent.pk "file_cmn" %}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri il commento</a></li> {% endif %}
 			</ul>
 			<ul class="materiali half dx">
 			{% if sent.ocr %}
@@ -82,13 +82,13 @@
 			{% if sent.file_img or sent.file_sch %}
 				<ul class="materiali sx">
 				{# TODO FILES, + capire perchè è sdoppiato..? #}
-					{% if sent.file_img %}<li><a href="/odp_pdf/{{ sent.file_img }}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scansione</a></li>{% endif %}
-					{% if sent.file_sch %}<li><a href="/odp_pdf/{{ sent.file_sch }}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scheda</a></li>{% endif %}
+					{% if sent.file_img %}<li><a href="{% sentenza_file_url sent.pk "file_img" %}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scansione</a></li>{% endif %}
+					{% if sent.file_sch %}<li><a href="{% sentenza_file_url sent.pk "file_sch" %}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri la scheda</a></li>{% endif %}
 				</ul>
 			{% endif %}
 			{% if sent.file_cmn or sent.ocr %}
 				<ul class="materiali half dx">
-					{% if sent.file_cmn %}<li><a href="/odp_pdf/{{ sent.file_cmn }}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri il commento</a></li> {% endif %}
+					{% if sent.file_cmn %}<li><a href="{% sentenza_file_url sent.pk "file_cmn" %}"><img src="{% static 'odp_app/images/pdf.gif' %}" alt="File PDF di Acrobat Reader" height="25" width="25" class="icona" /> Apri il commento</a></li> {% endif %}
 					{% if sent.ocr %}{# qua è tutto sdoppiato TODO #}
 					<li><a href="#ocr"><img src="{% static 'odp_app/images/clipboard.gif' %}" alt="Testo semplice" height="25" width="25" class="icona" /> Vai all'OCR</a></li>
 					{% endif %}

@@ -13,6 +13,13 @@ register = template.Library()
 
 @register.simple_tag
 def sentenza_file_url(sent_id, field_name):
+    """
+    Given the id of a sentenza and the filend name associated with a file,
+    retrurns the url correspoding to the view serving THAT specific file.
+
+    NOTE: yes it could have been done with an hard encoded url 
+    in the template, but this is more changable in the future
+    """
     try:
         return reverse('odp_app:get-file', kwargs={
             'sent_id': sent_id,
