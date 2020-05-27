@@ -129,7 +129,7 @@ EMAIL_PORT = 25
 
 # login, logout and redirects
 
-LOGIN_URL = "login/"
+LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = ""
 
 # media file uploading and serving
