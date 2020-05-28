@@ -1,3 +1,4 @@
+----------------------------------------------------------
 RICERCHE
 
     -   search e new_search sono le pagine di RICERCA (coi form)
@@ -12,6 +13,7 @@ RICERCHE
 
     LE SENTENZE PRE 2001 NON VENGONO MAI VISUALIZZATE!!!
     
+----------------------------------------------------------
 
     gifs e roba vaira
 ./var/www/archivio/images/odp_database/male.png
@@ -56,6 +58,8 @@ rexeg di ricerca immagini:
 
 I CSS SONO SU /var/www/styles/odp_database
 
+----------------------------------------------------------
+
 STATIC FILES
 
 I files vengono collezzionati da django per il server deployment 
@@ -66,10 +70,11 @@ Ora questi gli voglio git-ignore ma gli static dentro il sito no!
 (quindi dentro base_dir/odp_app/static/cose varie*, oppure base_dir/odp_site/static/file admin di django).
 https://stackoverflow.com/questions/5861280/gitignore-folder-vs-folder
 
+----------------------------------------------------------
 
 E JQUERY.JS? che è quella roba? non viene usata quasi mai.
 
-
+----------------------------------------------------------
 SICUREZZA E FORZA ESCLUSIONE:
 
 alcuni check sono fatti nei template (infortunato details), mentre altri nelle 
@@ -79,6 +84,23 @@ Regola: se c'è anche solo un infortunato non pubblicabile, o la sentenza ha for
 Regola: se infortunato non è pubblicabile, i suoi dettagli non sono visibili
 
 NOTA - PROBLEMA: perchè in infortunato-results le sentenze con infortunati non pubblicabili, e le sentenze con forza esclusione sono visualizzate nella lista, mentre nell'old s_results non lo erano, e in new_s_results si (ma ora no per coerenza)? O non lo sono mai, o lo sono sempre. 
-
+----------------------------------------------------------
 TODO: per l'infortunato la pubblicabilità viene controllata nel template.
 Pls no, farlo nella vista
+----------------------------------------------------------
+register view
+https://medium.com/@frfahim/django-registration-with-confirmation-email-bb5da011e4ef
+
+url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$':
+bisogna capire che è quell'uidb64: NON ESISTE nell'url dispacher. posso dare semplicementei l nome ad una variabile? Se si, che diavolo mi viene ad essere? una stringa (si: str - Matches any non-empty string, excluding the path separator, '/'. This is the default if a converter isn’t included in the expression.)
+----------------------------------------------------------
+UNA nota importante:
+https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#extending-the-existing-user-model
+
+PEr quanto sia ancora possibile tornare indietro (e infatti verrà fatto), 
+la strada intrapresa finora è quella del "Profile" con la 1 to 1 relationship. 
+Io vorrei subclassare AbstracUser come indicato nel link e metterci magari un paio di attributi per la registrazione (tipo mail attivata e un numero random per gli one time links, ecc ecc).
+
+Bisogna tirare giu tutto il db, cancellare le migrazioni, cambiare il setting AUTH_USER_MODEL e ri-
+migrare tutto.
+----------------------------------------------------------
