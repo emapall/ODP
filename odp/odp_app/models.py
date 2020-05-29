@@ -18,7 +18,7 @@
 
 from django.db import models
 from django.template.defaultfilters import date
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -26,6 +26,12 @@ from django.dispatch import receiver
 # User registration with confirmation email
 # TODO: ELIMINARE QUESTA CLASSE: EITHER USARE class ConfirmedUser(User) 
 # oppure banalmente usare il flag actuve dei standard django users!
+
+class User(AbstractUser):
+    registration_complete =  models.BooleanField(default=True, blank=True)
+    random_seed = models.IntegerField(null=True,blank=True)
+
+"""
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email_confirmed = models.BooleanField(default=False)
@@ -39,7 +45,9 @@ def update_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
         instance.profile.save()
-
+        
+TODO: CI PROVO CON GLI UTENTI SUBCLASSATI DA ABSTRACTUSER
+"""
 
 # DipendeDa_est_it = validators.AnyValidator([validators.isNotEmpty, validators.ValidateIfOtherFieldEquals('est_it', 'False', [])])
 # DipendeDa_est_ip = validators.AnyValidator([validators.isNotEmpty, validators.ValidateIfOtherFieldEquals('est_ip', 'False', [])])
