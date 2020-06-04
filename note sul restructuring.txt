@@ -135,3 +135,6 @@ Piccola nota sullo user e sul token: ma perchè c'è bisogno dello uid in
 base 64 come stringa e non si può mannaggia usare l'int della pk? io lo 
 farei così
 ----------------------------------------------------------
+
+server mail di test: 
+sudo python -m smtpd -c DebuggingServer -n localhost:25
