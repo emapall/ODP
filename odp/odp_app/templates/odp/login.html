@@ -34,12 +34,12 @@
 		<div class="box_errore">
 			<ul class="messages">
 				{% for message in messages %}
-				<li>{{ message }}</li>
-		{% endfor %}
-</ul>
-
+					<li>{{ message }}</li>
+				{% endfor %}
+			</ul>
 		</div>	
 	{% endif %}
+	
 	<div id="form">
 		<form method="post" action="">
 			{% csrf_token %}
