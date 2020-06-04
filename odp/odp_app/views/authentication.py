@@ -1,9 +1,15 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
 from django.urls import reverse
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.shortcuts import render, redirect
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
 
+from odp_app.forms import SingupForm
+
+token_generator = PasswordResetTokenGenerator()
 
 # just login would override the contrib.auth.login funct,
 # https://stackoverflow.com/questions/39316948/typeerror-login-takes-1-positional-argument-but-2-were-given
@@ -37,6 +43,24 @@ def logout_view(request):
     messages.success(request,"Logout effettuato con successo")
     return redirect(reverse('odp_app:login'))
 
+def singup(request):
+    if request.method == "POST":
+        form = SingupForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+
+            # get the parameters to build the mail
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = token_generator.make_token(user)
+            msg = render_to_string()
+
+
+    else:
+        form = SingupForm()
+
+    return render(request,"odp/singup.html",{"form":form})
 
 def username_remind(request):
     # TODO

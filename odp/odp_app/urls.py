@@ -36,6 +36,7 @@ urlpatterns = [
     # path("register/", core_views.singup), # TODO
     # path("admin/", RedirectView.as_view(url="/database/admin/")), # TODO???
     path("<schifo>/<schifo2>/",core_views.test, name="test"),
+    path("singup/",core_views.singup,name="signup"),
     path("account_activation_sent/", core_views.account_activation_sent),
     path("change_password/", def_auth.PasswordChangeView.as_view(), name="change-password"), # TODO: CUSTOM!
     path("reset_password/",def_auth.PasswordResetView.as_view(),name="reset-password") # TODO: CUSTOM

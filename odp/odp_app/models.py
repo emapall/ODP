@@ -28,8 +28,10 @@ from django.dispatch import receiver
 # oppure banalmente usare il flag actuve dei standard django users!
 
 class User(AbstractUser):
-    registration_complete =  models.BooleanField(default=True, blank=True)
-    random_seed = models.IntegerField(null=True,blank=True)
+    pass
+    # registration_complete =  models.BooleanField(default=True, blank=True)
+    # random_seed = models.IntegerField(null=True,blank=True)
+    # non servono, vedere note
 
 """
 class Profile(models.Model):
