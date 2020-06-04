@@ -1,0 +1,27 @@
+{% extends 'odp/_base.html' %}
+{% load static %}
+
+{% block pagina %}
+    <form action="" method="post">
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div class="fieldWrapper">               
+                {{ field.label_tag }}  {{ field }}
+                {% if field.help_text %}
+                    <span"help">{{ field.help_text|safe }}</span>
+                {% endif %}
+                {% if field.errors %}
+                    <div class="box_errore">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <br>
+        {% endfor %}
+
+    <input type="submit" value="Conferma">
+
+    </form>
+{% endblock %}
+
