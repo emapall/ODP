@@ -103,4 +103,35 @@ Io vorrei subclassare AbstracUser come indicato nel link e metterci magari un pa
 
 Bisogna tirare giu tutto il db, cancellare le migrazioni, cambiare il setting AUTH_USER_MODEL e ri-
 migrare tutto.
+
+--------------------------
+
+link utili per la registerazione nuovi utenti: sull'uso di django.utils.encode
+--> url_base64_decode / encode (o qualcsa del genere)
+https://stackoverflow.com/questions/47814228/django-2-python-3-4-cannot-decode-urlsafe-base64-decodeuidb64
+https://stackoverflow.com/questions/47177696/noreversematch-with-keyword-argument-uidb64-with-django-2-0
+https://docs.djangoproject.com/en/2.2/releases/2.2/#miscellaneousz
+
+
+Sicuramente, facendo la classe custom il tutto è più controllabile:
+il token coi secondi pare dare risultati strani (sempre lo stesso token, nel giro)
+di pochi secondi, in più il fallimento del token si basa sul last_login e sulla
+password stessa (appunto, p un token per il password reset. )
+
+E poi mi genera sempre gli stessi token...mh
+Dall'altra, è semplicmeente comodo avercela così e amen. Va indagato
+edit giorno dopo
+Ho indagato: contrariamente al github (django 3.2), la versione corrente genera un token
+che utilizza i giorni come timestamp, e che dura settings.PASSWORD_RESET_TIMEOUT_DAYS (+1): vale a dire che, con lo scatto del 
+giorno alla mezzanotte del server, la differenza tra il giorno di generazione 
+del token e il giorno di utilizzo del token deve essere strettamente maggiore del timeout: se lo genero alle 00:02 di sabato e lo uso alle 23:58 di domenica
+sono passati circa due giorni (meno 4 minuti), ed è valido anche se il timeout è uno (solo una mezzanotte è passata).
+
+
+Sticazzi: per i lielli di sicurezza richiesta, mi pare più che sufficiente.
+tanto poi nella 3.2 verranno usati i secondi, no nstiamo a fasciarci la testa.
+
+Piccola nota sullo user e sul token: ma perchè c'è bisogno dello uid in 
+base 64 come stringa e non si può mannaggia usare l'int della pk? io lo 
+farei così
 ----------------------------------------------------------
