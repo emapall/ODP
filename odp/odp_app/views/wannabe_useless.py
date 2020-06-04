@@ -24,7 +24,7 @@ def old_search(request):
     return render(request, "odp/search.html", {})
 
 """
-def singup(request):
+def signup(request):
     from django.http import HttpResponseRedirect
     from lider.odp.forms import SignUpForm
     from lider.odp.tokens import account_activation_token

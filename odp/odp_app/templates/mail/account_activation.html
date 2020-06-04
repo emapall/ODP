@@ -3,5 +3,5 @@ Benvenuto {{ user.first_name }} {{user.last_name}},
 
 Per favore usa questo link per confermare la tua registrazione:
 
-https://odp.santannapisa.it/{% url 'singup-confirm' uid_b64=uid token=token %}
+https://odp.santannapisa.it{% url 'odp_app:signup-confirm' uid_b64=uid_b64 token=token %}
 {% endautoescape %}

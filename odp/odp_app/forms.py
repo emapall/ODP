@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
 from odp_app.models import User
-class SingupForm(UserCreationForm):
+class SignupForm(UserCreationForm):
     email = forms.EmailField(label="Indirizzo email", required=True)
     first_name = forms.CharField(label="Nome/i", max_length=100, required=True)
     last_name = forms.CharField(label="Cognome/i", max_length=100, required=True)
