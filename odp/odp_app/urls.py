@@ -38,8 +38,9 @@ urlpatterns = [
     path("<schifo>/<schifo2>/",core_views.test, name="test"),
     path("signup/",core_views.signup,name="signup"),
     path("signup/confirm/<str:uid_b64>/<str:token>", core_views.signup_confirm,name="signup-confirm"),
-    path("change_password/", def_auth.PasswordChangeView.as_view(), name="change-password"), # TODO: CUSTOM!
-    path("reset_password/",def_auth.PasswordResetView.as_view(),name="reset-password") # TODO: CUSTOM
+    path("change_password/", core_views.password_reset_view, name="change-password"), 
+    path("reset_password/",core_views.password_reset_view,name="reset-password"),
+    path("reset_password/confirm/<str:uid_b64>/<str:token>", core_views.password_reset_confirm,name="reset-password-confirm"),
     
 
 ]
