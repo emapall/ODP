@@ -1,7 +1,0 @@
-{% autoescape off %}
-Benvenuto {{ user.username }},
-
-Per favore usa questo link per confermare la tua registrazione:
-
-https://{{ domain }}{% url 'activate' uidb64=uid token=token %}
-{% endautoescape %}

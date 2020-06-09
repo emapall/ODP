@@ -406,7 +406,8 @@ def i_details(request, infort_id):
 def new_search(request):
     return render(request, "odp/new_search.html", {})
 
-
+def test(request,schifo,schifo2):
+    print(schifo,schifo2,type(schifo),type(schifo2))
 ###### /search_ns: ricerca noscript ############
 
 """

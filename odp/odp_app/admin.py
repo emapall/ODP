@@ -2,6 +2,7 @@
 
 from django import forms
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from odp_app.models import (
     Assicurazione,
     Comune,
@@ -29,6 +30,7 @@ from odp_app.models import (
     TrendLiquidazione,
     TrendProfiloRilevante,
     TrendProfiloRilevanteContainer,
+    User,
 )
 
 # from lider.odp.widgets import *
@@ -519,3 +521,4 @@ admin.site.register(TrendLiquidazione)
 admin.site.register(ProfiloRilevante)
 admin.site.register(TrendProfiloRilevante)
 admin.site.register(TrendProfiloRilevanteContainer)
+admin.site.register(User)

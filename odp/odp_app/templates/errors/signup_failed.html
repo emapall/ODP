@@ -1,0 +1,13 @@
+{% extends "errore.html" %}
+
+
+{% block titolo %}Errore{% endblock %}
+
+
+{% block titolo_errore %}
+    Errore
+{% endblock %}
+
+{% block desc %}
+    Siamo spiacenti, qualcosa è andato storto. E' possibile che il link che hai utilizzato non sia quello corretto o sia obsoleto (è valido solo per alcuni giorni). Ti invitiamo a <a href="{% url 'odp_app:home' %}">tornare indietro</a> o a contattare gli amministratori, se il problema persiste. 
+{% endblock %}

@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "odp_app", # odp_app.apps.OdpAppConfig? direi di no
     'django.contrib.admindocs',
-    'django_extensions'
-
+    'django_extensions',
+    'background_task',
 ]
 
 MIDDLEWARE = [
@@ -102,6 +102,8 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+AUTH_USER_MODEL = 'odp_app.User'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -129,7 +131,7 @@ EMAIL_PORT = 25
 
 # login, logout and redirects
 
-LOGIN_URL = "login/"
+LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = ""
 
 # media file uploading and serving
