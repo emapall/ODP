@@ -348,9 +348,11 @@ def s_details(request,sent_id):
             )
         # security check: if at LEAST 1 INFORTUNATO IS not pubblicabile, 
         # then throw an error
+
+        # TODO: ANCHE se non si cambia, rifare bene
         if not request.user.is_staff:
             for uninfortunato in suoi_infortunati:
-                if not uninfortunato.pubblicabile:
+                if not uninfortunato.pubblicabile: # TODO: CAMBIARE COME MI HA DETTO ELEFETHRIA
                     return render(
                         request,
                         "errore.html",
