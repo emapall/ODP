@@ -1,0 +1,32 @@
+{% extends "odp/_base.html" %}
+{% load static %}
+
+{% block titolo %}Successo!{% endblock %}
+{% block titolo_html_h1 %}{% endblock %}
+
+
+{% block head %}
+	<link rel="stylesheet" type="text/css" href="{% static 'odp_app/css/success.css' %}" />
+{% endblock %}
+
+
+{% block pagina %}
+	<div id="message">
+        <div id="img-success">
+            <img src="{% static 'odp_app/images/tick-big.png' %}" alt="Success" width="80" height="80" />
+        </div>
+        
+        <h1>{% block titolo_errore %}Successo{% endblock %}</h1>
+        
+        {% if mess %}
+            <p>{{ mess|safe }}</p>
+        {% else %}
+            <p>
+                {% block desc %}
+                    L'operazione è andata a buon fine.
+                {% endblock %}
+            </p>
+        {% endif %}
+		{% block link %}Torna alla <a href="{% url 'odp_app:home' %}">home</a>.{% endblock %}
+	</div>
+{% endblock %}

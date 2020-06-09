@@ -1,0 +1,15 @@
+{% extends "success.html" %}
+
+
+{% block titolo %}Successo{% endblock %}
+
+
+{% block titolo_errore %}
+    Successo
+{% endblock %}
+
+{% block desc %}
+    La password per l'utente {{user.username}} è stata cambiata con successo. Vai al <a href="{% url 'odp_app:login' %}">login</a>.
+{% endblock %}
+
+{% block link %}{% endblock link %}

@@ -1,0 +1,15 @@
+{% extends "success.html" %}
+
+
+{% block titolo %}Successo{% endblock %}
+
+
+{% block titolo_errore %}
+    Successo
+{% endblock %}
+
+{% block desc %}
+    Congratulazioni: l'utente è stato creato con successo. Puoi utilizzare il tuo username {{user.username}} per effettuare il <a href="{% url 'odp_app:login' %}">login</a>
+{% endblock %}
+
+{% block link %}{% endblock link %}
