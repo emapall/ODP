@@ -1,0 +1,120 @@
+admin | log entry | Can add log entry
+admin | log entry | Can change log entry
+admin | log entry | Can delete log entry
+auth | group | Can add group
+auth | group | Can change group
+auth | group | Can delete group
+auth | permission | Can add permission
+auth | permission | Can change permission
+auth | permission | Can delete permission
+auth | user | Can add user
+auth | user | Can change user
+auth | user | Can delete user
+contenttypes | content type | Can add content type
+contenttypes | content type | Can change content type
+contenttypes | content type | Can delete content type
+odp_app | assicurazione | Can add assicurazione
+odp_app | assicurazione | Can change assicurazione
+odp_app | assicurazione | Can delete assicurazione
+odp_app | comune | Can add comune
+odp_app | comune | Can change comune
+odp_app | comune | Can delete comune
+odp_app | danno patrimoniale | Can add danno patrimoniale
+odp_app | danno patrimoniale | Can change danno patrimoniale
+odp_app | danno patrimoniale | Can delete danno patrimoniale
+odp_app | diritto inviolabile | Can add diritto inviolabile
+odp_app | diritto inviolabile | Can change diritto inviolabile
+odp_app | diritto inviolabile | Can delete diritto inviolabile
+odp_app | esaminatore | Can add esaminatore
+odp_app | esaminatore | Can change esaminatore
+odp_app | esaminatore | Can delete esaminatore
+odp_app | fattore rilevante di liquidazione | Can add fattore rilevante di liquidazione
+odp_app | fattore rilevante di liquidazione | Can change fattore rilevante di liquidazione
+odp_app | fattore rilevante di liquidazione | Can delete fattore rilevante di liquidazione
+odp_app | fattore rilevante di liquidazione del danno patrimoniale | Can add fattore rilevante di liquidazione del dann
+odp_app | fattore rilevante di liquidazione del danno patrimoniale | Can change fattore rilevante di liquidazione del d
+odp_app | fattore rilevante di liquidazione del danno patrimoniale | Can delete fattore rilevante di liquidazione del d
+odp_app | infortunato | Can add infortunato
+odp_app | infortunato | Can change infortunato
+odp_app | infortunato | Can delete infortunato
+odp_app | invalidità temporanea | Can add invalidità temporanea
+odp_app | invalidità temporanea | Can change invalidità temporanea
+odp_app | invalidità temporanea | Can delete invalidità temporanea
+odp_app | lesione | Can add lesione
+odp_app | lesione | Can change lesione
+odp_app | lesione | Can delete lesione
+odp_app | osservatorio | Can add osservatorio
+odp_app | osservatorio | Can change osservatorio
+odp_app | osservatorio | Can delete osservatorio
+odp_app | postumo | Can add postumo
+odp_app | postumo | Can change postumo
+odp_app | postumo | Can delete postumo
+odp_app | postumo da tabella standard | Can add postumo da tabella standard
+odp_app | postumo da tabella standard | Can change postumo da tabella standard
+odp_app | postumo da tabella standard | Can delete postumo da tabella standard
+odp_app | professione | Can add professione
+odp_app | professione | Can change professione
+odp_app | professione | Can delete professione
+odp_app | profilo rilevante | Can add profilo rilevante
+odp_app | profilo rilevante | Can change profilo rilevante
+odp_app | profilo rilevante | Can delete profilo rilevante
+odp_app | prova del danno non patrimoniale | Can add prova del danno non patrimoniale
+odp_app | prova del danno non patrimoniale | Can change prova del danno non patrimoniale
+odp_app | prova del danno non patrimoniale | Can delete prova del danno non patrimoniale
+odp_app | prova del danno patrimoniale | Can add prova del danno patrimoniale
+odp_app | prova del danno patrimoniale | Can change prova del danno patrimoniale
+odp_app | prova del danno patrimoniale | Can delete prova del danno patrimoniale
+odp_app | provenienza | Can add provenienza
+odp_app | provenienza | Can change provenienza
+odp_app | provenienza | Can delete provenienza
+odp_app | provincia | Can add provincia
+odp_app | provincia | Can change provincia
+odp_app | provincia | Can delete provincia
+odp_app | regione | Can add regione
+odp_app | regione | Can change regione
+odp_app | regione | Can delete regione
+odp_app | responsabilità | Can add responsabilità
+odp_app | responsabilità | Can change responsabilità
+odp_app | responsabilità | Can delete responsabilità
+odp_app | richiesta parte attrice | Can add richiesta parte attrice
+odp_app | richiesta parte attrice | Can change richiesta parte attrice
+odp_app | richiesta parte attrice | Can delete richiesta parte attrice
+odp_app | sentenza | Can add sentenza
+odp_app | sentenza | Can change sentenza
+odp_app | sentenza | Can delete sentenza
+odp_app | trend di liquidazione | Can add trend di liquidazione
+odp_app | trend di liquidazione | Can change trend di liquidazione
+odp_app | trend di liquidazione | Can delete trend di liquidazione
+odp_app | profilo rilevante | Can add profilo rilevante
+odp_app | profilo rilevante | Can change profilo rilevante
+odp_app | profilo rilevante | Can delete profilo rilevante
+odp_app | trend profilo rilevante container | Can add trend profilo rilevante container
+odp_app | trend profilo rilevante container | Can change trend profilo rilevante container
+odp_app | trend profilo rilevante container | Can delete trend profilo rilevante container
+rtn | court | Can add court
+rtn | court | Can change court
+rtn | court | Can delete court
+rtn | fact pattern | Can add fact pattern
+rtn | fact pattern | Can change fact pattern
+rtn | fact pattern | Can delete fact pattern
+rtn | sentence | Can add sentence
+rtn | sentence | Can change sentence
+rtn | sentence | Can delete sentence
+rtn | thesaurus | Can add thesaurus
+rtn | thesaurus | Can change thesaurus
+rtn | thesaurus | Can delete thesaurus
+sessions | session | Can add session
+sessions | session | Can change session
+sessions | session | Can delete session
+sites | site | Can add site
+sites | site | Can change site
+sites | site | Can delete site
+tabelle | metodo di calcolo | Can add metodo di calcolo
+tabelle | metodo di calcolo | Can change metodo di calcolo
+tabelle | metodo di calcolo | Can delete metodo di calcolo
+tabelle | funzione di calcolo | Can add funzione di calcolo
+tabelle | funzione di calcolo | Can change funzione di calcolo
+tabelle | funzione di calcolo | Can delete funzione di calcolo
+tabelle | sede del calcolo | Can add sede del calcolo
+tabelle | sede del calcolo | Can change sede del calcolo
+tabelle | sede del calcolo | Can delete sede del calcolo

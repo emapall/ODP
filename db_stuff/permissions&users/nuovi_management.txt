@@ -1,0 +1,136 @@
+{% comment %} admin | voce di log | Can add log entry
+admin | voce di log | Can change log entry
+admin | voce di log | Can delete log entry
+admin | voce di log | Can view log entry
+auth | gruppo | Can add group
+auth | gruppo | Can change group
+auth | gruppo | Can delete group
+auth | gruppo | Can view group
+auth | permesso | Can add permission
+auth | permesso | Can change permission
+auth | permesso | Can delete permission
+auth | permesso | Can view permission
+background_task | completed task | Can add completed task
+background_task | completed task | Can change completed task
+background_task | completed task | Can delete completed task
+background_task | completed task | Can view completed task
+background_task | task | Can add task
+background_task | task | Can change task
+background_task | task | Can delete task
+background_task | task | Can view task
+contenttypes | content type | Can add content type
+contenttypes | content type | Can change content type
+contenttypes | content type | Can delete content type
+contenttypes | content type | Can view content type {% endcomment %}
+odp_app | assicurazione | Can add assicurazione
+odp_app | assicurazione | Can change assicurazione
+odp_app | assicurazione | Can delete assicurazione
+odp_app | assicurazione | Can view assicurazione
+odp_app | comune | Can add comune
+odp_app | comune | Can change comune
+odp_app | comune | Can delete comune
+odp_app | comune | Can view comune
+odp_app | danno patrimoniale | Can add danno patrimoniale
+odp_app | danno patrimoniale | Can change danno patrimoniale
+odp_app | danno patrimoniale | Can delete danno patrimoniale
+odp_app | danno patrimoniale | Can view danno patrimoniale
+odp_app | diritto | Can add diritto
+odp_app | diritto | Can change diritto
+odp_app | diritto | Can delete diritto
+odp_app | diritto | Can view diritto
+odp_app | esaminatore | Can add esaminatore
+odp_app | esaminatore | Can change esaminatore
+odp_app | esaminatore | Can delete esaminatore
+odp_app | esaminatore | Can view esaminatore
+odp_app | fattore rilevante di liquidazione del danno non patrimoniale | Can add fattore rilevante di liquidazione del danno non patrimoniale
+odp_app | fattore rilevante di liquidazione del danno non patrimoniale | Can change fattore rilevante di liquidazione del danno non patrimoniale
+odp_app | fattore rilevante di liquidazione del danno non patrimoniale | Can delete fattore rilevante di liquidazione del danno non patrimoniale
+odp_app | fattore rilevante di liquidazione del danno non patrimoniale | Can view fattore rilevante di liquidazione del danno non patrimoniale
+odp_app | fattore rilevante di liq. del dp | Can add fattore rilevante di liq. del dp
+odp_app | fattore rilevante di liq. del dp | Can change fattore rilevante di liq. del dp
+odp_app | fattore rilevante di liq. del dp | Can delete fattore rilevante di liq. del dp
+odp_app | fattore rilevante di liq. del dp | Can view fattore rilevante di liq. del dp
+odp_app | danneggiato | Can add danneggiato
+odp_app | danneggiato | Can change danneggiato
+odp_app | danneggiato | Can delete danneggiato
+odp_app | danneggiato | Can view danneggiato
+odp_app | invalidità temporanea | Can add invalidità temporanea
+odp_app | invalidità temporanea | Can change invalidità temporanea
+odp_app | invalidità temporanea | Can delete invalidità temporanea
+odp_app | invalidità temporanea | Can view invalidità temporanea
+odp_app | lesione | Can add lesione
+odp_app | lesione | Can change lesione
+odp_app | lesione | Can delete lesione
+odp_app | lesione | Can view lesione
+odp_app | osservatorio | Can add osservatorio
+odp_app | osservatorio | Can change osservatorio
+odp_app | osservatorio | Can delete osservatorio
+odp_app | osservatorio | Can view osservatorio
+odp_app | postumo | Can add postumo
+odp_app | postumo | Can change postumo
+odp_app | postumo | Can delete postumo
+odp_app | postumo | Can view postumo
+odp_app | postumo da tabella standard | Can add postumo da tabella standard
+odp_app | postumo da tabella standard | Can change postumo da tabella standard
+odp_app | postumo da tabella standard | Can delete postumo da tabella standard
+odp_app | postumo da tabella standard | Can view postumo da tabella standard
+odp_app | professione | Can add professione
+odp_app | professione | Can change professione
+odp_app | professione | Can delete professione
+odp_app | professione | Can view professione
+odp_app | profilo rilevante | Can add profilo rilevante
+odp_app | profilo rilevante | Can change profilo rilevante
+odp_app | profilo rilevante | Can delete profilo rilevante
+odp_app | profilo rilevante | Can view profilo rilevante
+odp_app | prova del danno non patrimoniale | Can add prova del danno non patrimoniale
+odp_app | prova del danno non patrimoniale | Can change prova del danno non patrimoniale
+odp_app | prova del danno non patrimoniale | Can delete prova del danno non patrimoniale
+odp_app | prova del danno non patrimoniale | Can view prova del danno non patrimoniale
+odp_app | prova del danno patrimoniale | Can add prova del danno patrimoniale
+odp_app | prova del danno patrimoniale | Can change prova del danno patrimoniale
+odp_app | prova del danno patrimoniale | Can delete prova del danno patrimoniale
+odp_app | prova del danno patrimoniale | Can view prova del danno patrimoniale
+odp_app | provenienza | Can add provenienza
+odp_app | provenienza | Can change provenienza
+odp_app | provenienza | Can delete provenienza
+odp_app | provenienza | Can view provenienza
+odp_app | provincia | Can add provincia
+odp_app | provincia | Can change provincia
+odp_app | provincia | Can delete provincia
+odp_app | provincia | Can view provincia
+odp_app | regione | Can add regione
+odp_app | regione | Can change regione
+odp_app | regione | Can delete regione
+odp_app | regione | Can view regione
+odp_app | responsabilità | Can add responsabilità
+odp_app | responsabilità | Can change responsabilità
+odp_app | responsabilità | Can delete responsabilità
+odp_app | responsabilità | Can view responsabilità
+odp_app | richiesta parte attrice | Can add richiesta parte attrice
+odp_app | richiesta parte attrice | Can change richiesta parte attrice
+odp_app | richiesta parte attrice | Can delete richiesta parte attrice
+odp_app | richiesta parte attrice | Can view richiesta parte attrice
+odp_app | sentenza | Can add sentenza
+odp_app | sentenza | Can change sentenza
+odp_app | sentenza | Can delete sentenza
+odp_app | sentenza | Can view sentenza
+odp_app | trend di liquidazione | Can add trend di liquidazione
+odp_app | trend di liquidazione | Can change trend di liquidazione
+odp_app | trend di liquidazione | Can delete trend di liquidazione
+odp_app | trend di liquidazione | Can view trend di liquidazione
+odp_app | trend profilo rilevante | Can add trend profilo rilevante
+odp_app | trend profilo rilevante | Can change trend profilo rilevante
+odp_app | trend profilo rilevante | Can delete trend profilo rilevante
+odp_app | trend profilo rilevante | Can view trend profilo rilevante
+odp_app | profilo rilevante container | Can add profilo rilevante container
+odp_app | profilo rilevante container | Can change profilo rilevante container
+odp_app | profilo rilevante container | Can delete profilo rilevante container
+odp_app | profilo rilevante container | Can view profilo rilevante container
+{% comment %} odp_app | utente | Can add user
+odp_app | utente | Can change user
+odp_app | utente | Can delete user
+odp_app | utente | Can view user
+sessions | sessione | Can add session
+sessions | sessione | Can change session
+sessions | sessione | Can delete session
+sessions | sessione | Can view session {% endcomment %}
