@@ -140,5 +140,16 @@ LOGIN_REDIRECT_URL = ""
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
 MEDIA_URL = '/uploads/'
 
+# httpS stuff : https://docs.djangoproject.com/en/3.0/topics/security/#ssl-https
+# also https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/#https
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
+# for now no strict transport security 
+# SECURE_HSTS_SECONDS = 10
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+
+# sendfile
 SENDFILE_BACKEND = "sendfile.backends.xsendfile" 
 # SENDFILE_BACKEND = "sendfile.backends.development"
