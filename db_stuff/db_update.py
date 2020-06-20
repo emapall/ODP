@@ -89,6 +89,7 @@ def field_value(fieldname,fieldtype, jsonval, model_name):
             return None
     if fieldtype == "str": 
         return jsonval # may be ''
+    # TODO MA ESISTEVA datetime.strptime :\
     if fieldtype == "date": #like YYYYMMGG     
         return date(int(jsonval[0:4]),int(jsonval[4:6]),int(jsonval[6:8]))
 

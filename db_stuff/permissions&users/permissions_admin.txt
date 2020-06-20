@@ -1,0 +1,136 @@
+Can add log entry
+Can change log entry
+Can delete log entry
+Can view log entry
+Can add group
+Can change group
+Can delete group
+Can view group
+Can add permission
+Can change permission
+Can delete permission
+Can view permission
+Can add completed task
+Can change completed task
+Can delete completed task
+Can view completed task
+Can add task
+Can change task
+Can delete task
+Can view task
+Can add content type
+Can change content type
+Can delete content type
+Can view content type
+Can add assicurazione
+Can change assicurazione
+Can delete assicurazione
+Can view assicurazione
+Can add comune
+Can change comune
+Can delete comune
+Can view comune
+Can add danno patrimoniale
+Can change danno patrimoniale
+Can delete danno patrimoniale
+Can view danno patrimoniale
+Can add diritto
+Can change diritto
+Can delete diritto
+Can view diritto
+Can add esaminatore
+Can change esaminatore
+Can delete esaminatore
+Can view esaminatore
+Can add fattore rilevante di liquidazione del danno non patrimoniale
+Can change fattore rilevante di liquidazione del danno non patrimoniale
+Can delete fattore rilevante di liquidazione del danno non patrimoniale
+Can view fattore rilevante di liquidazione del danno non patrimoniale
+Can add fattore rilevante di liq. del dp
+Can change fattore rilevante di liq. del dp
+Can delete fattore rilevante di liq. del dp
+Can view fattore rilevante di liq. del dp
+Can add danneggiato
+Can change danneggiato
+Can delete danneggiato
+Can view danneggiato
+Can add invalidità temporanea
+Can change invalidità temporanea
+Can delete invalidità temporanea
+Can view invalidità temporanea
+Can add lesione
+Can change lesione
+Can delete lesione
+Can view lesione
+Can add osservatorio
+Can change osservatorio
+Can delete osservatorio
+Can view osservatorio
+Can add postumo
+Can change postumo
+Can delete postumo
+Can view postumo
+Can add postumo da tabella standard
+Can change postumo da tabella standard
+Can delete postumo da tabella standard
+Can view postumo da tabella standard
+Can add professione
+Can change professione
+Can delete professione
+Can view professione
+Can add profilo rilevante
+Can change profilo rilevante
+Can delete profilo rilevante
+Can view profilo rilevante
+Can add prova del danno non patrimoniale
+Can change prova del danno non patrimoniale
+Can delete prova del danno non patrimoniale
+Can view prova del danno non patrimoniale
+Can add prova del danno patrimoniale
+Can change prova del danno patrimoniale
+Can delete prova del danno patrimoniale
+Can view prova del danno patrimoniale
+Can add provenienza
+Can change provenienza
+Can delete provenienza
+Can view provenienza
+Can add provincia
+Can change provincia
+Can delete provincia
+Can view provincia
+Can add regione
+Can change regione
+Can delete regione
+Can view regione
+Can add responsabilità
+Can change responsabilità
+Can delete responsabilità
+Can view responsabilità
+Can add richiesta parte attrice
+Can change richiesta parte attrice
+Can delete richiesta parte attrice
+Can view richiesta parte attrice
+Can add sentenza
+Can change sentenza
+Can delete sentenza
+Can view sentenza
+Can add trend di liquidazione
+Can change trend di liquidazione
+Can delete trend di liquidazione
+Can view trend di liquidazione
+Can add trend profilo rilevante
+Can change trend profilo rilevante
+Can delete trend profilo rilevante
+Can view trend profilo rilevante
+Can add profilo rilevante container
+Can change profilo rilevante container
+Can delete profilo rilevante container
+Can view profilo rilevante container
+Can add user
+Can change user
+Can delete user
+Can view user
+Can add session
+Can change session
+Can delete session
+Can view session
