@@ -39,9 +39,11 @@ import random, json
 from decimal import Decimal
 
 
-INFORTUNATO_BLACKLIST = [3625, 4658, 4684, 4685, 5221, 5284, 5295, 5310, 5333,5571,3841]
+INFORTUNATO_BLACKLIST = [3625, 4658, 4684, 4685, 5221, 5284, 5295, 5310, 5333,5571,3841] # dont know what the problem was
+SENTENZA_BLACKLIST = [1L, 1191L, 78L, 517L, 480L, 487L, 298L, 562L, 539L, 574L, 478L, 607L, 672L, 662L, 482L, 518L, 663L, 502L, 609L, 527L, 516L, 540L, 538L, 520L, 499L, 535L, 665L, 483L, 234L, 664L, 525L, 536L, 560L, 524L, 481L, 670L, 512L, 496L, 498L, 629L, 537L, 526L, 501L, 559L, 295L, 567L, 1196L, 188L, 210L, 177L, 189L, 300L, 207L, 173L, 216L, 479L, 533L, 184L, 206L, 232L, 683L, 178L, 490L, 179L, 181L, 211L, 504L, 231L, 214L, 183L, 208L, 212L, 180L, 631L, 577L, 297L, 215L, 182L, 960L, 176L, 186L, 491L, 187L, 213L, 514L, 489L, 633L, 610L, 585L, 627L, 622L, 555L, 566L, 575L, 568L, 713L, 552L, 624L, 588L, 630L, 606L, 619L, 616L, 464L, 2659L]
 
-def write_rule(fieldval,t):
+
+def write_rule(fieldval,t,fieldname=None):
     if fieldval is None :
         return None
     
@@ -49,12 +51,16 @@ def write_rule(fieldval,t):
         try:
             return int(fieldval)
         except:
+            if fieldval != None:
+                print(fieldval,type(fieldval),fieldname)
             assert(fieldval == None)
             return None
     if t == "dec":
         try:
             return str(Decimal(fieldval))
         except:
+            if fieldval is not None:
+                print(fieldval,type(fieldval),fieldname)
             assert(fieldval is None)
             return None
     if t == "str":
@@ -63,6 +69,8 @@ def write_rule(fieldval,t):
         try:
             return fieldval.strftime("%Y%m%d")
         except:
+            if fieldval != None:
+                print(fieldval,type(fieldval),fieldname)
             assert(fieldval == None)
             return None
     if t == "file":
@@ -74,6 +82,8 @@ def write_rule(fieldval,t):
         try:
             return int(fieldval.pk)
         except:
+            if fieldval is not None:
+                print(fieldval,type(fieldval),fieldname)
             assert(fieldval == None)
     if t == "manytomany-d": # TODO: MANYTOMANY REVERSE
         # fieldval is then a many to many manager (.all() is queryset)
@@ -104,11 +114,19 @@ def create_pk_remap(names_list):
 def scale_down(full_list,scaledown):
     global ng
     
-    if scaledown is None and ng != 4:
+    if scaledown is None and ng not in [4,2]:
         return full_list
         
     object_list = []
     if ng == 2:
+        if scaledown is None:
+            # for o in full_list:
+            #     if o.pk not in SENTENZA_BLACKLIST:
+            #         object_list.append(o)
+            object_list=full_list.exclude(pk__in=SENTENZA_BLACKLIST)
+            # object_list=object_list.filter(pk__lt=500001) use ths for shortening the process
+            return object_list
+
         for o in full_list:
             if random.random() <= 1.0/scaledown:
                 object_list.append(o)
@@ -162,7 +180,8 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
     # each instance is a dict of field_name:field_value for the various fields
     object_list = m_obj.objects.all() # list of the instances already in the db
     object_list = scale_down(object_list,scaledown)
-    for m_inst in object_list:  # m_inst model instance        
+    for m_inst in object_list:  # m_inst model instance   
+        print "Beginning ",m_inst, "with pk",m_inst.pk     
         instance_dict={}  # each instance is a dict of field_name:field_value
         #save base fields
         for fieldname, t in model_dict["fields_dict"].items():
@@ -174,7 +193,7 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
             assert(fieldname not in instance_dict)
             # print "provo a salvare field", fieldname,t,field
             # raw_input()
-            instance_dict.update({fieldname:write_rule(field,t)})
+            instance_dict.update({fieldname:write_rule(field,t,fieldname=fieldname)})
         # many to many
         if "many_to_many_dict" in model_dict.keys():
             for fieldname, t in model_dict["many_to_many_dict"].items():
@@ -184,7 +203,7 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
                     print fieldname
                     assert(False)
                 assert(fieldname not in instance_dict)
-                instance_dict.update({fieldname:write_rule(field,t)})
+                instance_dict.update({fieldname:write_rule(field,t,fieldname=fieldname)})
         # files
         if "files_list" in model_dict.keys():
             for fieldname in model_dict["files_list"]:
@@ -194,11 +213,11 @@ def populate_model_dict(model_dict,model_name, scaledown = None):
                     print (fieldname,":file not found for instance with local pk",getattr(m_inst,"pk"))
                     assert(False)
                 assert(fieldname not in instance_dict)
-                instance_dict.update({fieldname:write_rule(field,"file")})
+                instance_dict.update({fieldname:write_rule(field,"file",fieldname=fieldname)})
 
         instance_dict.update({"old_pk":int(m_inst.pk)})
         instances_list.append(instance_dict) 
-        print "Saved ",m_inst, "with pk",m_inst.pk
+        #  print "Saved ",m_inst, "with pk",m_inst.pk
     # endfor on object instances    
     dump_dict.update({model_name:instances_list})
 
