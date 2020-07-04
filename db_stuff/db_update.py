@@ -108,15 +108,15 @@ def save_row(row_json_dict,model_name):
     # is like {"field1":value1,"filed2",field}
     model_obj = models_dict[model_name]["model_obj"]
     i = model_obj()
-    if debug_flag:
-        print("chiavi dict:",row_json_dict.keys())
-    
+    # if debug_flag:
+    #     print("chiavi dict:",row_json_dict.keys())
+    print("-----------------------------------------------n\Preparing to save instance with old pk",row_json_dict['old_pk'])
     for fieldname, fieldtype in models_dict[model_name]["fields_dict"].items():
         jsonval = row_json_dict[fieldname] # get the json-field relative value
         if fieldname != "ocr": #debug_flag: #and 
             print("prep field",fieldname,jsonval)
         else:
-            print("ocr, len",len(jsonval))
+            print("ocr, len ",len(jsonval))
         # get the field type
         fieldtype = models_dict[model_name]["fields_dict"][fieldname]
         if fieldtype == "file":
@@ -136,9 +136,9 @@ def save_row(row_json_dict,model_name):
                 print("getattr fails: writerule returned",fieldval)
     i.save() # save the model
     try:
-        print("Saved normal fields",i)
+        print("+++Saved normal fields",i)
     except:
-        print("cannot print obj,saving it")
+        print("+++cannot print obj,saving it")
     # save the pk remappings
     pk_remap[model_name].update({row_json_dict["old_pk"]:i.pk})
 
@@ -176,7 +176,7 @@ def save_row(row_json_dict,model_name):
                     print(type(getattr(i,fieldname)))
         i.save()
 
-    print("Finished saving instance",i)
+    print("Finished saving instance",i,"\n-------------of new pk",i.pk)
     return i.pk
 
 def save_model(instances_list, model_name):
