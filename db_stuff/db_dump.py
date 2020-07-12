@@ -135,9 +135,11 @@ def scale_down(full_list,scaledown):
     #infortunati
     if ng == 4:
         if scaledown is None:
-            for o in full_list:
-                if o.pk not in INFORTUNATO_BLACKLIST:
-                    object_list.append(o)
+            # for o in full_list:
+            #     if o.pk not in INFORTUNATO_BLACKLIST:
+            #         object_list.append(o)
+            object_list=full_list.exclude(pk__in=INFORTUNATO_BLACKLIST)
+            object_list=object_list.exclude(sentenza__pk__in=SENTENZA_BLACKLIST)
             return object_list
 
         # read the pk and check if infortunato is in the sentenze's
