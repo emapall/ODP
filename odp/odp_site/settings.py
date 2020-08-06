@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-from odp_site.secret import SECRET_KEY
+from odp_site.secret import SECRET_KEY, GMAIL_PASSWORD
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -126,8 +126,14 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # email
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 25
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+# EMAIL_USE_SSL = True
+# EMAIL_PORT = 465
+
+EMAIL_HOST_USER = 'info.odp.santannapisa@gmail.com'
+EMAIL_HOST_PASSWORD = GMAIL_PASSWORD
 
 # login, logout and redirects
 
