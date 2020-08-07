@@ -20,7 +20,7 @@ def get_file(request,sent_id,field_name): #filename may be a filename or a path,
         raise PermissionDenied
     if not request.user.is_staff:
         for infortunato in sent.infortunati.all():
-            if not uninfortunato.pubblicabile:
+            if not infortunato.pubblicabile:
                 raise PermissionDenied
 
     # can access document
