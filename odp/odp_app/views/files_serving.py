@@ -28,7 +28,7 @@ def get_file(request,sent_id,field_name): #filename may be a filename or a path,
     filename = doc.name
     real_path = os.path.join(
                 settings.MEDIA_ROOT, 
-                filename #the name is actually a the path user/file
+                filename #the name is actually a the path (immagine-scheda-commento)/file
     )
 
     return sendfile(request,real_path)
