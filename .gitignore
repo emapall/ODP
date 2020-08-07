@@ -86,6 +86,7 @@ commento/
 *copia_media/
 *.tif
 uploads/*
+uploads/
 
 db_stuff/
 apache_stuff/
