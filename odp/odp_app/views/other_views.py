@@ -255,6 +255,9 @@ def new_s_results(request):
 
         # -------- SENTENZA -------- 
 
+        # TODO: perchè c'è questa cosa che è la copia di 
+        # s_results, non s possono unire le due cose?
+
         if request.GET.get("grado_di_giudizio"):
             obj = obj.filter(
                 sentenza__grado_di_giudizio__contains=request.GET["grado_di_giudizio"]
@@ -295,8 +298,8 @@ def new_s_results(request):
                     obj = obj.filter(sentenza__ocr__icontains=word.strip())
         
         #security check
-        if not request.user.is_staff:
-            obj = obj.filter(forza_esclusione=False) # false perchè forza esclusione
+        if not request.user.is_staff: 
+            obj = obj.filter(sentenza__forza_esclusione=False) # false perchè forza esclusione
             # se è true allora va esclusa
 
         obj = obj.order_by("-sentenza__data_del_deposito")
