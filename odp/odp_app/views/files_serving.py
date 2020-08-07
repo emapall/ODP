@@ -19,7 +19,7 @@ def get_file(request,sent_id,field_name): #filename may be a filename or a path,
     if sent.forza_esclusione and (not request.user.is_staff):
         raise PermissionDenied
     if not request.user.is_staff:
-        for infortunato in sent.infortunati.all():
+        for infortunato in sent.infortunati:
             if not uninfortunato.pubblicabile:
                 raise PermissionDenied
 
