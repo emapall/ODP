@@ -1,15 +1,15 @@
 # from odp_app.models import *
 from django.contrib.auth.models import *
 import os
-DB_STUFF_PATH = "/home/ema/projects/LiderLab/odp/ODP/db_stuff/permissions&users"
+DB_STUFF_PATH = "/home/allievo/odp_files/odp/ODP/db_stuff/permissions&users"
 
 
 def set_permissions(n):
-    f = open(os.path.join(DB_STUFF_PATH,str("permissions_"+n+".txt"),"r"))
+    f = open(os.path.join(DB_STUFF_PATH,str("permissions_"+n+".txt")),"r")
     g = Group.objects.get(name=n)
     l = f.read().splitlines() #OTHERWISE THERE ARE \N in the strings
     pl = Permssion.objects.filter(name__in=l)
-    print("this group has "+str(pl.count())+" permissions")
+    print("this group has "+str(pl.count())+" permissions:\n",pl,"\n")
     
     g.permission.set(pl)
     g.save()
