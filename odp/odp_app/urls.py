@@ -35,7 +35,6 @@ urlpatterns = [
     path("logout/", core_views.logout_view, name="logout"),
     # path("register/", core_views.signup), # TODO
     # path("admin/", RedirectView.as_view(url="/database/admin/")), # TODO???
-    path("<schifo>/<schifo2>/",core_views.test, name="test"),
     path("signup/",core_views.signup,name="signup"),
     path("signup/confirm/<str:uid_b64>/<str:token>", core_views.signup_confirm,name="signup-confirm"),
     path("change_password/", core_views.password_reset_view, name="change-password"), 
