@@ -31,6 +31,10 @@ from odp_app.models import (
     TrendProfiloRilevante,
     TrendProfiloRilevanteContainer,
     User,
+    Ctu,
+    AreaFunzionaleCoinvolta,
+    ProfiloOperatoreCoinvolto,
+    TipologiaErrore,
 )
 
 # from lider.odp.widgets import *
@@ -486,10 +490,28 @@ class DanneggiatoAdmin(admin.ModelAdmin):
         "trend_liquidazione",
     )
     save_on_top = True
-    list_display = ("id", "professione", "sesso", "eta", "pubblicabile")
+    list_display = ("id", "professione", "sesso", "eta", "pubblicabile","sentenza")
     raw_id_fields = ("sentenza", "lesione", "postumo", "postumo_tabulato")
     search_fields = ["id", "professione__professione", "eta"]
     list_display_links = ("id", "professione")
+
+@admin.register(Ctu)
+class CtuAdmin(admin.ModelAdmin):
+    raw_id_fields = ("infortunato",)
+    filter_horizontal = ("area_funzionale_coinvolta_sec",)
+    list_display = ("pk","infortunato","sentenza")
+    search_fields = (
+                "infortunato__sentenza__sede_tribunale__comune",
+        )
+    list_filter = (
+                "infortunato__sentenza__grado_di_giudizio",
+        )    
+
+
+admin.site.register(AreaFunzionaleCoinvolta)
+admin.site.register(ProfiloOperatoreCoinvolto)
+admin.site.register(TipologiaErrore)
+    
 
 
 #    list_filter = ['pubblicabile']
