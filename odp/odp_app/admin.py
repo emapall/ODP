@@ -495,10 +495,12 @@ class DanneggiatoAdmin(admin.ModelAdmin):
     search_fields = ["id", "professione__professione", "eta"]
     list_display_links = ("id", "professione")
 
+
+
 @admin.register(Ctu)
 class CtuAdmin(admin.ModelAdmin):
     raw_id_fields = ("infortunato",)
-    filter_horizontal = ("area_funzionale_coinvolta_sec",)
+    #filter_vertical = ("area_funzionale_coinvolta_sec","profilo_operatore_coinvolto_sec",)
     list_display = ("pk","infortunato","sentenza")
     search_fields = (
                 "infortunato__sentenza__sede_tribunale__comune",
@@ -506,7 +508,83 @@ class CtuAdmin(admin.ModelAdmin):
     list_filter = (
                 "infortunato__sentenza__grado_di_giudizio",
         )    
+    fieldsets = (
+                ("Generale", {
+                    "fields": (
+                        "infortunato",
+                        "tipo_procedimento",
+                        "data","qualifica_ctu",
+                        "quesito_formulato",
+                    ),
+                    "classes": ("collapse","extrapretty")
+                }),
+                ("Consulenze medici legali", {
+                    "fields": (
+                        "consulenza_med_legale_parte_ric",
+                        "errore_lamentato",
+                        "richiesta_danni",
+                        "consulenza_med_legale_parte_con",
+                        "considerazioni_difensive",
+                        "proposta_risarcitoria",
+                    ),
+                    "classes":("collapse",),
+                }),
+                ("Aree funzionali,profili operatori ed errore", {
+                    "fields": (
+                        ("area_funzionale_coinvolta_princ","profilo_operatore_coinvolto_princ",),
+                        ("area_funzionale_coinvolta_sec","profilo_operatore_coinvolto_sec",),
+                        "tipologia_errore",
+                    ),
+                    "classes":("collapse",),
+                }),
+                ("Responsabilità", {
+                    "fields": (
+                        "identificazione_responsabilita",
+                        "identificazione_responsabilita_arg",
+                        "corresponsabilita_altri",
+                    ),
+                    "classes":("collapse",),
+                }),
+                ("Danni", {
+                    "fields": (
+                        "danno_biologico_permanente",
+                        "percentuale_danno_permanente",
+                        ("danno_iatrogeno_differenziale_dal", "danno_iatrogeno_differenziale_al",),
+                        "danno_differenziale_inail",
+                        ("danno_morte","danno_jure_proprio","danno_biologico_terminale",),
+                        "danno_perdita_chances_guarigione",
+                        "danno_perdita_chances_guarigione_arg",
+                        "danno_perdita_chances_di_sopravvivenza",
+                    ),
+                    "classes":("collapse",),
+                }),
+                ("Capacità lavorativa", {
+                    "fields": (
+                        "riduzione_capacita_lavorativa_specifica",
+                        "riduzione_capacita_lavorativa_specifica_arg",                   
+                    ),
+                    "classes":("collapse",),
+                }),
+                ("Spese mediche", {
+                    "fields": (
+                        "rimborso_spese_mediche_prodotte",
+                        "rimborso_spese_mediche_prodotte_arg",                   
+                    ),
+                    "classes":("collapse",),
+                }),
+                ("Altro", {
+                    "fields": (
+                        ("citazioni_bibliografiche","file_nativo_digitale","doc",),                        
+                        "accoglimento_giudice",
+                        "riferimento_valutativo",
+                        "riferimento_valutativo_arg",
+                        "note",                                           
+                    ),
+                    "classes":("collapse",),
+                }),
 
+    )
+    
 
 admin.site.register(AreaFunzionaleCoinvolta)
 admin.site.register(ProfiloOperatoreCoinvolto)

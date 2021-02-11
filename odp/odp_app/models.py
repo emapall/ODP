@@ -1479,7 +1479,7 @@ class Ctu(models.Model):
         (3, "Giudizio di appello"),
         (4, "Mediazione EX D. LGS. 28/2010"),
     ]
-    AREA_FUNZIONALE_COINVOLTA_CHOICES=[
+    """    AREA_FUNZIONALE_COINVOLTA_CHOICES=[
         (0,"Medica"),
         (1,"Chirurgica"),
         (2,"Terapia intensiva"),
@@ -1495,7 +1495,7 @@ class Ctu(models.Model):
         (12,"Direzione sanitaria"),
         (13,"Igene/medicina preventiva"),
     ]
-
+    """
     IDENTIFICAZIONE_RESPONSABILITA_CHOICES=[
         (0,"Presente"),
         (1,"Assente"),
@@ -1517,10 +1517,10 @@ class Ctu(models.Model):
     ]
 
     ACCOGLIMENTO_GIUDICE_CHOICES=[
-        (0,"Totale"),
+        (0,"Non applicabile"),
         (1,"Parziale"),
-        (2,"Negato"),
-        (3,"Non applicabile"),
+        (2,"Totale"),
+        (3,"Negato"),
         (4,"Ordinanza"),
     ]
 
@@ -1634,7 +1634,6 @@ class Ctu(models.Model):
             verbose_name="Tipologia/e di errore/i",
             blank=False, #TODO TOASK
         )
-
     identificazione_responsabilita = models.SmallIntegerField(
             verbose_name="Identificazione responsabilità",
             null=False,
@@ -1655,7 +1654,7 @@ class Ctu(models.Model):
             default=False,
             help_text="Check se si, lasciare bianco se no"
         )
-    citazioni_bibliografice = models.BooleanField(
+    citazioni_bibliografiche = models.BooleanField( #TODO CORREGGERE METTERE LA H
             verbose_name="Citazioni bibliografiche",
             null=False,
             blank=False, #TODO TOASK
@@ -1663,6 +1662,7 @@ class Ctu(models.Model):
             help_text="Check se si, lasciare bianco se no"
         )
     # lesione, postumo, invalidità temporanee ecc. ecc... #TODO TOASK queste le lascierei nell'infortunato
+    # todo ESAME OGGETTIVO ME LO SO SCORDATO, TIPOLOGIA DI DANNO
     danno_biologico_permanente = models.BooleanField(
             verbose_name="Danno biologico permanente",
             null=False,
@@ -1671,31 +1671,31 @@ class Ctu(models.Model):
             help_text="Check se si, lasciare bianco se no"
         ) 
     percentuale_danno_permanente = models.DecimalField(
-        verbose_name="Percentuale del danno biologico permanente",
-        max_digits=5, 
-        decimal_places=2,
-        null=False, #TODO TOASK
-        blank=True, #TODO TOASK
-        default=0, #TODO TOASK
+            verbose_name="Percentuale del danno biologico permanente",
+            max_digits=5,
+            decimal_places=2,
+            null=False, #TODO TOASK
+            blank=True, #TODO TOASK
+            default=0, #TODO TOASK
         )
     danno_iatrogeno_differenziale_dal = models.DecimalField(
-        verbose_name="Danno iatrogeno differenziale - Dal...",
-        max_digits=5, 
-        decimal_places=2,
-        null=False, #TODO TOASK
-        blank=True, #TODO TOASK
-        default=0, #TODO TOASK
+            verbose_name="Danno iatrogeno differenziale - Dal...",
+            max_digits=5,
+            decimal_places=2,
+            null=False, #TODO TOASK
+            blank=True, #TODO TOASK
+            default=0, #TODO TOASK
         ) 
-    danno_iatrogeno_differenziale_dal = models.DecimalField(
-        verbose_name="Danno iatrogeno differenziale - Al...",
-        max_digits=5, 
-        decimal_places=2,
-        null=False, #TODO TOASK
-        blank=True, #TODO TOASK
-        default=0, #TODO TOASK
+    danno_iatrogeno_differenziale_al = models.DecimalField( #TODO CAMBIARE AL
+            verbose_name="Danno iatrogeno differenziale - Al...",
+            max_digits=5,
+            decimal_places=2,
+            null=False, #TODO TOASK
+            blank=True, #TODO TOASK
+            default=0, #TODO TOASK
         )
     danno_differenziale_inail = models.TextField( 
-            verbose_name="Argomentazione su identificazione responsabilità",
+            verbose_name="Danno differenziale inail",
             null=False,
             blank=True, #TODO TOASK
             default="",
@@ -1719,7 +1719,7 @@ class Ctu(models.Model):
             help_text="Check se si, lasciare bianco se no"
         )
     danno_perdita_chances_guarigione = models.BooleanField( #TODO VALIDAZIONE (? CON DANNO MORTE TOASK )
-            verbose_name="Danno causato da perdita di chances di guarigione",
+            verbose_name="Danno da perdita di chances di guarigione",
             null=False,
             default=False,
             help_text="Check se si, lasciare bianco se no"
@@ -1732,27 +1732,15 @@ class Ctu(models.Model):
             help_text="Se non c'è danno, lasciare in bianco."
         )    
     danno_perdita_chances_di_sopravvivenza = models.DecimalField(
-        verbose_name="Danno da perdita chances di sopravvivenza (%)",
-        max_digits=5, 
-        decimal_places=2,
-        null=True, #TODO TOASK
-        blank=True, #TODO TOASK
-        #default=0, #TODO TOASK
-        help_text="Lasciare libero se non sussiste il danno."
+            verbose_name="Danno da perdita chances di sopravvivenza (%)",
+            max_digits=5,
+            decimal_places=2,
+            null=True, #TODO TOASK
+            blank=True, #TODO SI BLANKABILE
+            #default=0, #TODO TOASK
+            help_text="Lasciare libero se non sussiste il danno."
         )      
-    riferimento_valutativo = models.SmallIntegerField( #TODO VALIDATION
-            verbose_name="Riferimento valutativo",
-            null=False,
-            blank=False, #TODO TOASK
-            choices=RIFERIMENTO_VALUTATIVO_CHOICES,
-        )
-    identificazione_responsabilita_arg = models.TextField( #TODO VALIDATION
-            verbose_name="Riferimento valutativo",
-            null=False,
-            blank=True, #TODO TOASK
-            default="",
-            help_text="Specificare se necessario, altrimenti si può lasciare in bianco.",
-        )
+
     # danno patrimoniale è come l'altri - lesione, postumo, ecc...li lascierei sull'infortunato
     riduzione_capacita_lavorativa_specifica = models.SmallIntegerField( #TODO VALIDATION
             verbose_name="Riduzione capacità lavorativa specifica",
@@ -1778,18 +1766,37 @@ class Ctu(models.Model):
             blank=True, #TODO TOASK
             default="",
         )
+    riferimento_valutativo = models.SmallIntegerField( #TODO VALIDATION
+            verbose_name="Riferimento valutativo",
+            null=False,
+            blank=False, #TODO TOASK
+            choices=RIFERIMENTO_VALUTATIVO_CHOICES,
+        )
+    riferimento_valutativo_arg = models.TextField( #TODO VALIDATION
+            verbose_name="Riferimento valutativo - specificare",
+            null=False,
+            blank=True,
+            default="",
+            help_text="Specificare se necessario, altrimenti si può lasciare in bianco.",
+        )
+    accoglimento_giudice = models.SmallIntegerField( #TODO VALIDATION
+            verbose_name="Accoglimento giudice",
+            null=False,
+            blank=False, #TODO TOASK
+            choices=ACCOGLIMENTO_GIUDICE_CHOICES,
+        )
     note = models.TextField(
-        verbose_name="Note (opzionale)",
-        null=False,
-        blank=True,
-        default="",
-    )
+            verbose_name="Note (opzionale)",
+            null=False,
+            blank=True,
+            default="",
+        )
     doc = models.FileField(
-        verbose_name="Allega un pdf",
-        upload_to="ctu/",
-        null=True,
-        blank=True,
-    )
+            verbose_name="Allega un pdf",
+            upload_to="ctu/",
+            null=True,
+            blank=True,
+        )
 
     @property
     def sentenza(self):
