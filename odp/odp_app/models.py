@@ -15,6 +15,7 @@
 #  DirittoInviolabile e DannoPatrimonaile    [JC 01/03/2009]
 #
 ############################################################
+import datetime
 
 from django.db import models
 from django.template.defaultfilters import date
@@ -1387,7 +1388,53 @@ class Infortunato(models.Model):
         verbose_name_plural = u"danneggiati"
         # ordering = ["sentenza", "nome_infortunato"]
         # order_with_respect_to = 'sentenza'
+ 
+class AreaFunzionaleCoinvolta(models.Model):
+    area = models.CharField(
+            verbose_name="CTU-Area funzionale coinvolta",
+            max_length=100,
+            unique=True,
+            null=False,
+            blank=False,
+        )
+    class Meta:
+        verbose_name = "CTU - Area funzionale"
+        verbose_name_plural = "CTU- Aree funzionali"
+    
+    def __str__(self):
+        return str(self.area)
 
+class ProfiloOperatoreCoinvolto(models.Model):
+    profilo = models.CharField(
+            verbose_name="CTU - Profilo operatore coinvolto",
+            max_length=100,
+            unique=True,
+            null=False,
+            blank=False,
+        )
+
+    class Meta:
+        verbose_name = "CTU-Profilo operatore"
+        verbose_name_plural = "CTU-Profili operatori"
+
+    def __str__(self):
+        return str(self.profilo)
+
+class TipologiaErrore(models.Model):
+    tipologia = models.CharField(
+            verbose_name="CTU - Tipologia di errore",
+            max_length=100,
+            unique=True,
+            null=False,
+            blank=False,
+        )
+    
+    class Meta:
+        verbose_name = "CTU-Tipologia di errore"
+        verbose_name_plural = "CTU-Tipologie di errori"
+
+    def __str__(self):
+        return self.tipologia
 
 class TrendProfiloRilevanteContainer(models.Model):
     trend = models.ForeignKey(
@@ -1420,3 +1467,355 @@ class Invalidita_temporanea(models.Model):
         verbose_name = u"invalidità temporanea"
         verbose_name_plural = u"invalidità temporanee"
         ordering = ("-percentuale",)
+
+
+
+# Scheda CTU
+class Ctu(models.Model):
+    TIPO_PROCEDIMENTO_CHOICES=[
+        (0, "Accertamento tecnico preventivo ai sensi art. 696 bis"),
+        (1, "Consulenza tecnica preventiva"),
+        (2, "Giudizio di merito"),
+        (3, "Giudizio di appello"),
+        (4, "Mediazione EX D. LGS. 28/2010"),
+    ]
+    """    AREA_FUNZIONALE_COINVOLTA_CHOICES=[
+        (0,"Medica"),
+        (1,"Chirurgica"),
+        (2,"Terapia intensiva"),
+        (3,"Materno infantile"),
+        (4,"Salute mentale"),
+        (5,"Emergenza-urgenza"),
+        (6,"Diagnostica di laboratorio"),
+        (7,"Diagnostica per immagini"),
+        (8,"Territorio"),
+        (9,"Aera tecnica"),
+        (10,"Farmacia"),
+        (11,"Infermieristica"),
+        (12,"Direzione sanitaria"),
+        (13,"Igene/medicina preventiva"),
+    ]
+    """
+    IDENTIFICAZIONE_RESPONSABILITA_CHOICES=[
+        (0,"Presente"),
+        (1,"Assente"),
+        (2,"Dubbia"),
+    ]
+
+    RIFERIMENTO_VALUTATIVO_CHOICES=[
+        (0,"Altro (specificare)"),
+        (1,"Tabella Comm. Min. ex DM 26/5/2004"),
+        (2,"Linee guida SIMLA 2016"),
+        (3,"Ronchi et al, 2015"),
+        (4,"Tabelle DM 3/7/03"),
+    ]
+
+    RIDUZIONE_CAPACITA_LAVORATIVA_SPECIFICA_CHOICES=[
+        (0,"Si"),
+        (1,"No"),
+        (2,"Non applicabile"),
+    ]
+
+    ACCOGLIMENTO_GIUDICE_CHOICES=[
+        (0,"Non applicabile"),
+        (1,"Parziale"),
+        (2,"Totale"),
+        (3,"Negato"),
+        (4,"Ordinanza"),
+    ]
+
+
+    infortunato = models.ForeignKey(
+            Infortunato,
+            verbose_name="Danneggiato", 
+            on_delete=models.PROTECT,
+        )
+    file_nativo_digitale = models.BooleanField(
+            verbose_name="File nativo digitale",
+            help_text="Tick su casella se sì",
+            default=False,
+            null=False,
+        )
+    #TODO TOASK blank/null = True?
+    tipo_procedimento = models.SmallIntegerField(
+            null=False,
+            blank=False, #TODO TOASK
+            choices=TIPO_PROCEDIMENTO_CHOICES,
+            verbose_name="Tipologia di procedimento",  
+        ) 
+    data = models.DateField(
+            null=False, #TODO TOASK
+            blank=False, #TODO TOASK
+            verbose_name="Data",
+            auto_now=False,
+            auto_now_add=False,
+            default=datetime.date.today, # ATTENTION!: date is already imported as templatefilter
+        )
+    qualifica_ctu = models.TextField(
+            verbose_name="Qualifica CTU",
+            null=False,
+            blank=True, #TODO TOASK
+            default="",
+        )
+    quesito_formulato = models.TextField(
+            verbose_name="Quesito formulato",
+            null=False,
+            blank=True, #TODO TOASK
+            default="",
+        )
+    consulenza_med_legale_parte_ric = models.BooleanField( #TODO VALIDATION erorre lamentato
+            verbose_name="Consulenza medico legale di parte ricorrente",
+            null=False,
+            default=False,
+            help_text="Check se si, lasciare bianco se no"
+        )
+    errore_lamentato = models.TextField( #TODO VALIDATION
+            verbose_name="Errore lamentato",
+            null=False,
+            blank=True, #TODO TOASK
+            default="",
+            help_text="Se non c'è consulenza medico legale parte ricorrente, lasciare in bianco."
+        )
+    richiesta_danni = models.TextField(
+            verbose_name="RIchiesta danni",
+            null=False,
+            blank=True, #TODO TOASK
+            default="",
+        )
+    consulenza_med_legale_parte_con = models.BooleanField( #TODO VALIDATION considerazioni difensive
+            verbose_name="Consulenza medico legale di parte convenuta",
+            null=False,
+            default=False,
+            help_text="Check se si, lasciare bianco se no"
+        )
+    considerazioni_difensive = models.TextField( #TODO VALIDATION
+            verbose_name="Considerazioni difensive",
+            null=False,
+            blank=True, #TODO TOASK
+            default="",
+            help_text="Se non c'è consulenza medico legale parte convenuta, lasciare in bianco."
+        )
+    proposta_risarcitoria = models.TextField(
+            verbose_name="Proposta risarcitoria",
+            null=False,
+            blank=True, #TODO TOASK
+            default="",
+        )
+    area_funzionale_coinvolta_princ = models.ForeignKey(
+            AreaFunzionaleCoinvolta,
+            verbose_name="Principale area funzionale coinvolta",
+            on_delete=models.PROTECT,
+            blank=False, #TODO TOASK
+            null=True, # TODO ???? IS IT VALID?
+            related_name="schede_ctu_princ_set",
+        )
+    area_funzionale_coinvolta_sec = models.ManyToManyField(
+            AreaFunzionaleCoinvolta,
+            verbose_name="Aree funzionali coinvolte secondarie",
+            blank= True, #TODO TOASK
+            related_name="schede_ctu_sec_set"
+        )
+    profilo_operatore_coinvolto_princ = models.ForeignKey(
+            ProfiloOperatoreCoinvolto,
+            verbose_name="Profilo del principale operatore coinvolto",
+            on_delete=models.PROTECT,
+            blank=False, #TODO TOASK
+            null=True, # TODO ???? IS IT VALID?
+            related_name="schede_ctu_princ_set",
+        )
+    profilo_operatore_coinvolto_sec = models.ManyToManyField(
+            ProfiloOperatoreCoinvolto,
+            verbose_name="Profili secondari operatori coinvolti",
+            blank= True, #TODO TOASK
+            related_name="schede_ctu_sec_set"
+        )
+    tipologia_errore = models.ManyToManyField(
+            TipologiaErrore,
+            verbose_name="Tipologia/e di errore/i",
+            blank=False, #TODO TOASK
+        )
+    identificazione_responsabilita = models.SmallIntegerField(
+            verbose_name="Identificazione responsabilità",
+            null=False,
+            blank=False, #TODO TOASK
+            choices=IDENTIFICAZIONE_RESPONSABILITA_CHOICES,
+        )
+    identificazione_responsabilita_arg = models.TextField( #TODO VALIDATION
+            verbose_name="Argomentazione su identificazione responsabilità",
+            null=False,
+            blank=True, #TODO TOASK
+            default="",
+            help_text="Se non c'è identificazione responsabilità, lasciare in bianco."
+        )
+    corresponsabilita_altri = models.BooleanField(
+            verbose_name="Corresponsabilità di altri enti/aziende",
+            null=False,
+            blank=False, #TODO TOASK
+            default=False,
+            help_text="Check se si, lasciare bianco se no"
+        )
+    citazioni_bibliografiche = models.BooleanField( #TODO CORREGGERE METTERE LA H
+            verbose_name="Citazioni bibliografiche",
+            null=False,
+            blank=False, #TODO TOASK
+            default=False,
+            help_text="Check se si, lasciare bianco se no"
+        )
+    # lesione, postumo, invalidità temporanee ecc. ecc... #TODO TOASK queste le lascierei nell'infortunato
+    # todo ESAME OGGETTIVO ME LO SO SCORDATO, TIPOLOGIA DI DANNO
+    danno_biologico_permanente = models.BooleanField(
+            verbose_name="Danno biologico permanente",
+            null=False,
+            blank=False, #TODO TOASK
+            default=False,
+            help_text="Check se si, lasciare bianco se no"
+        ) 
+    percentuale_danno_permanente = models.DecimalField(
+            verbose_name="Percentuale del danno biologico permanente",
+            max_digits=5,
+            decimal_places=2,
+            null=False, #TODO TOASK
+            blank=True, #TODO TOASK
+            default=0, #TODO TOASK
+        )
+    danno_iatrogeno_differenziale_dal = models.DecimalField(
+            verbose_name="Danno iatrogeno differenziale - Dal...",
+            max_digits=5,
+            decimal_places=2,
+            null=False, #TODO TOASK
+            blank=True, #TODO TOASK
+            default=0, #TODO TOASK
+        ) 
+    danno_iatrogeno_differenziale_al = models.DecimalField( #TODO CAMBIARE AL
+            verbose_name="Danno iatrogeno differenziale - Al...",
+            max_digits=5,
+            decimal_places=2,
+            null=False, #TODO TOASK
+            blank=True, #TODO TOASK
+            default=0, #TODO TOASK
+        )
+    danno_differenziale_inail = models.TextField( 
+            verbose_name="Danno differenziale inail",
+            null=False,
+            blank=True, #TODO TOASK
+            default="",
+        )
+    danno_morte = models.BooleanField( 
+            verbose_name="Danno da morte",
+            null=False,
+            default=False,
+            help_text="Check se si, lasciare bianco se no"
+        )
+    danno_jure_proprio = models.BooleanField( #TODO VALIDAZIONE (? CON DANNO MORTE TOASK )
+            verbose_name="Danno jure proprio",
+            null=False,
+            default=False,
+            help_text="Check se si, lasciare bianco se no"
+        )
+    danno_biologico_terminale = models.BooleanField( #TODO VALIDAZIONE (? CON DANNO MORTE TOASK )
+            verbose_name="Danno biologico terminale",
+            null=False,
+            default=False,
+            help_text="Check se si, lasciare bianco se no"
+        )
+    danno_perdita_chances_guarigione = models.BooleanField( #TODO VALIDAZIONE (? CON DANNO MORTE TOASK )
+            verbose_name="Danno da perdita di chances di guarigione",
+            null=False,
+            default=False,
+            help_text="Check se si, lasciare bianco se no"
+        )
+    danno_perdita_chances_guarigione_arg = models.TextField( #TODO VALIDATION
+            verbose_name="Indicazioni sul danno da perdita di chances di guarigione",
+            null=False,
+            blank=True, #TODO TOASK
+            default="",
+            help_text="Se non c'è danno, lasciare in bianco."
+        )    
+    danno_perdita_chances_di_sopravvivenza = models.DecimalField(
+            verbose_name="Danno da perdita chances di sopravvivenza (%)",
+            max_digits=5,
+            decimal_places=2,
+            null=True, #TODO TOASK
+            blank=True, #TODO SI BLANKABILE
+            #default=0, #TODO TOASK
+            help_text="Lasciare libero se non sussiste il danno."
+        )      
+
+    # danno patrimoniale è come l'altri - lesione, postumo, ecc...li lascierei sull'infortunato
+    riduzione_capacita_lavorativa_specifica = models.SmallIntegerField( #TODO VALIDATION
+            verbose_name="Riduzione capacità lavorativa specifica",
+            null=False,
+            blank=False, #TODO TOASK
+            choices=RIDUZIONE_CAPACITA_LAVORATIVA_SPECIFICA_CHOICES,
+        )
+    riduzione_capacita_lavorativa_specifica_arg = models.TextField( #TODO VALIDATION
+            verbose_name="Dettagli sulla riduzione di capacità lavorativa specifica",
+            null=False,
+            blank=True, #TODO TOASK
+            default="",
+        )
+    rimborso_spese_mediche_prodotte = models.BooleanField( #TODO VALIDAZIONE (? CON DANNO MORTE TOASK )
+            verbose_name="Rimborso spese mediche prodotte",
+            null=False,
+            default=False,
+            help_text="Check se si, lasciare bianco se no"
+        )
+    rimborso_spese_mediche_prodotte_arg = models.TextField( #TODO VALIDATION
+            verbose_name="Dettagli sul rimborso delle spese mediche prodotte",
+            null=False,
+            blank=True, #TODO TOASK
+            default="",
+        )
+    riferimento_valutativo = models.SmallIntegerField( #TODO VALIDATION
+            verbose_name="Riferimento valutativo",
+            null=False,
+            blank=False, #TODO TOASK
+            choices=RIFERIMENTO_VALUTATIVO_CHOICES,
+        )
+    riferimento_valutativo_arg = models.TextField( #TODO VALIDATION
+            verbose_name="Riferimento valutativo - specificare",
+            null=False,
+            blank=True,
+            default="",
+            help_text="Specificare se necessario, altrimenti si può lasciare in bianco.",
+        )
+    accoglimento_giudice = models.SmallIntegerField( #TODO VALIDATION
+            verbose_name="Accoglimento giudice",
+            null=False,
+            blank=False, #TODO TOASK
+            choices=ACCOGLIMENTO_GIUDICE_CHOICES,
+        )
+    note = models.TextField(
+            verbose_name="Note (opzionale)",
+            null=False,
+            blank=True,
+            default="",
+        )
+    doc = models.FileField(
+            verbose_name="Allega un pdf",
+            upload_to="ctu/",
+            null=True,
+            blank=True,
+        )
+
+    @property
+    def sentenza(self):
+        return self.infortunato.sentenza
+
+    def __str__(self):
+        return ("%s-%s" % (str(self.infortunato),str(self.infortunato.sentenza)) )
+
+    class Meta:
+        verbose_name = u"Scheda CTU"
+        verbose_name_plural = u"Schede CTU"
+   
+
+#TODO: 
+"""
+    - I campi BOOL non ha senso il BLANK
+    - I campi PERCENTUALI o ci si mette il default a 0% o non ha senso il NULL,
+        in piùse blank <--> NULL, altrimenti si può far casino in sede di compilazione del form
+    - I campi che hanno bisogno di si/no + testo argomentativo, non si può fare in modo
+        che semplicemente abbiano il testo e se è no è vuoto?
+    - Invece che nessun errore, tipologia di errore po' anche esse lasciato voto direi no?        
+"""

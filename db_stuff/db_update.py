@@ -278,7 +278,7 @@ def save_group(ng, handle_dict=None):
                 instances_list=db_dict[modelname],
                 model_name=modelname,
                 )
-    pk_rel_path = "pk_remap.json"
+    pk_rel_path = "pk_remap.json" #TODO LOL THIS should go at beginning of the 
     # open with write because it's the pk_remap obj that gets updated, 
     # the file can be overwritten
     pk_file = open(os.path.join(DB_STUFF_PATH,pk_rel_path),"w")
