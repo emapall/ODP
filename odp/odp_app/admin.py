@@ -499,7 +499,7 @@ class CtuForm(forms.ModelForm):
     class Meta:
         model = Ctu
         # TODO list only interesting fields
-        #fields = "__all__"
+        fields = "__all__"
     """
         If field A depends on fields B,C,D,E, then
         _dependiences_dict is a dictionary like
