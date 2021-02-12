@@ -10,8 +10,6 @@ import django.utils.timezone
 
 class Migration(migrations.Migration):
 
-    replaces = [('odp_app', '0001_initial'), ('odp_app', '0003_areafunzionalecoinvolta_ctu_profilooperatorecoinvolto_tipologiaerrore'), ('odp_app', '0004_auto_20210124_1627'), ('odp_app', '0005_auto_20210124_1652'), ('odp_app', '0006_auto_20210124_1653'), ('odp_app', '0007_auto_20210124_1739'), ('odp_app', '0008_auto_20210124_1820'), ('odp_app', '0009_auto_20210211_1157'), ('odp_app', '0010_ctu_accoglimento_giudice'), ('odp_app', '0011_auto_20210211_1626'), ('odp_app', '0012_auto_20210211_1629'), ('odp_app', '0013_auto_20210211_1646')]
-
     dependencies = [
         ('auth', '0011_update_proxy_permissions'),
     ]
