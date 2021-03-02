@@ -1525,11 +1525,19 @@ class Ctu(models.Model):
     ]
 
 
-    infortunato = models.ForeignKey(
-            Infortunato,
-            verbose_name="Danneggiato", 
-            on_delete=models.PROTECT,
+    sentenza = models.ForeignKey(
+            Sentenza,
+            verbose_name="Sentenza", 
+            on_delete=models.SET_NULL,
+            null=True,
+            blank=True,
         )
+    esaminatore = models.ManyToManyField(
+            Esaminatore,
+            verbose_name="esaminatore",
+            blank=True,
+    )
+
     file_nativo_digitale = models.BooleanField(
             verbose_name="File nativo digitale",
             help_text="Tick su casella se sì",
@@ -1798,12 +1806,8 @@ class Ctu(models.Model):
             blank=True,
         )
 
-    @property
-    def sentenza(self):
-        return self.infortunato.sentenza
-
     def __str__(self):
-        return ("%s-%s" % (str(self.infortunato),str(self.infortunato.sentenza)) )
+        return ("%s" % str(self.sentenza))
 
     class Meta:
         verbose_name = u"Scheda CTU"

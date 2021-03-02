@@ -495,23 +495,79 @@ class DanneggiatoAdmin(admin.ModelAdmin):
     search_fields = ["id", "professione__professione", "eta"]
     list_display_links = ("id", "professione")
 
+class CtuForm(forms.ModelForm):
+    class Meta:
+        model = Ctu
+        # TODO list only interesting fields
+        fields = "__all__"
+    """
+        If field A depends on fields B,C,D,E, then
+        _dependiences_dict is a dictionary like
+            "A":(
+                ("B","message regarding A-B"),
+                ("C","message regarding A-C"),
+                ("D","msg for A-D"),
+                etc etc..
+            )
 
+        this, for each field A for which we need to check dependencies.
+    
+    _dependencies_dict = {
+            "errore_lamentato" : (
+                ("consulenza_med_legale_parte_ric","C'è consulenza del medico legale di parte ricorrente!"),
+            ),
+             "" : (
+                ("",""),
+            ),
+             "" : (
+                ("",""),
+            ),
+             "" : (
+                ("",""),
+            ),
+             "" : (
+                ("",""),
+            ),
+             "" : (
+                ("",""),
+            ),
+             "" : (
+                ("",""),
+            ),
+             "" : (
+                ("",""),
+                ("",""),
+                ("",""),
+                ("",""),
+                ("",""),
+                ("",""),
+                ("",""),
+                ("",""),
+                ("",""),
+            ),
+   }
+
+    def clean(self):
+        super.clean()
+    """
 
 @admin.register(Ctu)
 class CtuAdmin(admin.ModelAdmin):
-    raw_id_fields = ("infortunato",)
+    raw_id_fields = ("sentenza",)
     #filter_vertical = ("area_funzionale_coinvolta_sec","profilo_operatore_coinvolto_sec",)
-    list_display = ("pk","infortunato","sentenza")
+    filter_horizontal = ("esaminatore",)
+    list_display = ("pk","sentenza")
     search_fields = (
-                "infortunato__sentenza__sede_tribunale__comune",
+                "sentenza__sede_tribunale__comune",
         )
     list_filter = (
-                "infortunato__sentenza__grado_di_giudizio",
+                "sentenza__grado_di_giudizio",
         )    
     fieldsets = (
                 ("Generale", {
                     "fields": (
-                        "infortunato",
+                        "sentenza",
+                        "esaminatore",
                         "tipo_procedimento",
                         "data","qualifica_ctu",
                         "quesito_formulato",
