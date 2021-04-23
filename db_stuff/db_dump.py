@@ -102,8 +102,7 @@ def create_pk_remap(names_list):
     pk_remap = {n:[] for n in names_list}
     for n in names_list:
         for k in pk_remap_json[n].keys():
-            #since keys are not int but str in a json i have to cast them
-            pk_remap[n].append(int(k))
+            pk_remap[n].append(int(k)) # keys are not int but str in json 
 
         pk_remap[n].sort()
     print("pk-remaps:",pk_remap)
@@ -111,13 +110,24 @@ def create_pk_remap(names_list):
 
     return pk_remap
 
+def cherry_pick_scaledown(full_list, pk_list):
+    global ng
+    object_list = full_list.filter(pk__in=pk_list)
+
 def scale_down(full_list,scaledown):
     global ng
-    
-    if scaledown is None and ng not in [4,2]:
+    # NOTE: fino ad aprile 2021 questa linea era [4,2]
+    # potenzialmente ci sono invalidtà temporanee e TrendProfRivContainers che sono stati 
+    # uploadati su aruba, senza esser collegati a nulla 
+
+    if scaledown is None and ng not in [4,2,5,7]: 
         return full_list
-        
     object_list = []
+
+    if type(scaledown) is list:
+        object_list=cherry_pick_scaledown(full_list, scaledown)
+        return object_list
+    
     if ng == 2:
         if scaledown is None:
             # for o in full_list:
